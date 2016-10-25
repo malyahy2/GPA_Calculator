@@ -11,6 +11,5 @@ angular.module('gpaCalc.controllers', [])
     $scope.loadingComplete = true;
     loadHome();
   });
-
-
+  
 });

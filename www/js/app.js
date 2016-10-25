@@ -32,11 +32,30 @@ angular.module('gpaCalc', ['ionic', 'gpaCalc.controllers', 'gpaCalc.services'])
     controller: 'loadingCtrl'
   })
 
-  .state('gradebooks', {
-  url: '/gradebooks',
-  templateUrl: 'templates/gradebooks.html',
-  //controller: 'HomeCtrl'
-});
+    .state('gradebooks', {
+    url: '/gradebooks',
+    templateUrl: 'templates/gradebooks.html'
+  })
+
+    .state('gradebook', {
+    url: '/gradebook',
+    templateUrl: 'templates/gradebook.html'
+  })
+
+    .state('term', {
+    url: '/term',
+    templateUrl: 'templates/term.html'
+  })
+
+    .state('settings', {
+    url: '/settings',
+    templateUrl: 'templates/settings.html'
+  })
+
+    .state('gpaScale', {
+    url: '/gpaScale',
+    templateUrl: 'templates/gpaScale.html'
+  });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/loading');
 });
