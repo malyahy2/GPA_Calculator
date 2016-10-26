@@ -1,27 +1,32 @@
 angular.module('gpaCalc.services', [])
 
-.service('HomeReference', function(DatabaseAccessor) {
+.factory('HomeReference', function(DatabaseAccessor) {
+  var key = "Home";
+  var initialHome = "gradebooks";
   return {
+    setHome: function (home) {
+      DatabaseAccessor.setData(key, home);
+    },
     getHome: function() {
-      return DatabaseAccessor.getHome();
+      var home = DatabaseAccessor.getData(key);
+      if(home != undefined){
+        return home;
+      } else {
+        home = initialHome;
+        DatabaseAccessor.setData(key, home);
+        return home;
+      }
     }
   }
 })
 
-.service('DatabaseAccessor', function() {
+.factory('DatabaseAccessor', function() {
   return {
-    setHome: function (home) {
-      window.localStorage.setItem("Home", home);
+    setData: function (key, value) {
+      window.localStorage.setItem(key, value);
     },
-    getHome: function() {
-      var home = window.localStorage.getItem("Home");
-      if(home != undefined){
-        return home;
-      } else {
-        home = 'gradebooks';
-        this.setHome(home);
-        return home;
-      }
+    getData: function (key) {
+      return window.localStorage.getItem(key);
     }
   }
 });
