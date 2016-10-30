@@ -20,23 +20,23 @@ angular.module('gpaCalc.services', [])
   }
 })
 
-.service('AppManager', function(DatabaseAccessor, IdGenerator, GradebookManager, TermManager) {
+.factory('AppManager', function(DatabaseAccessor, IdGenerator) {
   var gradebooks = { key: "gradebooksList", list: [] };
   var terms = { key: "termsList", list: [] };
   var courses = { key: "coursesList", list: [] };
 
-  var getInitialDataList = function(key) {
+  var getInitialDataList = function (key) {
     var dataList = DatabaseAccessor.getDataObject(key);
     if(dataList == undefined){
       dataList = [];
       DatabaseAccessor.setDataObject(key, dataList);
     }
     return dataList;
-  }
+  };
 
-  gradebooks.list = this.getInitialDataList(gradebooks.key);
-  terms.list = this.getInitialDataList(terms.key);
-  courses.list = this.getInitialDataList(courses.key);
+  gradebooks.list = getInitialDataList(gradebooks.key);
+  terms.list = getInitialDataList(terms.key);
+  courses.list = getInitialDataList(courses.key);
 
   var updateDataList = function(dataList) {
     DatabaseAccessor.setDataObject(dataList.key, dataList.list);
@@ -44,99 +44,61 @@ angular.module('gpaCalc.services', [])
 
   var getListObject = function(id) {
     if(id.charAt(0) == 'g' || id.charAt(0) == 'G'){
-      return this.gradebooks;
+      return gradebooks;
     } else if(id.charAt(0) == 't' || id.charAt(0) == 't'){
-      return this.terms;
+      return terms;
     } else if(id.charAt(0) == 'c' || id.charAt(0) == 'C'){
-      return this.courses;
+      return courses;
     }
     return undefined;
   }
 
+  var addObject = function(newObject) {
+    var listObject = getListObject(newObject.id);
+    listObject.list.push(newObject);
+    updateDataList(listObject);
+  }
+
+  var getObject = function(objectId) {
+    var objectList = getListObject(objectId).list;
+    return objectList.find(function(object) {
+        return object.id == objectId;
+    });
+  }
+
+  var updateObject = function(updatedObject) {
+    var listObject = getListObject(updatedObject.id);
+    var objectIndex = listObject.list.indexOf(updatedObject.id);
+    listObject.list[objectIndex] = updatedObject;
+    updateDataList(listObject);
+  }
+
+  var deleteObject = function(objectId) {
+    var listObject = getListObject(objectId);
+    var objectIndex = listObject.list.indexOf(objectId);
+    listObject.list.splice(objectIndex, 1);
+    updateDataList(listObject);
+  }
+
   return {
-    addObject: function(newObject) {
-      var listObject = this.getListObject(newObject.id);
-      listObject.list.push(newObject);
-      this.updateDataList(listObject);
-    },
-    getObject: function(objectId) {
-      var objectList = this.getListObject(objectId).list;
-      return objectList.find(function(object) {
-          return object.id == objectId;
-      });
-    },
-    updateObject: function(updatedObject) {
-      var listObject = this.getListObject(updatedObject.id);
-      var objectIndex = listObject.list.indexOf(updatedObject.id);
-      listObject.list[objectIndex] = updatedObject;
-      this.updateDataList(listObject);
-    },
-    deleteObject: function(objectId) {
-      var listObject = this.getListObject(objectId);
-      var objectIndex = listObject.list.indexOf(objectId);
-      listObject.list.splice(objectIndex, 1);
-      this.updateDataList(listObject);
-    },
+    addObject: addObject,
+    getObject: getObject,
+    updateObject: updateObject,
+    deleteObject: deleteObject,
     getParentObject: function(objectId) {
       if(objectId.charAt(0) == 't' || objectId.charAt(0) == 't'){
-        var objectList = this.gradebooks.list;
+        var objectList = gradebooks.list;
         return objectList.find(function(object) {
             return object.terms.indexOf(objectId) > -1;
         });
       } else if(objectId.charAt(0) == 'c' || objectId.charAt(0) == 'c'){
-        var objectList = this.terms.list;
+        var objectList = terms.list;
         return objectList.find(function(object) {
             return object.courses.indexOf(objectId) > -1;
         });
       }
     },
-    calculateCumulativeData: function (gradebookId) {
-      var currentGradebook = this.getObject(gradebookId);
-      var gradebookTerms = GradebookManager.getTerms(gradebookId);
-      var cumulativePoints = (currentGradebook.initialGPA * currentGradebook.initialHours);
-      var cumulativeHours = currentGradebook.initialHours;
-      for(var i=0; i<gradebookTerms.length; i++){
-        cumulativePoints += gradebookTerms[i].points;
-        cumulativeHours += gradebookTerms[i].hours;
-      }
-      currentGradebook.hours = cumulativeHours;
-      currentGradebook.GPA = cumulativePoints / cumulativeHours;
-      AppManager.updateObject(currentGradebook);
-      return currentGradebook;
-    },
-    updateCumulativeData: function (termID) {
-      var currentTerm = this.getObject(termID);
-      var oldTermPoints = currentTerm.points;
-      var oldTermHours = currentTerm.hours;
-
-      var parentGradebook = this.getParentObject(termID);
-      var oldCumulativeHours = parentGradebook.hours;
-      var oldCumulativePoints = parentGradebook.GPA * oldCumulativeHours;
-
-      currentTerm = this.calculateTermData(termID);
-
-      parentGradebook.hours = (oldCumulativeHours - oldTermHours + currentTerm.hours);
-      parentGradebook.GPA = (oldCumulativePoints - oldTermPoints + currentTerm.points) / parentGradebook.hours;
-      AppManager.updateObject(parentGradebook);
-      return parentGradebook;
-    },
-    calculateTermData: function (termId) {
-      var currentTerm = this.getObject(termId);
-      var termCourses = TermManager.getCourses(termId);
-      var termPoints = 0;
-      var termHours = 0;
-      for(var i=0; i<termCourses.length; i++){
-        var currentCourse = termCourses[i];
-        termPoints += (currentCourse.grade * currentCourse.hours);
-        termHours += currentCourse.hours;
-      }
-      currentTerm.hours = termHours;
-      currentTerm.points = termPoints;
-      currentTerm.GPA = termPoints / termHours;
-      AppManager.updateObject(currentTerm);
-      return currentTerm;
-    },
-    createGradebook: function () {
+    createGradebook: function (gradeBookName) {
       var newId = IdGenerator.getNewId("gradebook");
       var newGradebook = { id: 0,
                           name:"",
@@ -146,8 +108,15 @@ angular.module('gpaCalc.services', [])
                           initialHours: 0,
                           terms:[]};
       newGradebook.id = newId;
-      this.addObject(newGradebook);
+
+      if(gradeBookName != undefined)
+        newGradebook.name = gradeBookName;
+
+      addObject(newGradebook);
       return newGradebook;
+    },
+    getGradebooks: function () {
+      return gradebooks.list;
     }
   }
 })
@@ -285,8 +254,8 @@ angular.module('gpaCalc.services', [])
       newTerm.courses.push(courseID);
       AppManager.updateObject(newTerm);
 
-      AppManager.calculateTermData(oldTermID);
-      AppManager.calculateTermData(newTermID);
+      AppCalculator.calculateTermData(oldTermID);
+      AppCalculator.calculateTermData(newTermID);
     },
   }
 })
@@ -295,17 +264,84 @@ angular.module('gpaCalc.services', [])
 //add watch to grade so that it watches the grading scale to update its grade
 
 
+.factory('AppCalculator', function(AppManager, GradebookManager) {
+  return {
+    calculateCumulativeData: function (gradebookId) {
+      var currentGradebook = AppManager.getObject(gradebookId);
+      var gradebookTerms = GradebookManager.getTerms(gradebookId);
+
+      // var gradebookTerms = [];
+      // for(var i=0; i<currentGradebook.terms.length; i++){
+      //   gradebookTerms.push(AppManager.getObject(currentGradebook.terms[i]));
+      // }
+
+      var cumulativePoints = (currentGradebook.initialGPA * currentGradebook.initialHours);
+      var cumulativeHours = currentGradebook.initialHours;
+      for(var i=0; i<gradebookTerms.length; i++){
+        cumulativePoints += gradebookTerms[i].points;
+        cumulativeHours += gradebookTerms[i].hours;
+      }
+      currentGradebook.hours = cumulativeHours;
+      currentGradebook.GPA = cumulativePoints / cumulativeHours;
+      AppManager.updateObject(currentGradebook);
+      return currentGradebook;
+    },
+    updateCumulativeData: function (termID) {
+      var currentTerm = AppManager.getObject(termID);
+      var oldTermPoints = currentTerm.points;
+      var oldTermHours = currentTerm.hours;
+
+      var parentGradebook = AppManager.getParentObject(termID);
+      var oldCumulativeHours = parentGradebook.hours;
+      var oldCumulativePoints = parentGradebook.GPA * oldCumulativeHours;
+
+      currentTerm = AppManager.calculateTermData(termID);
+
+      parentGradebook.hours = (oldCumulativeHours - oldTermHours + currentTerm.hours);
+      parentGradebook.GPA = (oldCumulativePoints - oldTermPoints + currentTerm.points) / parentGradebook.hours;
+      AppManager.updateObject(parentGradebook);
+      return parentGradebook;
+    },
+    calculateTermData: function (termId) {
+      var currentTerm = AppManager.getObject(termId);
+      var termCourses = TermManager.getCourses(termId);
+
+      // var termCourses = [];
+      // for(var i=0; i<currentTerm.courses.length; i++){
+      //   termCourses.push(AppManager.getObject(currentTerm.courses[i]));
+      // }
+
+      var termPoints = 0;
+      var termHours = 0;
+      for(var i=0; i<termCourses.length; i++){
+        var currentCourse = termCourses[i];
+        termPoints += (currentCourse.grade * currentCourse.hours);
+        termHours += currentCourse.hours;
+      }
+      currentTerm.hours = termHours;
+      currentTerm.points = termPoints;
+      currentTerm.GPA = termPoints / termHours;
+      AppManager.updateObject(currentTerm);
+      return currentTerm;
+    }
+  }
+})
+
 .factory('IdGenerator', function(DatabaseAccessor) {
-  var key = "nextId";
+  var baseKey = "nextId";
   return {
     getNewId: function (idType) {
-      key += "_" + idType.charAt(0);
-      var nextId = DatabaseAccessor.getData(key);
-      if(nextId == undefined){
-        nextId = 0;
+      key = baseKey + "_" + idType.charAt(0);
+      var currentId = parseInt(DatabaseAccessor.getData(key));
+      console.log("gotten ID number: " + currentId + " for key: " +key);
+      if(currentId == undefined){
+        currentId = 0;
       }
-      DatabaseAccessor.setData(key, nextId+1);
-      return idType.charAt(0) + nextId;
+      var nextId = currentId + 1;
+      DatabaseAccessor.setData(key, "" + nextId);
+      console.log("current ID number: " + idType.charAt(0) + currentId);
+      console.log("next ID number: " + idType.charAt(0) + nextId);
+      return idType.charAt(0) + currentId;
     }
   }
 })

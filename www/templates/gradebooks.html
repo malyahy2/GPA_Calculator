@@ -1,5 +1,16 @@
 <ion-view title="Gradebooks View">
-  <ion-content>
+  <ion-content padding="true">
     Gradebooks List
+    <div class="list">
+        <a ng-repeat="gradebook in gradebooksList">
+          <h2>{{ gradebook.name }}</h2></br>
+          <h4><strong>GPA: </strong></h4>
+          <h4>{{ gradebook.GPA }}</h4>
+          <h4><strong>,   Hours: </strong></h4>
+          <h4>{{ gradebook.hours }}</h4>
+        </a>
+    </div>
+    <button class="button button-positive"
+    ng-click="createGradebook()"> New Gradebook </button>
   </ion-content>
 </ion-view>

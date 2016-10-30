@@ -11,5 +11,17 @@ angular.module('gpaCalc.controllers', [])
     $scope.loadingComplete = true;
     loadHome();
   });
-  
+
+})
+
+.controller('gradebooksCtrl', function($scope, $state, AppManager) {
+  $scope.gradebooksList = AppManager.getGradebooks();
+  console.log($scope.gradebooksList);
+
+  $scope.createGradebook = function() {
+    var newGradebook = AppManager.createGradebook("Testing Gradebook");
+    $scope.gradebooksList = AppManager.getGradebooks();
+    console.log($scope.gradebooksList);
+  }
+
 });
