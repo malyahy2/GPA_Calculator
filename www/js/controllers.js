@@ -16,12 +16,14 @@ angular.module('gpaCalc.controllers', [])
 
 .controller('gradebooksCtrl', function($scope, $state, AppManager) {
   $scope.gradebooksList = AppManager.getGradebooks();
-  console.log($scope.gradebooksList);
+  AppManager.printList($scope.gradebooksList, "gradebooksCtrl - After:");
 
   $scope.createGradebook = function() {
-    var newGradebook = AppManager.createGradebook("Testing Gradebook");
-    $scope.gradebooksList = AppManager.getGradebooks();
-    console.log($scope.gradebooksList);
+    AppManager.createGradebook("Testing Gradebook");
+  }
+
+  $scope.displayID = function(itemID) {
+    console.log("this item was clicked: " + itemID);
   }
 
 });

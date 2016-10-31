@@ -80,143 +80,183 @@ angular.module('gpaCalc.services', [])
     updateDataList(listObject);
   }
 
+  var printList = function(list, location) {
+    var idList = location + " ";
+    for( var i=0; i<list.length; i++) {
+      idList += list[i].id;
+      idList += ", ";
+    }
+    console.log(idList);
+  }
+
+  var getParentObject = function(objectId) {
+    if(objectId.charAt(0) == 't' || objectId.charAt(0) == 't'){
+      var objectList = gradebooks.list;
+      return objectList.find(function(object) {
+          return object.terms.indexOf(objectId) > -1;
+      });
+    } else if(objectId.charAt(0) == 'c' || objectId.charAt(0) == 'c'){
+      var objectList = terms.list;
+      return objectList.find(function(object) {
+          return object.courses.indexOf(objectId) > -1;
+      });
+    } else return undefined;
+  }
+
+  var createGradebook = function (gradeBookName) {
+    var newId = IdGenerator.getNewId("gradebook");
+    var newGradebook = { id: 0,
+                        name:"",
+                        GPA: 0.00,
+                        hours:0,
+                        initialGPA: 4.00,
+                        initialHours: 0,
+                        terms:[]};
+    newGradebook.id = newId;
+
+    if(gradeBookName != undefined)
+      newGradebook.name = gradeBookName;
+
+    addObject(newGradebook);
+    return newGradebook;
+  }
+
+  var getGradebooks = function () {
+    return gradebooks.list;
+  }
+
   return {
     addObject: addObject,
     getObject: getObject,
     updateObject: updateObject,
     deleteObject: deleteObject,
-    getParentObject: function(objectId) {
-      if(objectId.charAt(0) == 't' || objectId.charAt(0) == 't'){
-        var objectList = gradebooks.list;
-        return objectList.find(function(object) {
-            return object.terms.indexOf(objectId) > -1;
-        });
-      } else if(objectId.charAt(0) == 'c' || objectId.charAt(0) == 'c'){
-        var objectList = terms.list;
-        return objectList.find(function(object) {
-            return object.courses.indexOf(objectId) > -1;
-        });
-      }
-    },
-    createGradebook: function (gradeBookName) {
-      var newId = IdGenerator.getNewId("gradebook");
-      var newGradebook = { id: 0,
-                          name:"",
-                          GPA: 0.00,
-                          hours:0,
-                          initialGPA: 4.00,
-                          initialHours: 0,
-                          terms:[]};
-      newGradebook.id = newId;
-
-      if(gradeBookName != undefined)
-        newGradebook.name = gradeBookName;
-
-      addObject(newGradebook);
-      return newGradebook;
-    },
-    getGradebooks: function () {
-      return gradebooks.list;
-    }
+    printList: printList,
+    getParentObject: getParentObject,
+    createGradebook: createGradebook,
+    getGradebooks: getGradebooks
   }
 })
 
 .factory('GradebookManager', function(AppManager, IdGenerator) {
-  return {
-    updateName: function (gradebookId, newName) {
-      var currentGradebook = AppManager.getObject(gradebookId);
-      currentGradebook.name = newName;
-      AppManager.updateObject(currentGradebook);
-    },
-    createTerm: function (gradebookId) {
-      var newId = IdGenerator.getNewId("term");
-      var newTerm = { id: 0,
-                      name:"",
-                      GPA: 0.00,
-                      hours:0,
-                      points:0,
-                      courses:[]};
-      newTerm.id = newId;
-      AppManager.addObject(newTerm);
+  var updateName = function (gradebookId, newName) {
+    var currentGradebook = AppManager.getObject(gradebookId);
+    currentGradebook.name = newName;
+    AppManager.updateObject(currentGradebook);
+  }
 
-      var currentGradebook = AppManager.getObject(gradebookId);
-      currentGradebook.terms.push(newTerm.id);
-      AppManager.updateObject(currentGradebook);
-      return newTerm;
-    },
-    getTerms: function (gradebookId) {
-      var currentGradebook = AppManager.getObject(gradebookId);
-      var termsObjects = [];
-      for(var i=0; i<currentGradebook.terms.length; i++){
-        termsObjects.push(AppManager.getObject(currentGradebook.terms[i]));
-      }
-      return termsObjects;
-    },
-    deleteGradebook: function (gradebookID) {
-      var termsList = GradebookManager.getTerms(gradebookID);
-      for(var i=0; i<termsList.length; i++){
-        AppManager.deleteObject(termsList[i].id);
-      }
-      AppManager.deleteObject(gradebookID);
+  var createTerm = function (gradebookId, termName) {
+    var newId = IdGenerator.getNewId("term");
+    var newTerm = { id: 0,
+                    name:"",
+                    GPA: 0.00,
+                    hours:0,
+                    points:0,
+                    courses:[]};
+    newTerm.id = newId;
+    AppManager.addObject(newTerm);
+
+    if(termName != undefined)
+      newGradebook.name = termName;
+
+    var currentGradebook = AppManager.getObject(gradebookId);
+    currentGradebook.terms.push(newTerm.id);
+    AppManager.updateObject(currentGradebook);
+    return newTerm;
+  }
+
+  var getTerms = function (gradebookId) {
+    var currentGradebook = AppManager.getObject(gradebookId);
+    var termsObjects = [];
+    for(var i=0; i<currentGradebook.terms.length; i++){
+      termsObjects.push(AppManager.getObject(currentGradebook.terms[i]));
     }
+    return termsObjects;
+  }
+
+  var deleteGradebook = function (gradebookID) {
+    var termsList = getTerms(gradebookID);
+    for(var i=0; i<termsList.length; i++){
+      AppManager.deleteObject(termsList[i].id);
+    }
+    AppManager.deleteObject(gradebookID);
+  }
+
+  return {
+    updateName: updateName,
+    createTerm: createTerm,
+    getTerms: getTerms,
+    deleteGradebook: deleteGradebook
   }
 })
 
 .factory('TermManager', function(AppManager, IdGenerator) {
-  return {
-    updateName: function (termId, newName) {
-      var currentTerm = AppManager.getObject(termId);
-      currentTerm.name = newName;
-      AppManager.updateObject(currentTerm);
-    },
-    createCourse: function (termId) {
-      var newId = IdGenerator.getNewId("course");
-      var newCourse = { id: 0,
-                        name:"",
-                        grade: 0.00,
-                        hours:0};
-      newCourse.id = newId;
-      AppManager.addObject(newTerm);
+  var updateName =  function (termId, newName) {
+    var currentTerm = AppManager.getObject(termId);
+    currentTerm.name = newName;
+    AppManager.updateObject(currentTerm);
+  }
 
-      var currentTerm = AppManager.getObject(termId);
-      currentTerm.courses.push(newCourse.id);
-      AppManager.updateObject(currentTerm);
-      return newCourse;
-    },
-    getCourses: function (termId) {
-      var currentTerm = AppManager.getObject(termId);
-      var CoursesObjects = [];
-      for(var i=0; i<currentTerm.courses.length; i++){
-        CoursesObjects.push(AppManager.getObject(currentTerm.courses[i]));
-      }
-      return CoursesObjects;
-    },
-    deleteTerm: function (termID, gradebookID) {
-      var parentGradebook = AppManager.getObject(gradebookID);
-      var termIndex = parentGradebook.terms.indexOf(termID);
-      parentGradebook.terms.splice(termIndex, 1);
-      AppManager.updateObject(parentTerm);
+  var createCourse = function (termId, courseName) {
+    var newId = IdGenerator.getNewId("course");
+    var newCourse = { id: 0,
+                      name:"",
+                      grade: 0.00,
+                      hours:0};
+    newCourse.id = newId;
+    AppManager.addObject(newTerm);
 
-      var courseList = TermManager.getCourses(termID);
-      for(var i=0; i<courseList.length; i++){
-        AppManager.deleteObject(courseList[i].id);
-      }
+    if(courseName != undefined)
+      newGradebook.name = courseName;
 
-      AppManager.deleteObject(courseID);
-    },
-    moveTerm: function (termID, oldGradebookID, newGradebookID) {
-      var oldGradebook = AppManager.getObject(oldGradebookID);
-      var termIndex = oldGradebook.terms.indexOf(termID);
-      oldGradebook.terms.splice(courseIndex, 1);
-      AppManager.updateObject(oldGradebook);
+    var currentTerm = AppManager.getObject(termId);
+    currentTerm.courses.push(newCourse.id);
+    AppManager.updateObject(currentTerm);
+    return newCourse;
+  }
 
-      var newGradebook = AppManager.getObject(newGradebookID);
-      newGradebook.courses.push(termID);
-      AppManager.updateObject(newGradebook);
-
-      AppManager.calculateCumulativeData(oldGradebookID);
-      AppManager.calculateCumulativeData(newGradebookID);
+  var getCourses = function (termId) {
+    var currentTerm = AppManager.getObject(termId);
+    var CoursesObjects = [];
+    for(var i=0; i<currentTerm.courses.length; i++){
+      CoursesObjects.push(AppManager.getObject(currentTerm.courses[i]));
     }
+    return CoursesObjects;
+  }
+
+  var deleteTerm = function (termID, gradebookID) {
+    var parentGradebook = AppManager.getObject(gradebookID);
+    var termIndex = parentGradebook.terms.indexOf(termID);
+    parentGradebook.terms.splice(termIndex, 1);
+    AppManager.updateObject(parentTerm);
+
+    var courseList = getCourses(termID);
+    for(var i=0; i<courseList.length; i++){
+      AppManager.deleteObject(courseList[i].id);
+    }
+
+    AppManager.deleteObject(courseID);
+  }
+
+  var moveTerm = function (termID, oldGradebookID, newGradebookID) {
+    var oldGradebook = AppManager.getObject(oldGradebookID);
+    var termIndex = oldGradebook.terms.indexOf(termID);
+    oldGradebook.terms.splice(courseIndex, 1);
+    AppManager.updateObject(oldGradebook);
+
+    var newGradebook = AppManager.getObject(newGradebookID);
+    newGradebook.courses.push(termID);
+    AppManager.updateObject(newGradebook);
+
+    AppManager.calculateCumulativeData(oldGradebookID);
+    AppManager.calculateCumulativeData(newGradebookID);
+  }
+
+  return {
+    updateName: updateName,
+    createCourse: createCourse,
+    getCourses: getCourses,
+    deleteTerm: deleteTerm,
+    moveTerm: moveTerm
   }
 })
 
@@ -256,7 +296,7 @@ angular.module('gpaCalc.services', [])
 
       AppCalculator.calculateTermData(oldTermID);
       AppCalculator.calculateTermData(newTermID);
-    },
+    }
   }
 })
 
@@ -264,7 +304,7 @@ angular.module('gpaCalc.services', [])
 //add watch to grade so that it watches the grading scale to update its grade
 
 
-.factory('AppCalculator', function(AppManager, GradebookManager) {
+.factory('AppCalculator', function(AppManager, GradebookManager, TermManager) {
   return {
     calculateCumulativeData: function (gradebookId) {
       var currentGradebook = AppManager.getObject(gradebookId);
