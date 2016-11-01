@@ -232,8 +232,8 @@ angular.module('gpaCalc.services', [])
     var newID = IDGenerator.getNewID("course");
     var newCourse = { id: "",
                       name:"",
-                      grade: 0.00,
-                      hours:0};
+                      grade: null,
+                      hours:null};
     newCourse.id = newID;
     AppManager.addObject(newCourse);
 
@@ -293,7 +293,7 @@ angular.module('gpaCalc.services', [])
   }
 })
 
-.factory('CourseManager', function(AppManager) {
+.factory('CourseManager', function(AppManager, AppCalculator) {
   return {
     updateName: function (courseID, newName) {
       var currentCourse = AppManager.getObject(courseID);
@@ -304,11 +304,19 @@ angular.module('gpaCalc.services', [])
       var currentCourse = AppManager.getObject(courseID);
       currentCourse.grade = newGrade;
       AppManager.updateObject(currentCourse);
+      if(currentCourse.grade != 0 && currentCourse.hours != 0 && currentCourse.grade != null && currentCourse.hours != null){
+        AppCalculator.calculateTermData(AppManager.getParentObject(courseID).id);
+        AppCalculator.calculateCumulativeData(AppManager.getParentObject(AppManager.getParentObject(courseID).id).id);
+      }
     },
     updateHours: function (courseID, newHours) {
       var currentCourse = AppManager.getObject(courseID);
       currentCourse.hours = newHours;
       AppManager.updateObject(currentCourse);
+      if(currentCourse.grade != 0 && currentCourse.hours != 0 && currentCourse.grade != null && currentCourse.hours != null){
+        AppCalculator.calculateTermData(AppManager.getParentObject(courseID).id);
+        AppCalculator.calculateCumulativeData(AppManager.getParentObject(AppManager.getParentObject(courseID).id).id);
+      }
     },
     deleteCourse: function (courseID, termID) {
       var parentTerm = AppManager.getObject(termID);
@@ -429,7 +437,7 @@ angular.module('gpaCalc.services', [])
 
   var getAssociatedGradingScale = function(gradebookID) {
     var gradingScaleIndex =  gradingScalesRefrence.list.findIndex(function(object) {
-        return object.id == gradebookID;
+        return object.gradebookID == gradebookID;
     });
     return getGradingScale(gradingScalesRefrence.list[gradingScaleIndex].gradingScaleID);
   }
@@ -491,6 +499,7 @@ angular.module('gpaCalc.services', [])
 
     var currentGradingScale = getGradingScale(gradingScaleID);
     currentGradingScale.grades.push(newGrade);
+    updateDataList(gradingScales);
     //console.log("grade pushed to: "+currentGradingScale.id);
 
     return newGrade;
@@ -515,6 +524,29 @@ angular.module('gpaCalc.services', [])
 
 
 .factory('AppCalculator', function(AppManager, GradebookManager, TermManager) {
+  var calculateTermData = function (termID) {
+    var currentTerm = AppManager.getObject(termID);
+    var termCourses = TermManager.getCourses(termID);
+
+    // var termCourses = [];
+    // for(var i=0; i<currentTerm.courses.length; i++){
+    //   termCourses.push(AppManager.getObject(currentTerm.courses[i]));
+    // }
+
+    var termPoints = 0;
+    var termHours = 0;
+    for(var i=0; i<termCourses.length; i++){
+      var currentCourse = termCourses[i];
+      termPoints += (parseFloat(currentCourse.grade) * parseFloat(currentCourse.hours));
+      termHours += parseFloat(currentCourse.hours);
+    }
+    currentTerm.hours = termHours.toFixed(2);
+    currentTerm.points = termPoints.toFixed(2);
+    currentTerm.GPA = (termPoints / termHours).toFixed(2);
+    AppManager.updateObject(currentTerm);
+    return currentTerm;
+  }
+
   return {
     calculateCumulativeData: function (gradebookID) {
       var currentGradebook = AppManager.getObject(gradebookID);
@@ -525,55 +557,42 @@ angular.module('gpaCalc.services', [])
       //   gradebookTerms.push(AppManager.getObject(currentGradebook.terms[i]));
       // }
 
-      var cumulativePoints = (currentGradebook.initialGPA * currentGradebook.initialHours);
-      var cumulativeHours = currentGradebook.initialHours;
+      var cumulativePoints = (parseFloat(currentGradebook.initialGPA) * parseFloat(currentGradebook.initialHours));
+      var cumulativeHours = parseFloat(currentGradebook.initialHours);
       for(var i=0; i<gradebookTerms.length; i++){
-        cumulativePoints += gradebookTerms[i].points;
-        cumulativeHours += gradebookTerms[i].hours;
+        cumulativePoints += parseFloat(gradebookTerms[i].points);
+        cumulativeHours += parseFloat(gradebookTerms[i].hours);
       }
-      currentGradebook.hours = cumulativeHours;
-      currentGradebook.GPA = cumulativePoints / cumulativeHours;
+      currentGradebook.hours = cumulativeHours.toFixed(2);
+      currentGradebook.GPA = (cumulativePoints / cumulativeHours).toFixed(2);
       AppManager.updateObject(currentGradebook);
       return currentGradebook;
     },
     updateCumulativeData: function (termID) {
       var currentTerm = AppManager.getObject(termID);
-      var oldTermPoints = currentTerm.points;
-      var oldTermHours = currentTerm.hours;
+      var oldTermPoints = parseFloat(currentTerm.points);
+      var oldTermHours = parseFloat(currentTerm.hours);
+      console.log("termID= "+termID);
+      console.log("oldTermPoints= "+oldTermPoints);
+      console.log("oldTermHours= "+oldTermHours);
 
       var parentGradebook = AppManager.getParentObject(termID);
-      var oldCumulativeHours = parentGradebook.hours;
-      var oldCumulativePoints = parentGradebook.GPA * oldCumulativeHours;
+      var oldCumulativeHours = parseFloat(parentGradebook.hours);
+      var oldCumulativePoints = parseFloat(parentGradebook.GPA) * oldCumulativeHours;
+      console.log("parentGradebook= "+parentGradebook.id);
+      console.log("oldCumulativeHours= "+oldCumulativeHours);
+      console.log("oldCumulativePoints= "+oldCumulativePoints);
 
-      currentTerm = AppManager.calculateTermData(termID);
+      currentTerm = calculateTermData(termID);
 
-      parentGradebook.hours = (oldCumulativeHours - oldTermHours + currentTerm.hours);
-      parentGradebook.GPA = (oldCumulativePoints - oldTermPoints + currentTerm.points) / parentGradebook.hours;
+      parentGradebook.hours = (oldCumulativeHours - oldTermHours + parseFloat(currentTerm.hours)).toFixed(2);
+      parentGradebook.GPA = ((oldCumulativePoints - oldTermPoints + parseFloat(currentTerm.points)) / parseFloat(parentGradebook.hours)).toFixed(2);
+      console.log("parentGradebook.hours= "+parentGradebook.hours);
+      console.log("parentGradebook.GPA= "+parentGradebook.GPA);
       AppManager.updateObject(parentGradebook);
       return parentGradebook;
     },
-    calculateTermData: function (termID) {
-      var currentTerm = AppManager.getObject(termID);
-      var termCourses = TermManager.getCourses(termID);
-
-      // var termCourses = [];
-      // for(var i=0; i<currentTerm.courses.length; i++){
-      //   termCourses.push(AppManager.getObject(currentTerm.courses[i]));
-      // }
-
-      var termPoints = 0;
-      var termHours = 0;
-      for(var i=0; i<termCourses.length; i++){
-        var currentCourse = termCourses[i];
-        termPoints += (currentCourse.grade * currentCourse.hours);
-        termHours += currentCourse.hours;
-      }
-      currentTerm.hours = termHours;
-      currentTerm.points = termPoints;
-      currentTerm.GPA = termPoints / termHours;
-      AppManager.updateObject(currentTerm);
-      return currentTerm;
-    }
+    calculateTermData: calculateTermData
   }
 })
 

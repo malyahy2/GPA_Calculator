@@ -59,16 +59,47 @@ angular.module('gpaCalc.controllers', [])
   }
 })
 
-.controller('termCtrl', function($scope, $state, $stateParams, TermManager, CourseManager) {
+.controller('termCtrl', function($scope, $state, $stateParams, TermManager, CourseManager, GradingScaleManager, AppManager) {
   $scope.currentTerm = TermManager.getTerm($stateParams.id);
   //console.log("gradebookCtrl ID: "+$scope.currentGradebook.id);
   $scope.coursesList = TermManager.getCourses($scope.currentTerm.id);
-  //console.log("gradebookCtrl termsList length: "+$scope.termsList.length);
-  // var termsIDs = "gradebookCtrl Terms List: ";
-  // for(var i=0; i<$scope.termsList.length; i++){
-  //   termsIDs +=$scope.termsList[i].id;
+
+  $scope.termGPA = null;
+  $scope.termHours = null;
+  $scope.cumulGPA = null;
+  $scope.cumulHours = null;
+
+  var updateCalc = function(){
+    $scope.termGPA = $scope.currentTerm.GPA;
+    $scope.termHours = $scope.currentTerm.hours;
+    $scope.cumulGPA = AppManager.getParentObject($scope.currentTerm.id).GPA;
+    $scope.cumulHours = AppManager.getParentObject($scope.currentTerm.id).hours;
+  }
+
+  updateCalc();
+
+  $scope.selectedGrade = null;
+  $scope.inputHours = null;
+
+  $scope.gradingScaleList = GradingScaleManager.getAssociatedGradingScale(AppManager.getParentObject($scope.currentTerm.id).id).grades;
+  // console.log("termCtrl gradingScaleList length: "+$scope.gradingScaleList.length);
+  // var termsIDs = "termCtrl gradingScaleList : ";
+  // for(var i=0; i<$scope.gradingScaleList.length; i++){
+  //   termsIDs +=$scope.gradingScaleList[i].points +", ";
   // }
-  //console.log(termsIDs);
+  // console.log(termsIDs);
+
+  $scope.updateGrade = function(courseID, newGrade) {
+    console.log("changed Grade for: "+courseID+" to: "+newGrade);
+    CourseManager.updateGrade(courseID,newGrade);
+    updateCalc();
+  }
+
+  $scope.updateHours = function(courseID, newHours) {
+    console.log("changed Hours for: "+courseID+" to: "+newHours);
+    CourseManager.updateHours(courseID,newHours);
+    updateCalc();
+  }
 
   $scope.createCourse = function() {
     var newCourse = TermManager.createCourse($scope.currentTerm.id, "Testing Course");

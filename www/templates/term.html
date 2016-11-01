@@ -7,15 +7,22 @@
       <h1 class="title">Gradebooks</h1>
     </div> -->
     <!-- <div class="app_header"> <h2>Gradebooks</h2></Div> -->
+    termGPA: {{termGPA}}, termHours: {{termHours}}
+    cumulGPA: {{cumulGPA}}, cumulHours: {{cumulHours}}
     <div class="card" ng-repeat="course in coursesList track by $index">
       <div class="item item-text-wrap">
-        {{ course.name }}
+        {{ course.name }}, {{selectedGrade}}, {{inputHours}}
       </div>
       <div class="item item-divider">
         <strong>Grade: </strong>
-        {{ course.grade }}
+        <select ng-model="selectedGrade" ng-init="selectedGrade= course.grade"  ng-selected="selectedGrade" ng-change="updateGrade(course.id, selectedGrade)"
+        ng-options="grade.points as grade.name for grade in gradingScaleList">
+          <!-- <option ng-repeat="grade in gradingScaleList track by $index"  ng-value="grade.points" ng-selected="grade.points == course.grade">{{grade.name}}</option> -->
+          <!-- <option selected ng-repeat="grade in gradingScaleList track by $index"  ng-value="grade.points" ng-if="grade.points == course.grade">{{grade.name}}</option> -->
+          <!-- <option ng-repeat="grade in gradingScaleList track by $index"  ng-value="grade.points" ng-if="grade.points < course.grade">{{grade.name}}</option> -->
+        </select>
         <strong>, Hours: </strong>
-        {{ course.hours }}
+        <input type="tel"  ng-model="inputHours" ng-value="{{course.hours}}" ng-change="updateHours(course.id, inputHours)">
       </div>
     </div>
     <div class="row">
