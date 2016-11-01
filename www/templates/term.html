@@ -1,5 +1,27 @@
 <ion-view title="Term View">
-  <ion-content>
-    Courses List
+  <ion-header-bar align-title="center" class="app_header">
+    <h1 class="title">{{currentTerm.name}}</h1>
+  </ion-header-bar>
+  <ion-content padding="false">
+    <!-- <div class="bar bar-header bar-stable">
+      <h1 class="title">Gradebooks</h1>
+    </div> -->
+    <!-- <div class="app_header"> <h2>Gradebooks</h2></Div> -->
+    <div class="card" ng-repeat="course in coursesList track by $index">
+      <div class="item item-text-wrap">
+        {{ course.name }}
+      </div>
+      <div class="item item-divider">
+        <strong>Grade: </strong>
+        {{ course.grade }}
+        <strong>, Hours: </strong>
+        {{ course.hours }}
+      </div>
+    </div>
+    <div class="row">
+       <div class="col text-right">
+         <button class="button icon ion-plus-round plus-circle" ng-click="createCourse()"></button>
+       </div>
+    </div>
   </ion-content>
 </ion-view>

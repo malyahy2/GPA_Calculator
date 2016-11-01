@@ -8,7 +8,7 @@
     </div> -->
     <!-- <div class="app_header"> <h2>Gradebooks</h2></Div> -->
     <div class="card" ng-repeat="gradebook in gradebooksList track by $index"
-                      ng-click="displayID(gradebook.id)">
+                      ng-click="goToGradebook(gradebook.id)">
       <div class="item item-text-wrap">
         {{ gradebook.name }}
       </div>

@@ -39,13 +39,15 @@ angular.module('gpaCalc', ['ionic', 'gpaCalc.controllers', 'gpaCalc.services'])
   })
 
     .state('gradebook', {
-    url: '/gradebook',
-    templateUrl: 'templates/gradebook.html'
+    url: '/gradebook/:id',
+    templateUrl: 'templates/gradebook.html',
+    controller: 'gradebookCtrl'
   })
 
     .state('term', {
-    url: '/term',
-    templateUrl: 'templates/term.html'
+    url: '/term/:id',
+    templateUrl: 'templates/term.html',
+    controller: 'termCtrl'
   })
 
     .state('settings', {

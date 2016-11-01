@@ -1,5 +1,28 @@
 <ion-view title="Gradebook View">
-  <ion-content>
-    Terms List
+  <ion-header-bar align-title="center" class="app_header">
+    <h1 class="title">{{currentGradebook.name}}</h1>
+  </ion-header-bar>
+  <ion-content padding="false">
+    <!-- <div class="bar bar-header bar-stable">
+      <h1 class="title">Gradebooks</h1>
+    </div> -->
+    <!-- <div class="app_header"> <h2>Gradebooks</h2></Div> -->
+    <div class="card" ng-repeat="term in termsList track by $index"
+                      ng-click="goToTerm(term.id)">
+      <div class="item item-text-wrap">
+        {{ term.name }}
+      </div>
+      <div class="item item-divider">
+        <strong>GPA: </strong>
+        {{ term.GPA }}
+        <strong>, Hours: </strong>
+        {{ term.hours }}
+      </div>
+    </div>
+    <div class="row">
+       <div class="col text-right">
+         <button class="button icon ion-plus-round plus-circle" ng-click="createTerm()"></button>
+       </div>
+    </div>
   </ion-content>
 </ion-view>
