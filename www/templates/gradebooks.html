@@ -1,6 +1,6 @@
 <ion-view title="Gradebooks View">
   <ion-header-bar align-title="center" class="app_header">
-    <h1 class="title">Gradebooks</h1>
+    <h1 class="title">APP Name</h1>
   </ion-header-bar>
   <ion-content padding="false">
     <!-- <div class="bar bar-header bar-stable">
@@ -8,9 +8,10 @@
     </div> -->
     <!-- <div class="app_header"> <h2>Gradebooks</h2></Div> -->
     <div class="card" ng-repeat="gradebook in gradebooksList track by $index"
-                      ng-click="goToGradebook(gradebook.id)">
-      <div class="item item-text-wrap">
-        {{ gradebook.name }}
+                      >
+      <div class="item item-text-wrap item-icon-right">
+        <div ng-click="goToGradebook(gradebook.id)">{{ gradebook.name }}</div>
+        <i class="icon ion-android-more-vertical" ng-click="show(gradebook.id)"></i>
       </div>
       <div class="item item-divider">
         <strong>GPA: </strong>

@@ -8,9 +8,10 @@
     </div> -->
     <!-- <div class="app_header"> <h2>Gradebooks</h2></Div> -->
     <div class="card" ng-repeat="term in termsList track by $index"
-                      ng-click="goToTerm(term.id)">
-      <div class="item item-text-wrap">
-        {{ term.name }}
+                      >
+      <div class="item item-text-wrap  item-icon-right">
+        <div ng-click="goToTerm(term.id)">{{ term.name }}</div>
+        <i class="icon ion-android-more-vertical"  ng-click="show(term.id)"></i>
       </div>
       <div class="item item-divider">
         <strong>GPA: </strong>

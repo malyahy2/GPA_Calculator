@@ -10,8 +10,9 @@
     termGPA: {{termGPA}}, termHours: {{termHours}}
     cumulGPA: {{cumulGPA}}, cumulHours: {{cumulHours}}
     <div class="card" ng-repeat="course in coursesList track by $index">
-      <div class="item item-text-wrap">
-        {{ course.name }}, {{selectedGrade}}, {{inputHours}}
+      <div class="item item-text-wrap  item-icon-right">
+        {{ course.name }}
+        <i class="icon ion-android-more-vertical"  ng-click="show(course.id)"></i>
       </div>
       <div class="item item-divider">
         <strong>Grade: </strong>
