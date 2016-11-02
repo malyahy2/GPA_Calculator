@@ -246,7 +246,7 @@ angular.module('gpaCalc.services', [])
   }
 })
 
-.factory('TermManager', function(AppManager, IDGenerator) {
+.factory('TermManager', function(AppManager, IDGenerator, AppCalculator) {
   var updateName =  function (termID, newName) {
     var currentTerm = AppManager.getObject(termID);
     currentTerm.name = newName;
@@ -300,18 +300,18 @@ angular.module('gpaCalc.services', [])
     AppManager.deleteObject(termID);
   }
 
-  var moveTerm = function (termID, oldGradebookID, newGradebookID) {
-    var oldGradebook = AppManager.getObject(oldGradebookID);
+  var moveTerm = function (termID, newGradebookID) {
+    var oldGradebook = AppManager.getParentObject(termID);
     var termIndex = oldGradebook.terms.indexOf(termID);
-    oldGradebook.terms.splice(courseIndex, 1);
+    oldGradebook.terms.splice(termIndex, 1);
     AppManager.updateObject(oldGradebook);
 
     var newGradebook = AppManager.getObject(newGradebookID);
-    newGradebook.courses.push(termID);
+    newGradebook.terms.push(termID);
     AppManager.updateObject(newGradebook);
 
-    AppManager.calculateCumulativeData(oldGradebookID);
-    AppManager.calculateCumulativeData(newGradebookID);
+    AppCalculator.calculateCumulativeData(oldGradebook.id);
+    AppCalculator.calculateCumulativeData(newGradebookID);
   }
 
   return {
@@ -358,10 +358,13 @@ angular.module('gpaCalc.services', [])
       var courseIndex = parentTerm.courses.indexOf(courseID);
       parentTerm.courses.splice(courseIndex, 1);
       AppManager.updateObject(parentTerm);
+
+      AppCalculator.calculateTermData(parentTerm.id);
+      AppCalculator.calculateCumulativeData(AppManager.getParentObject(parentTerm.id).id);
       AppManager.deleteObject(courseID);
     },
-    moveCourse: function (courseID, oldTermID, newTermID) {
-      var oldTerm = AppManager.getObject(oldTermID);
+    moveCourse: function (courseID, newTermID) {
+      var oldTerm = AppManager.getParentObject(courseID);
       var courseIndex = oldTerm.courses.indexOf(courseID);
       oldTerm.courses.splice(courseIndex, 1);
       AppManager.updateObject(oldTerm);
@@ -370,7 +373,7 @@ angular.module('gpaCalc.services', [])
       newTerm.courses.push(courseID);
       AppManager.updateObject(newTerm);
 
-      AppCalculator.calculateTermData(oldTermID);
+      AppCalculator.calculateTermData(oldTerm.id);
       AppCalculator.calculateTermData(newTermID);
     },
     copyCourse: function (courseID, termID) {
@@ -573,15 +576,15 @@ angular.module('gpaCalc.services', [])
 //add watch to grade so that it watches the grading scale to update its grade
 
 
-.factory('AppCalculator', function(AppManager, TermManager) {
+.factory('AppCalculator', function(AppManager) {
   var calculateTermData = function (termID) {
     var currentTerm = AppManager.getObject(termID);
-    var termCourses = TermManager.getCourses(termID);
+    //var termCourses = TermManager.getCourses(termID);
 
-    // var termCourses = [];
-    // for(var i=0; i<currentTerm.courses.length; i++){
-    //   termCourses.push(AppManager.getObject(currentTerm.courses[i]));
-    // }
+    var termCourses = [];
+    for(var i=0; i<currentTerm.courses.length; i++){
+      termCourses.push(AppManager.getObject(currentTerm.courses[i]));
+    }
 
     var termPoints = 0;
     var termHours = 0;

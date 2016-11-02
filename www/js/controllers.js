@@ -13,7 +13,7 @@ angular.module('gpaCalc.controllers', [])
 
 })
 
-.controller('gradebooksCtrl', function($scope, $state, AppManager, GradebookManager, $ionicActionSheet, $ionicPopup) {
+.controller('gradebooksCtrl', function($scope, $state, AppManager, $ionicPopover, GradebookManager, $ionicPopup) {
   $scope.gradebooksList = AppManager.getGradebooks();
   $scope.data = {};
   // AppManager.printList($scope.gradebooksList, "gradebooksCtrl - After:");
@@ -51,6 +51,58 @@ angular.module('gpaCalc.controllers', [])
   //   ]
   // });
     //  $scope.newName = "";
+    $scope.renameObject = function(gradebookID) {
+      console.log("renameClicked for: "+gradebookID);
+      $scope.showPopup("update", gradebookID);
+      $scope.closePopover();
+    }
+
+    $scope.copyObject = function(gradebookID) {
+      console.log("copyObject for: "+gradebookID);
+      GradebookManager.copyGradebook(gradebookID);
+      $scope.closePopover();
+    }
+
+    $scope.moveObject = function(gradebookID) {
+      console.log("moveObject for: "+gradebookID);
+    }
+
+    $scope.deleteObject = function(gradebookID) {
+      console.log("deleteObject for: "+gradebookID);
+      GradebookManager.deleteGradebook(gradebookID);
+      $scope.closePopover();
+    }
+
+    $ionicPopover.fromTemplateUrl('templates/optionsPopoverLayout.html', {
+      scope: $scope
+   }).then(function(popover) {
+      $scope.popover = popover;
+   });
+
+   $scope.openPopover = function($event, gradebookID) {
+      $scope.objectID = gradebookID;
+      $scope.popover.show($event);
+   };
+
+   $scope.closePopover = function() {
+      $scope.popover.hide();
+   };
+
+   //Cleanup the popover when we're done with it!
+   $scope.$on('$destroy', function() {
+      $scope.popover.remove();
+   });
+
+   // Execute action on hide popover
+   $scope.$on('popover.hidden', function() {
+      // Execute action
+   });
+
+   // Execute action on remove popover
+   $scope.$on('popover.removed', function() {
+      // Execute action
+   });
+
   $scope.showPopup = function(action, gradebookID) {
 
      // An elaborate, custom popup
@@ -88,42 +140,9 @@ angular.module('gpaCalc.controllers', [])
     //  }, 3000);
   };
 
-
-  $scope.show = function(gradebookID) {
-     var hideSheet = $ionicActionSheet.show({
-       buttons: [
-         { text: 'Rename' },
-         { text: 'Copy'}
-       ],
-       destructiveText: 'Delete',
-       titleText: 'Gradebook Options',
-       cancelText: 'Cancel',
-       destructiveButtonClicked: function() {
-         GradebookManager.deleteGradebook(gradebookID);
-       },
-       cancel: function() {
-            // add cancel code..
-          },
-       buttonClicked: function(index, button) {
-         console.log(button);
-         if(index == 0){
-           $scope.showPopup("update", gradebookID);
-         } else if(index == 1) {
-           GradebookManager.copyGradebook(gradebookID);
-         }
-         return true;
-       }
-     });
-
-     // For example's sake, hide the sheet after two seconds
-    //  $timeout(function() {
-    //    hideSheet();
-    //  }, 2000);
-   };
-
 })
 
-.controller('gradebookCtrl', function($scope, $state, $stateParams, GradebookManager, TermManager, $ionicActionSheet, $ionicPopup) {
+.controller('gradebookCtrl', function($scope, $state, $stateParams, AppManager, GradebookManager, TermManager, $ionicPopover, $ionicPopup) {
   $scope.currentGradebook = GradebookManager.getGradebook($stateParams.id);
   //console.log("gradebookCtrl ID: "+$scope.currentGradebook.id);
   $scope.termsList = GradebookManager.getTerms($scope.currentGradebook.id);
@@ -156,6 +175,100 @@ angular.module('gpaCalc.controllers', [])
     //console.log("this item was clicked: " + termID);
     $state.go('term', {id: termID});
   }
+
+  $scope.renameObject = function(termID) {
+    console.log("renameClicked for: "+termID);
+    $scope.showPopup("update", termID);
+    $scope.closePopover();
+  }
+
+  $scope.copyObject = function(termID) {
+    console.log("copyObject for: "+termID);
+    GradebookManager.copyTerm(termID);
+    updatePageList();
+    $scope.closePopover();
+  }
+
+  $scope.moveObject = function(termID, gradebookID) {
+    console.log("move: "+termID+" to: "+gradebookID);
+    TermManager.moveTerm(termID, gradebookID);
+    updatePageList();
+    $scope.closeMoveTOPopover();
+    $scope.closePopover();
+  }
+
+  $scope.deleteObject = function(termID) {
+    console.log("deleteObject for: "+termID);
+    TermManager.deleteTerm(termID);
+    updatePageList();
+    $scope.closePopover();
+  }
+
+  $ionicPopover.fromTemplateUrl('templates/optionsPopoverLayout.html', {
+    scope: $scope
+ }).then(function(popover) {
+    $scope.popover = popover;
+ });
+
+ $scope.openPopover = function($event, termID) {
+    $scope.objectID = termID;
+    $scope.popover.show($event);
+ };
+
+ $scope.closePopover = function() {
+    $scope.popover.hide();
+ };
+
+ //Cleanup the popover when we're done with it!
+ $scope.$on('$destroy', function() {
+    $scope.popover.remove();
+ });
+
+ // Execute action on hide popover
+ $scope.$on('popover.hidden', function() {
+    // Execute action
+ });
+
+ // Execute action on remove popover
+ $scope.$on('popover.removed', function() {
+    // Execute action
+ });
+
+ $ionicPopover.fromTemplateUrl('templates/moveToList.html', {
+   scope: $scope
+}).then(function(popover) {
+   $scope.moveToPopover = popover;
+});
+
+$scope.openMoveTOPopover = function($event, termID) {
+   $scope.objectID = termID;
+   $scope.objectsList = AppManager.getGradebooks();
+  //  var gradebookID = AppManager.getParentObject(termID).id;
+  //  var gradebookIndex = $scope.objectsList.findIndex(function(object) {
+  //      return object.id == gradebookID;
+  //  });
+  //  $scope.objectsList.splice(gradebookIndex, 1);
+   $scope.moveToPopover.show($event);
+};
+
+$scope.closeMoveTOPopover = function() {
+   $scope.moveToPopover.hide();
+};
+
+//Cleanup the popover when we're done with it!
+$scope.$on('$destroy', function() {
+   $scope.popover.remove();
+});
+
+// Execute action on hide popover
+$scope.$on('popover.hidden', function() {
+   // Execute action
+});
+
+// Execute action on remove popover
+$scope.$on('popover.removed', function() {
+   // Execute action
+});
 
   $scope.showPopup = function(action, termID) {
 
@@ -195,46 +308,9 @@ angular.module('gpaCalc.controllers', [])
     //     myPopup.close(); //close the popup after 3 seconds for some reason
     //  }, 3000);
   };
-
-
-  $scope.show = function(termID) {
-     var hideSheet = $ionicActionSheet.show({
-       buttons: [
-         { text: 'Rename' },
-         { text: 'Copy'},
-         { text: 'Move'}
-       ],
-       destructiveText: 'Delete',
-       titleText: 'Term Options',
-       cancelText: 'Cancel',
-       destructiveButtonClicked: function() {
-         TermManager.deleteTerm(termID);
-         updatePageList();
-         return true;
-       },
-       cancel: function() {
-            // add cancel code..
-          },
-       buttonClicked: function(index, button) {
-         console.log(button);
-         if(index == 0){
-           $scope.showPopup("update", termID);
-         } else if(index == 1) {
-           GradebookManager.copyTerm(termID);
-           updatePageList();
-         }
-         return true;
-       }
-     });
-
-     // For example's sake, hide the sheet after two seconds
-    //  $timeout(function() {
-    //    hideSheet();
-    //  }, 2000);
-   };
 })
 
-.controller('termCtrl', function($scope, $state, $stateParams, TermManager, CourseManager, GradingScaleManager, AppManager, $ionicActionSheet, $ionicPopup) {
+.controller('termCtrl', function($scope, $state, $stateParams, TermManager, CourseManager, GradingScaleManager, AppManager, GradebookManager, $ionicPopover, $ionicPopup) {
   $scope.currentTerm = TermManager.getTerm($stateParams.id);
   //console.log("gradebookCtrl ID: "+$scope.currentGradebook.id);
   $scope.coursesList = TermManager.getCourses($scope.currentTerm.id);
@@ -279,6 +355,7 @@ angular.module('gpaCalc.controllers', [])
 
   var updatePageList = function(){
     $scope.coursesList = TermManager.getCourses($scope.currentTerm.id);
+    updateCalc();
   }
 
   $scope.createCourse = function() {
@@ -294,6 +371,102 @@ angular.module('gpaCalc.controllers', [])
     // }
     //console.log(termsIDs2);
   }
+
+  $scope.renameObject = function(courseID) {
+    console.log("renameClicked for: "+courseID);
+    $scope.showPopup("update", courseID);
+    $scope.closePopover();
+  }
+
+  $scope.copyObject = function(courseID) {
+    console.log("copyObject for: "+courseID);
+    CourseManager.copyCourse(courseID);
+    updatePageList();
+    $scope.closePopover();
+  }
+
+  $scope.moveObject = function(courseID, termID) {
+    console.log("move: "+courseID+" to: "+termID);
+    CourseManager.moveCourse(courseID, termID);
+    updatePageList();
+    $scope.closeMoveTOPopover();
+    $scope.closePopover();
+  }
+
+  $scope.deleteObject = function(courseID) {
+    console.log("deleteObject for: "+courseID);
+    CourseManager.deleteCourse(courseID);
+    updatePageList();
+    $scope.closePopover();
+  }
+
+
+  $ionicPopover.fromTemplateUrl('templates/optionsPopoverLayout.html', {
+    scope: $scope
+ }).then(function(popover) {
+    $scope.popover = popover;
+ });
+
+ $scope.openPopover = function($event, courseID) {
+    $scope.objectID = courseID;
+    $scope.popover.show($event);
+ };
+
+ $scope.closePopover = function() {
+    $scope.popover.hide();
+ };
+
+ //Cleanup the popover when we're done with it!
+ $scope.$on('$destroy', function() {
+    $scope.popover.remove();
+ });
+
+ // Execute action on hide popover
+ $scope.$on('popover.hidden', function() {
+    // Execute action
+ });
+
+ // Execute action on remove popover
+ $scope.$on('popover.removed', function() {
+    // Execute action
+ });
+
+ $ionicPopover.fromTemplateUrl('templates/moveToList.html', {
+   scope: $scope
+}).then(function(popover) {
+   $scope.moveToPopover = popover;
+});
+
+$scope.openMoveTOPopover = function($event, courseID) {
+   $scope.objectID = courseID;
+   var termID = AppManager.getParentObject(courseID).id
+   var gradebookID = AppManager.getParentObject(termID).id;
+   $scope.objectsList = GradebookManager.getTerms(gradebookID);
+  //  var termIndex = $scope.objectsList.findIndex(function(object) {
+  //      return object.id == termID;
+  //  });
+  //  $scope.objectsList.splice(termIndex, 1);
+   $scope.moveToPopover.show($event);
+};
+
+$scope.closeMoveTOPopover = function() {
+   $scope.moveToPopover.hide();
+};
+
+//Cleanup the popover when we're done with it!
+$scope.$on('$destroy', function() {
+   $scope.popover.remove();
+});
+
+// Execute action on hide popover
+$scope.$on('popover.hidden', function() {
+   // Execute action
+});
+
+// Execute action on remove popover
+$scope.$on('popover.removed', function() {
+   // Execute action
+});
 
   $scope.showPopup = function(action, courseID) {
 
@@ -324,7 +497,7 @@ angular.module('gpaCalc.controllers', [])
        if(action == "update")
         TermManager.updateName(res.id, res.newName);
       else if(action == "create") {
-        GradebookManager.createTerm(courseID, res.newName);
+        TermManager.createCourse(courseID, res.newName);
         updatePageList();
       }
        console.log('Tapped!', res);
@@ -333,41 +506,4 @@ angular.module('gpaCalc.controllers', [])
     //     myPopup.close(); //close the popup after 3 seconds for some reason
     //  }, 3000);
   };
-
-
-  $scope.show = function(courseID) {
-     var hideSheet = $ionicActionSheet.show({
-       buttons: [
-         { text: 'Rename' },
-         { text: 'Copy'},
-         { text: 'Move'}
-       ],
-       destructiveText: 'Delete',
-       titleText: 'Term Options',
-       cancelText: 'Cancel',
-       destructiveButtonClicked: function() {
-         CourseManager.deleteCourse(courseID);
-         updatePageList();
-         return true;
-       },
-       cancel: function() {
-            // add cancel code..
-          },
-       buttonClicked: function(index, button) {
-         console.log(button);
-         if(index == 0){
-           $scope.showPopup("update", courseID);
-         } else if(index == 1) {
-           CourseManager.copyCourse(courseID);
-           updatePageList();
-         }
-         return true;
-       }
-     });
-
-     // For example's sake, hide the sheet after two seconds
-    //  $timeout(function() {
-    //    hideSheet();
-    //  }, 2000);
-   };
 });

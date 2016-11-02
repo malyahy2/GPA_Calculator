@@ -11,7 +11,7 @@
                       >
       <div class="item item-text-wrap item-icon-right">
         <div ng-click="goToGradebook(gradebook.id)">{{ gradebook.name }}</div>
-        <i class="icon ion-android-more-vertical" ng-click="show(gradebook.id)"></i>
+        <i class="icon ion-android-more-vertical" ng-click="openPopover($event, gradebook.id)"></i>
       </div>
       <div class="item item-divider">
         <strong>GPA: </strong>

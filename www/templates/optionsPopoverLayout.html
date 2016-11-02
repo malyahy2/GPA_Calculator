@@ -1,0 +1,24 @@
+<ion-popover-view class="fit">
+
+   <!-- <ion-header-bar>
+      <h1 class = "title">Gradebook Options</h1>
+   </ion-header-bar> -->
+
+   <ion-content>
+     <div class="list">
+        <span class="item popover-item-top" ng-click="renameObject(objectID)">
+          Rename
+        </span>
+        <span class="item" ng-click="copyObject(objectID)">
+          Copy
+        </span>
+        <span class="item" ng-hide="objectID.includes('gradebook')" ng-click="openMoveTOPopover($event, objectID)">
+          Move
+        </span>
+        <span class="item popover-item-bottom options-delete" ng-click="deleteObject(objectID)">
+          Delete
+        </span>
+      </div>
+   </ion-content>
+
+</ion-popover-view>
