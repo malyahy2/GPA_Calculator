@@ -58,6 +58,35 @@ ion-popover-view.fit span {
   /*font-weight:bold;*/
 }
 
+.float-button {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  width: 25px;
+  padding: 25px;
+  font-size: 24px;
+  background: #45CEE0;
+  position: fixed;
+  top: 20px; /* Adjust to where you want it */
+  right: 20px; /* Adjust to where you want it */
+  z-index: 9999;
+}
+
+.float-button .height_fix {
+  margin-top: 100%;
+}
+
+.float-button .content {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  margin-top: -12px; /* Note, this must be half the font size */
+  color: $light;
+}
+
 /*.bar-header{
   height: 80px
 }
