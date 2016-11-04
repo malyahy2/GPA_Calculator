@@ -1,36 +1,53 @@
 <ion-view title="Gradebooks View">
-  <ion-header-bar align-title="center" class="app_header">
-    <h1 class="title">APP Name</h1>
-  </ion-header-bar>
+  <div ng-class="{'blur-effect': settingsButtonClicked}">
+    <ion-header-bar align-title="center" class="app_header">
+      <h1 class="title">APP Name</h1>
+    </ion-header-bar>
+  </div>
   <ion-content padding="false">
-    <!-- <div class="bar bar-header bar-stable">
-      <h1 class="title">Gradebooks</h1>
-    </div> -->
-    <!-- <div class="app_header"> <h2>Gradebooks</h2></Div> -->
-    <div class="card" ng-repeat="gradebook in gradebooksList track by $index"
-                      >
-      <div class="item item-text-wrap item-icon-right">
-        <div ng-click="goToGradebook(gradebook.id)">{{ gradebook.name }}</div>
-        <i class="icon ion-android-more-vertical" ng-click="openPopover($event, gradebook.id)"></i>
+    <div ng-class="{'blur-effect': settingsButtonClicked}">
+      <!-- <div class="bar bar-header bar-stable">
+        <h1 class="title">Gradebooks</h1>
+      </div> -->
+      <!-- <div class="app_header"> <h2>Gradebooks</h2></Div> -->
+      <div class="card" ng-repeat="gradebook in gradebooksList track by $index"
+                        >
+        <div class="item item-text-wrap item-icon-right">
+          <div ng-click="goToGradebook(gradebook.id)">{{ gradebook.name }}</div>
+          <i class="icon ion-android-more-vertical" ng-click="openPopover($event, gradebook.id)"></i>
+        </div>
+        <div class="item item-divider">
+          <strong>GPA: </strong>
+          {{ gradebook.GPA }}
+          <strong>, Hours: </strong>
+          {{ gradebook.hours }}
+        </div>
       </div>
-      <div class="item item-divider">
-        <strong>GPA: </strong>
-        {{ gradebook.GPA }}
-        <strong>, Hours: </strong>
-        {{ gradebook.hours }}
+      <div class="row">
+         <div class="col text-right">
+           <button class="button icon ion-plus-round plus-circle" ng-click="createGradebook()"></button>
+         </div>
       </div>
-    </div>
-    <div class="row">
-       <div class="col text-right">
-         <button class="button icon ion-plus-round" ng-click="createGradebook()"></button>
-       </div>
     </div>
   </ion-content>
+  <div ng-class="{'trans-overlay': settingsButtonClicked}" ng-click="removeOverlay()"></div>
   <div class="float-button">
-    <span class="height-fix">
-      <a ui-sref="add-trip" class="content">
+      <a class="content" ng-click="settingsButtonClicked = !settingsButtonClicked">
         <i class="ion-ios-arrow-right"> </i>
       </a>
+  </div>
+  <div class="settings-buttons" ng-show="settingsButtonClicked">
+    <span class="height-fix">
+      <ul class="content">
+          <li ng-repeat="button in settingsButtons"  ng-click="{{button.onClick}}">
+            <div class="button-wraper">
+              <i class="{{button.icon}}"> </i>
+            </div>
+            <div class="text-wraper">
+              {{button.name}}
+            </div>
+          </li>
+      </ul>
     </span>
   </div>
 </ion-view>

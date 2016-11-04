@@ -2,18 +2,19 @@ angular.module('gpaCalc.services', [])
 
 .factory('HomeReference', function(DatabaseAccessor) {
   var key = "Home";
-  var initialHome = "gradebooks";
+  //DatabaseAccessor.deleteData(key);
+  var initialHome = { state: "gradebooks", stateParams: null};
   return {
     setHome: function (home) {
-      DatabaseAccessor.setData(key, home);
+      DatabaseAccessor.setDataObject(key, home);
     },
     getHome: function() {
-      var home = DatabaseAccessor.getData(key);
+      var home = DatabaseAccessor.getDataObject(key);
       if(home != undefined){
         return home;
       } else {
         home = initialHome;
-        DatabaseAccessor.setData(key, home);
+        DatabaseAccessor.setDataObject(key, home);
         return home;
       }
     }
@@ -692,6 +693,7 @@ angular.module('gpaCalc.services', [])
       window.localStorage.setItem(key, JSON.stringify(value));
     },
     getDataObject: function (key) {
+      console.log(window.localStorage.getItem(key));
       return JSON.parse( window.localStorage.getItem(key));
     },
     deleteData: function (key) {
