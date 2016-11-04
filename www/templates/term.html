@@ -4,7 +4,7 @@
       <h1 class="title">{{currentTerm.name}}</h1>
     </ion-header-bar>
   </div>
-  <ion-content padding="false">
+  <ion-content padding="false" on-swipe-left="onSwipeLeft()" on-swipe-right="onSwipeRight()">
     <div ng-class="{'blur-effect': settingsButtonClicked}">
       <!-- <div class="bar bar-header bar-stable">
         <h1 class="title">Gradebooks</h1>

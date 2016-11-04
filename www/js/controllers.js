@@ -211,7 +211,10 @@ angular.module('gpaCalc.controllers', [])
   if(currentHome.state != 'gradebook'){
     var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"}
     var setHome = {name: "Set As Home", icon:"ion-pin", onClick:"setHome()"};
-    $scope.settingsButtons.splice(1, 0, goHome, setHome);
+    if(currentHome.state == 'gradebooks')
+      $scope.settingsButtons.splice(1, 1, goHome, setHome);
+    else
+      $scope.settingsButtons.splice(1, 0, goHome, setHome);
   }
 
   $scope.settingsButtons.reverse();
@@ -422,10 +425,29 @@ $scope.$on('popover.removed', function() {
   if(currentHome.state != 'term'){
     var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"};
     var setHome = {name: "Set As Home", icon:"ion-pin", onClick:"setHome()"};
-    $scope.settingsButtons.splice(1, 0, goHome, setHome);
+    if(currentHome.state == 'gradebooks')
+      $scope.settingsButtons.splice(1, 1, goHome, setHome);
+    else
+      $scope.settingsButtons.splice(1, 0, goHome, setHome);
   }
 
   $scope.settingsButtons.reverse();
+
+  $scope.onSwipeLeft = function() {
+    $scope.currentTerm = TermManager.getTerm($stateParams.id);
+    var termsList = AppManager.getParentObject($stateParams.id).terms;
+    var termIndex = termsList.indexOf($stateParams.id);
+    if(termIndex != termsList.length-1)
+      $state.go('term', {id: termsList[termIndex+1]});
+  }
+
+  $scope.onSwipeRight = function() {
+    $scope.currentTerm = TermManager.getTerm($stateParams.id);
+    var termsList = AppManager.getParentObject($stateParams.id).terms;
+    var termIndex = termsList.indexOf($stateParams.id);
+    if(termIndex != 0)
+      $state.go('term', {id: termsList[termIndex-1]});
+  }
 
   $scope.setHome = function() {
     var newHome = { state: "term", stateParams: $stateParams.id};
