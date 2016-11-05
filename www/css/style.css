@@ -95,6 +95,20 @@ ion-popover-view.fit span {
    display: inline-block;
 }
 
+.indented {
+  /*position: absolute;*/
+  background: #efefef;
+  /*left: 20px;*/
+  top: 0px;
+}
+
+.indented a {
+  /*position: absolute;*/
+  background-color: inherit;
+  /*left: 20px;*/
+  top: 0px;
+}
+
 .course-item select {
   display: inline-block;
    background: transparent;

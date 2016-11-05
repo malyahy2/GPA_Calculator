@@ -1,5 +1,58 @@
 <ion-view title="Settings View">
+  <ion-header-bar align-title="center" class="app_header">
+    <h1 class="title">Settings</h1>
+  </ion-header-bar>
   <ion-content>
-    Settings List
+    <div class="list card">
+
+      <a class="item item-icon-left">
+        <i class="icon ion-compose"></i>
+        Grading Scales
+      </a>
+
+      <a class="item item-icon-left"ng-model="usabilitySettings" ng-init="usabilitySettings = false"
+      ng-click="usabilitySettings = !usabilitySettings">
+        <i class="icon ion-android-options"></i>
+        Usability
+      </a>
+      <div class="item indented" ng-show="usabilitySettings">
+        <a class="item item-icon-left" ng-click="autoFillClicked()">
+          <i class="icon {{autoFillCheckBox}}"></i>
+          Auto Fill Names
+        </a>
+        <a class="item item-icon-left" ng-click="changeColorScheme()">
+          <i class="icon ion-record" ng-style="{'color': colorScheme}"></i>
+          Color Scheme
+        </a>
+      </div>
+
+      <a class="item item-icon-left" ng-model="backupSettings" ng-init="backupSettings = false"
+      ng-click="backupSettings = !backupSettings">
+        <i class="icon ion-folder"></i>
+        Backup Options
+      </a>
+      <div class="item indented" ng-show="backupSettings">
+        <a class="item item-icon-left">
+          <i class="icon ion-alert"></i>
+          Coming Soon
+        </a>
+      </div>
+
+      <a class="item item-icon-left">
+        <i class="icon ion-android-chat"></i>
+        Support
+      </a>
+
+      <a class="item item-icon-left"  ng-click="deleteEverything()">
+        <i class="icon ion-close-circled"></i>
+        Delete Everything
+      </a>
+
+    </div>
   </ion-content>
+  <div class="float-button">
+      <a class="content" ng-click="goHome()">
+        <i class="ion-android-home"> </i>
+      </a>
+  </div>
 </ion-view>

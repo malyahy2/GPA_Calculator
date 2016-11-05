@@ -17,7 +17,68 @@ angular.module('gpaCalc.controllers', [])
 
 })
 
-.controller('gradebooksCtrl', function($scope, $state, AppManager, HomeReference, $ionicPopover, GradebookManager, $ionicPopup) {
+.controller('settingsCtrl', function($scope, $state, HomeReference, SettingsReference, $ionicPopup, $ionicHistory, $window) {
+  $scope.goHome = function() {
+    var currentHome = HomeReference.getHome();
+    if(currentHome.stateParams != null)
+      $state.go(currentHome.state, {id: currentHome.stateParams});
+    else
+      $state.go(currentHome.state);
+  }
+
+  $scope.deleteEverything = function() {
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'Deleting All Data',
+      template: 'Are you sure you want to delete everything?'
+    });
+
+    confirmPopup.then(function(res) {
+      if(res) {
+        SettingsReference.deleteEverything();
+        $state.go("gradebooks");
+          $ionicHistory.clearHistory();
+          setTimeout(function (){
+                 $window.location.reload(true);
+          }, 100);
+      } else {
+        console.log('Decided not to delete everything');
+      }
+    });
+  }
+
+  $scope.autoFillNames = SettingsReference.useDefaultNames();
+  if($scope.autoFillNames) {
+    $scope.autoFillCheckBox = "ion-android-checkbox-outline";
+  } else {
+    $scope.autoFillCheckBox = "ion-android-checkbox-outline-blank";
+  }
+
+  $scope.autoFillClicked = function() {
+    $scope.autoFillNames = !$scope.autoFillNames;
+    if($scope.autoFillNames) {
+      $scope.autoFillCheckBox = "ion-android-checkbox-outline";
+    } else {
+      $scope.autoFillCheckBox = "ion-android-checkbox-outline-blank";
+    }
+    SettingsReference.setDefaultNamesUsage($scope.autoFillNames);
+  };
+
+  var colorSchemeArray = ['#218D9B', '#ad001c', '#f7a102'];
+  var colorIndex = 0;
+  $scope.colorScheme = colorSchemeArray[colorIndex];
+
+  $scope.changeColorScheme = function() {
+    colorIndex++;
+    if(colorIndex == colorSchemeArray.length)
+      colorIndex = 0;
+    $scope.colorScheme = colorSchemeArray[colorIndex];
+  };
+
+
+
+})
+
+.controller('gradebooksCtrl', function($scope, $state, AppManager, HomeReference, SettingsReference, $ionicPopover, GradebookManager, $ionicPopup) {
   $scope.gradebooksList = AppManager.getGradebooks();
   $scope.data = {};
   $scope.settingsButtonClicked = false;
@@ -46,9 +107,11 @@ angular.module('gpaCalc.controllers', [])
   $scope.setHome = function() {
     var newHome = { state: "gradebooks", stateParams: null};
     HomeReference.setHome(newHome);
+    $scope.removeOverlay();
   }
 
   $scope.goTo = function(state, stateParams) {
+    $scope.removeOverlay();
     if(stateParams != null)
       $state.go(state, {id: stateParams});
     else
@@ -56,6 +119,7 @@ angular.module('gpaCalc.controllers', [])
   }
 
   $scope.doMethod = function(thingy) {
+    $scope.removeOverlay();
     console.log("Trying to do: "+thingy);
   }
 
@@ -65,9 +129,13 @@ angular.module('gpaCalc.controllers', [])
   // AppManager.printList($scope.gradebooksList, "gradebooksCtrl - After:");
 
   $scope.createGradebook = function() {
-    $scope.showPopup("create");
-    //var newGradebook = AppManager.createGradebook("Testing Gradebook");
-    //GradebookManager.updateName(newGradebook.id, "Gradebook "+newGradebook.id.slice(newGradebook.id.indexOf("_")+1));
+    var defaultNameOption = SettingsReference.useDefaultNames();
+    if(defaultNameOption) {
+      var newGradebook = AppManager.createGradebook("Testing Gradebook");
+      GradebookManager.updateName(newGradebook.id, "Gradebook "+newGradebook.id.slice(newGradebook.id.indexOf("_")+1));
+    } else{
+        $scope.showPopup("create");
+    }
   }
 
   $scope.goToGradebook = function(gradebookID) {
@@ -188,7 +256,7 @@ angular.module('gpaCalc.controllers', [])
 
 })
 
-.controller('gradebookCtrl', function($scope, $state, $stateParams, HomeReference, AppManager, GradebookManager, TermManager, $ionicPopover, $ionicPopup) {
+.controller('gradebookCtrl', function($scope, $state, $stateParams, HomeReference, SettingsReference, AppManager, GradebookManager, TermManager, $ionicPopover, $ionicPopup) {
   $scope.currentGradebook = GradebookManager.getGradebook($stateParams.id);
   //console.log("gradebookCtrl ID: "+$scope.currentGradebook.id);
   $scope.termsList = GradebookManager.getTerms($scope.currentGradebook.id);
@@ -222,9 +290,11 @@ angular.module('gpaCalc.controllers', [])
   $scope.setHome = function() {
     var newHome = { state: "gradebook", stateParams: $stateParams.id};
     HomeReference.setHome(newHome);
+    $scope.removeOverlay();
   }
 
   $scope.goTo = function(state, stateParams) {
+    $scope.removeOverlay();
     if(stateParams != null)
       $state.go(state, {id: stateParams});
     else
@@ -232,6 +302,7 @@ angular.module('gpaCalc.controllers', [])
   }
 
   $scope.doMethod = function(thingy) {
+    $scope.removeOverlay();
     console.log("Trying to do: "+thingy);
   }
 
@@ -251,9 +322,13 @@ angular.module('gpaCalc.controllers', [])
   }
 
   $scope.createTerm = function() {
-    $scope.showPopup("create", $scope.currentGradebook.id);
-    // var newTerm = GradebookManager.createTerm($scope.currentGradebook.id, "Testing Term");
-    // TermManager.updateName(newTerm.id, "Term "+newTerm.id.slice(newTerm.id.indexOf("_")+1));
+    var defaultNameOption = SettingsReference.useDefaultNames();
+    if(defaultNameOption) {
+      var newTerm = GradebookManager.createTerm($scope.currentGradebook.id, "Testing Term");
+      TermManager.updateName(newTerm.id, "Term "+newTerm.id.slice(newTerm.id.indexOf("_")+1));
+    } else{
+      $scope.showPopup("create", $scope.currentGradebook.id);
+    }
     updatePageList();
     //console.log("createTerm termsList length: "+$scope.termsList.length);
     // var termsIDs2 = "createTerm Terms List: ";
@@ -402,7 +477,7 @@ $scope.$on('popover.removed', function() {
   };
 })
 
-.controller('termCtrl', function($scope, $state, $stateParams, HomeReference, TermManager, CourseManager, GradingScaleManager, AppManager, GradebookManager, $ionicPopover, $ionicPopup) {
+.controller('termCtrl', function($scope, $state, $stateParams, HomeReference, SettingsReference, TermManager, CourseManager, GradingScaleManager, AppManager, GradebookManager, $ionicPopover, $ionicPopup) {
   $scope.currentTerm = TermManager.getTerm($stateParams.id);
   //console.log("gradebookCtrl ID: "+$scope.currentGradebook.id);
   $scope.coursesList = TermManager.getCourses($scope.currentTerm.id);
@@ -452,9 +527,11 @@ $scope.$on('popover.removed', function() {
   $scope.setHome = function() {
     var newHome = { state: "term", stateParams: $stateParams.id};
     HomeReference.setHome(newHome);
+    $scope.removeOverlay();
   }
 
   $scope.goTo = function(state, stateParams) {
+    $scope.removeOverlay();
     if(stateParams != null)
       $state.go(state, {id: stateParams});
     else
@@ -462,6 +539,7 @@ $scope.$on('popover.removed', function() {
   }
 
   $scope.doMethod = function(thingy) {
+    $scope.removeOverlay();
     console.log("Trying to do: "+thingy);
   }
 
@@ -512,10 +590,14 @@ $scope.$on('popover.removed', function() {
   }
 
   $scope.createCourse = function() {
-    $scope.showPopup("create", $scope.currentTerm.id);
+    var defaultNameOption = SettingsReference.useDefaultNames();
+    if(defaultNameOption) {
+      var newCourse = TermManager.createCourse($scope.currentTerm.id, "Testing Course");
+      CourseManager.updateName(newCourse.id, "Course "+newCourse.id.slice(newCourse.id.indexOf("_")+1));
+    } else{
+      $scope.showPopup("create", $scope.currentTerm.id);
+    }
     updatePageList();
-    // var newCourse = TermManager.createCourse($scope.currentTerm.id, "Testing Course");
-    // CourseManager.updateName(newCourse.id, "Course "+newCourse.id.slice(newCourse.id.indexOf("_")+1));
     $scope.coursesList = TermManager.getCourses($scope.currentTerm.id);
     //console.log("createTerm termsList length: "+$scope.termsList.length);
     // var termsIDs2 = "createTerm Terms List: ";

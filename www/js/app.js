@@ -52,7 +52,8 @@ angular.module('gpaCalc', ['ionic', 'gpaCalc.controllers', 'gpaCalc.services'])
 
     .state('settings', {
     url: '/settings',
-    templateUrl: 'templates/settings.html'
+    templateUrl: 'templates/settings.html',
+    controller: 'settingsCtrl'
   })
 
     .state('gpaScale', {

@@ -2,7 +2,6 @@ angular.module('gpaCalc.services', [])
 
 .factory('HomeReference', function(DatabaseAccessor) {
   var key = "Home";
-  //DatabaseAccessor.deleteData(key);
   var initialHome = { state: "gradebooks", stateParams: null};
   return {
     setHome: function (home) {
@@ -17,6 +16,36 @@ angular.module('gpaCalc.services', [])
         DatabaseAccessor.setDataObject(key, home);
         return home;
       }
+    },
+    deleteHome: function() {
+      DatabaseAccessor.deleteData(key);
+    }
+  }
+})
+
+.factory('SettingsReference', function(DatabaseAccessor, HomeReference, AppManager, GradingScaleManager, IDGenerator) {
+  var key = "settings";
+
+  var settings = DatabaseAccessor.getDataObject(key);
+  if(settings == undefined){
+    settings = { defaultNames: true};
+    DatabaseAccessor.setDataObject(key, settings);
+  }
+
+  return {
+    useDefaultNames: function () {
+      return settings.defaultNames;
+    },
+    setDefaultNamesUsage: function (setting) {
+      settings.defaultNames = setting;
+      DatabaseAccessor.setDataObject(key, settings);
+    },
+    deleteEverything: function() {
+      DatabaseAccessor.deleteData(key);
+      HomeReference.deleteHome();
+      AppManager.resetLocalStorage();
+      GradingScaleManager.resetLocalStorage();
+      IDGenerator.resetLocalStorage();
     }
   }
 })
@@ -149,7 +178,8 @@ angular.module('gpaCalc.services', [])
     printList: printList,
     getParentObject: getParentObject,
     createGradebook: createGradebook,
-    getGradebooks: getGradebooks
+    getGradebooks: getGradebooks,
+    resetLocalStorage: resetLocalStorage
   }
 })
 
@@ -569,7 +599,8 @@ angular.module('gpaCalc.services', [])
     deleteAssociation: deleteAssociation,
     updateAssociation: updateAssociation,
     createGradingScale: createGradingScale,
-    createGrade: createGrade
+    createGrade: createGrade,
+    resetLocalStorage: resetLocalStorage
   }
 })
 
@@ -677,7 +708,8 @@ angular.module('gpaCalc.services', [])
       //console.log("current ID number: " + idType + currentID);
       //console.log("next ID number: " + idType + nextID);
       return idType +"_" + currentID;
-    }
+    },
+    resetLocalStorage: resetLocalStorage
   }
 })
 
