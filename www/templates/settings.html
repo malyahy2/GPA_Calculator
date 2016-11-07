@@ -5,12 +5,27 @@
   <ion-content>
     <div class="list card">
 
-      <a class="item item-icon-left">
+      <a class="item item-icon-left" ng-model="GradingScaleSettings" ng-init="GradingScaleSettings = false"
+      ng-click="GradingScaleSettings = !GradingScaleSettings">
         <i class="icon ion-compose"></i>
         Grading Scales
       </a>
+      <div class="item indented" ng-show="GradingScaleSettings">
+        <a class="item item-icon-left">
+          <i class="icon ion-archive"></i>
+          Set Grading Scales
+        </a>
+        <a class="item item-icon-left">
+          <i class="icon ion-plus-round"></i>
+          New Grading Scale
+        </a>
+        <a class="item item-icon-left">
+          <i class="icon ion-edit"></i>
+          Edit Grading Scale
+        </a>
+      </div>
 
-      <a class="item item-icon-left"ng-model="usabilitySettings" ng-init="usabilitySettings = false"
+      <a class="item item-icon-left" ng-model="usabilitySettings" ng-init="usabilitySettings = false"
       ng-click="usabilitySettings = !usabilitySettings">
         <i class="icon ion-android-options"></i>
         Usability
@@ -23,6 +38,10 @@
         <a class="item item-icon-left" ng-click="changeColorScheme()">
           <i class="icon ion-record" ng-style="{'color': colorScheme}"></i>
           Color Scheme
+        </a>
+        <a class="item item-icon-left">
+          <i class="icon ion-social-usd"></i>
+          Remove Ads
         </a>
       </div>
 
@@ -38,15 +57,37 @@
         </a>
       </div>
 
-      <a class="item item-icon-left">
+      <a class="item item-icon-left" ng-model="supportSettings" ng-init="supportSettings = false"
+      ng-click="supportSettings = !supportSettings">
         <i class="icon ion-android-chat"></i>
         Support
       </a>
+      <div class="item indented" ng-show="supportSettings">
+        <a class="item item-icon-left">
+          <i class="icon ion-help"></i>
+          FAQs
+        </a>
+        <a class="item item-icon-left">
+          <i class="icon ion-email"></i>
+          Contact Us
+        </a>
+        <a class="item item-icon-left">
+          <i class="icon ion-android-star"></i>
+          Rate Us
+        </a>
+      </div>
 
-      <a class="item item-icon-left"  ng-click="deleteEverything()">
-        <i class="icon ion-close-circled"></i>
-        Delete Everything
+      <a class="item item-icon-left" ng-model="formatSettings" ng-init="formatSettings = false"
+      ng-click="formatSettings = !formatSettings">
+        <i class="icon ion-trash-b"></i>
+        Format Data
       </a>
+      <div class="item indented" ng-show="formatSettings">
+        <a class="item item-icon-left"  ng-click="deleteEverything()">
+          <i class="icon ion-close-circled" ng-style="{'color': 'red'}"></i>
+          Delete Everything
+        </a>
+      </div>
 
     </div>
   </ion-content>

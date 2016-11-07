@@ -10,14 +10,14 @@
         <h1 class="title">Gradebooks</h1>
       </div> -->
       <!-- <div class="app_header"> <h2>Gradebooks</h2></Div> -->
-      termGPA: {{termGPA}}, termHours: {{termHours}}
-      cumulGPA: {{cumulGPA}}, cumulHours: {{cumulHours}}
+      termGPA: {{currentTerm.GPA}}, termHours: {{currentTerm.hours}}
+      cumulGPA: {{currentGradebook.GPA}}, cumulHours: {{currentGradebook.hours}}
       <div class="card" ng-repeat="course in coursesList track by $index">
-        <div class="item item-text-wrap  item-icon-right">
+        <div class="item item-text-wrap  item-icon-right" ng-if="course.name != ''">
           {{ course.name }}
-          <i class="icon ion-android-more-vertical"  ng-click="openPopover($event, course.id)"></i>
+          <!-- <i class="icon ion-android-more-vertical"  ng-click="openPopover($event, course.id)"></i> -->
         </div>
-        <div class="item item-divider course-item">
+        <div class="item item-divider item-icon-right course-item">
           <strong>Grade: </strong>
           <select ng-model="selectedGrade" ng-init="selectedGrade= course.grade"  ng-selected="selectedGrade" ng-change="updateGrade(course.id, selectedGrade)"
           ng-options="grade.points as grade.name for grade in gradingScaleList">
@@ -27,6 +27,7 @@
           </select>
           <strong>, Hours: </strong>
           <input type="tel"  ng-model="inputHours" ng-value="{{course.hours}}" ng-change="updateHours(course.id, inputHours)">
+          <i class="icon ion-android-more-vertical"  ng-click="openPopover($event, course.id)"></i>
         </div>
       </div>
       <div class="row">

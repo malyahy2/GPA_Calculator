@@ -183,7 +183,7 @@ angular.module('gpaCalc.services', [])
   }
 })
 
-.factory('GradebookManager', function(AppManager, IDGenerator, GradingScaleManager, TermManager, CourseManager) {
+.factory('GradebookManager', function(AppManager, IDGenerator, GradingScaleManager, AppCalculator, TermManager, CourseManager) {
   var updateName = function (gradebookID, newName) {
     var currentGradebook = AppManager.getObject(gradebookID);
     currentGradebook.name = newName;
@@ -266,6 +266,13 @@ angular.module('gpaCalc.services', [])
     return newGradebook;
   }
 
+  var setInitialData = function(gradebookID, initialGPA, initialHours) {
+    var currentGradebook = AppManager.getObject(gradebookID);
+    currentGradebook.initialGPA = initialGPA;
+    currentGradebook.initialHours = initialHours;
+    AppCalculator.calculateCumulativeData(gradebookID);
+  }
+
   return {
     updateName: updateName,
     getGradebook: getGradebook,
@@ -273,7 +280,8 @@ angular.module('gpaCalc.services', [])
     getTerms: getTerms,
     deleteGradebook: deleteGradebook,
     copyTerm: copyTerm,
-    copyGradebook:copyGradebook
+    copyGradebook: copyGradebook,
+    setInitialData: setInitialData
   }
 })
 
@@ -345,13 +353,18 @@ angular.module('gpaCalc.services', [])
     AppCalculator.calculateCumulativeData(newGradebookID);
   }
 
+  var getGradebook = function(temID) {
+    return AppManager.getParentObject(temID);
+  }
+
   return {
     updateName: updateName,
     getTerm: getTerm,
     createCourse: createCourse,
     getCourses: getCourses,
     deleteTerm: deleteTerm,
-    moveTerm: moveTerm
+    moveTerm: moveTerm,
+    getGradebook: getGradebook
   }
 })
 
