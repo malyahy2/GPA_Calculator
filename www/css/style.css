@@ -1,4 +1,10 @@
  /*Empty. Add your own CSS if you like */
+ .pane {
+     /*background-color: #e8f0ff;*/
+     /*#e0ecff;*/
+     /*#aaf5ff;*/
+ }
+
 .app_header {
     /*list-style-type: none;*/
     /*font-family: helvetica;*/
@@ -258,6 +264,185 @@ filter: blur(2px);
   /*font-size: 24px;*/
 }
 
+.card-wrapper {
+  position: relative;
+  width: 92vw;
+  height: 10vw;
+  margin: 4vw;
+  /*margin-bottom: 50px;
+  margin-top: 4vw;*/
+  background-color: #218D9B;
+  -webkit-animation-name: card_layer;
+  -webkit-animation-duration: 1s;
+  animation-name: card_layer;
+  animation-duration: 1s;
+}
+
+.card-wrapper .item-wrapper {
+  position:absolute;
+  top:0;
+  right:0;
+  width: 92vw;
+  height: 9.8vw;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  /*padding-top: 8px;*/
+  background-color: white;
+  -webkit-animation-name: item_layer;
+  -webkit-animation-duration: 1s;
+  animation-name: item_layer;
+  animation-duration: 1s;
+}
+
+.item-wrapper .item-name {
+  /*color: blue;*/
+  position: relative;
+  max-width: 46%;
+  max-height: 5vw;
+  top: 20%;
+  left: 2%;
+  font-size: 4vw;
+  overflow: hidden;
+  /*background-color: green;*/
+  display: inline-block;
+}
+
+.item-wrapper .item-GPA {
+  position: absolute;
+  /*bottom: 0;*/
+  right: 32%;
+  max-width: 20%;
+  min-width: 12%;
+  height: 100%;
+  /*background-color: yellow;*/
+  overflow: hidden;
+  display: inline-block;
+}
+
+.item-wrapper .item-hours {
+  position: absolute;
+  /*bottom: 0;*/
+  right: 9%;
+  max-width: 27%;
+  min-width: 14%;
+  height: 100%;
+  /*background-color: purple;*/
+  overflow: hidden;
+  display: inline-block;
+}
+
+.item-wrapper .data {
+  position: relative;
+  top: 20%;
+  left: 0;
+  font-size: 6vw;
+  /*background-color: red;*/
+  display: inline-block;
+}
+
+.item-wrapper .label {
+  position: relative;
+  top: 30%;
+  right: 0;
+  font-size: 3vw;
+  /*background-color: lightgrey;*/
+  display: inline-block;
+}
+
+.item-wrapper .item-icon {
+/*background-color: orange;*/
+display: inline-block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  font-size: 8vw;
+}
+
+@-webkit-keyframes card_layer {
+    0%   {width:0vw; height:10vw;}
+    /*10%  {width:1.8vw; height:0.9vw;}
+    25%  {width:1.8vw; height:10vw;}*/
+    100% {width:92vw; height:10vw;}
+}
+
+@keyframes card_layer {
+    0%   {width:0vw; height:10vw;}
+    /*10%  {width:1.8vw; height:0.9vw;}
+    25%  {width:1.8vw; height:10vw;}*/
+    100% {width:92vw; height:10vw;}
+}
+
+
+@-webkit-keyframes item_layer {
+    0%   {width:0vw; height:9.8vw;}
+    /*10%  {width:0vw; height:0vw;}
+    25%  {width:0vw; height:9.2vw;}*/
+    100% {width:92vw; height:9.8vw;}
+}
+
+@keyframes item_layer {
+    0%   {width:0vw; height:9.8vw;}
+    /*10%  {width:0vw; height:0vw;}
+    25%  {width:0vw; height:9.2vw;}*/
+    100% {width:92vw; height:9.8vw;}
+}
+
+.header-1 {
+  position: fixed;
+  top: 6.5%;
+  left: 0;
+  width: 100vw;
+  height: 4vw;
+  /*padding: 25px;*/
+  background: #00b8c9;
+  /*background: yellow;*/
+  z-index: 9999;
+}
+
+.header-1 .header-2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50vw;
+  height: 5vw;
+  /*padding: 90px;*/
+  background: white;
+  border-top-right-radius: 5px;
+  /*background: yellow;*/
+  z-index: 9999;
+}
+
+.header-1 .header-3 {
+  position: absolute;
+  top: 0;
+  left: 50vw;
+  width: 50vw;
+  height: 5vw;
+  text-align: center;
+  /*font-size: 14px;*/
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  /*padding: 25px;*/
+  background: #00b8c9;
+  /*background: yellow;*/
+  /*z-index: 9999;*/
+}
+
+.header-1 .header-4 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 12vw;
+  height: 5vw;
+  /*padding: 25px;*/
+  background: white;
+  border-top-left-radius: 5px;
+  /*background: yellow;*/
+  z-index: 9999;
+}
+
 /*.bar-header{
   height: 80px
 }
@@ -298,3 +483,61 @@ filter: blur(2px);
   background-color: #45CEE0;
   height: 150px;
 }*/
+
+/*.small {
+position:relative;
+top:0px;
+left:0px;
+    width: 500px;
+    height: 50px;
+    background-color: #218D9B;
+    -webkit-animation-name: example_small;
+    -webkit-animation-duration: 1s;
+    animation-name: example_small;
+    animation-duration: 1s;
+}
+
+.large {
+position:absolute;
+top:0px;
+left:10px;
+    width: 490px;
+    height: 48px;
+    background-color: #45CEE0;
+    -webkit-animation-name: example_largel;
+    -webkit-animation-duration: 1s;
+    animation-name: example_large;
+    animation-duration: 1s;
+}
+
+@-webkit-keyframes example_small {
+    0%   {width:0px; height:0px;}
+    10%  {width:10px; height:5px;}
+    25%  {width:10px; height:50px;}
+    100% {width:500px; height:50px;}
+}
+
+@keyframes example_small {
+    0%   {width:0px; height:0px;}
+    10%  {width:10px; height:5px;}
+    25%  {width:10px; height:50px;}
+    100% {width:500px; height:50px;}
+}
+
+
+@-webkit-keyframes example_large {
+    0%   {width:0px; height:0px;}
+    10%  {width:0px; height:0px;}
+    25%  {width:0px; height:48px;}
+    100% {width:490px; height:48px;}
+}
+
+@keyframes example_large {
+    0%   {width:0px; height:0px;}
+    10%  {width:0px; height:0px;}
+    25%  {width:0px; height:48px;}
+    100% {width:490px; height:48px;}
+}
+for <div class="small">
+ <div class="large"></div>
+</div>*/

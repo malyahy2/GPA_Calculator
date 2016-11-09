@@ -638,7 +638,7 @@ angular.module('gpaCalc.services', [])
       termPoints += (parseFloat(currentCourse.grade) * parseFloat(currentCourse.hours));
       termHours += parseFloat(currentCourse.hours);
     }
-    currentTerm.hours = termHours.toFixed(2);
+    currentTerm.hours = termHours;
     currentTerm.points = termPoints.toFixed(2);
     currentTerm.GPA = (termPoints / termHours).toFixed(2);
     AppManager.updateObject(currentTerm);
@@ -661,7 +661,7 @@ angular.module('gpaCalc.services', [])
         cumulativePoints += parseFloat(gradebookTerms[i].points);
         cumulativeHours += parseFloat(gradebookTerms[i].hours);
       }
-      currentGradebook.hours = cumulativeHours.toFixed(2);
+      currentGradebook.hours = cumulativeHours;
       currentGradebook.GPA = (cumulativePoints / cumulativeHours).toFixed(2);
       AppManager.updateObject(currentGradebook);
       return currentGradebook;
@@ -683,7 +683,7 @@ angular.module('gpaCalc.services', [])
 
       currentTerm = calculateTermData(termID);
 
-      parentGradebook.hours = (oldCumulativeHours - oldTermHours + parseFloat(currentTerm.hours)).toFixed(2);
+      parentGradebook.hours = (oldCumulativeHours - oldTermHours + parseFloat(currentTerm.hours));
       parentGradebook.GPA = ((oldCumulativePoints - oldTermPoints + parseFloat(currentTerm.points)) / parseFloat(parentGradebook.hours)).toFixed(2);
       console.log("parentGradebook.hours= "+parentGradebook.hours);
       console.log("parentGradebook.GPA= "+parentGradebook.GPA);
