@@ -58,7 +58,8 @@ angular.module('gpaCalc', ['ionic', 'gpaCalc.controllers', 'gpaCalc.services'])
 
     .state('gpaScale', {
     url: '/gpaScale',
-    templateUrl: 'templates/gpaScale.html'
+    templateUrl: 'templates/gpaScale.html',
+    controller: 'gpaScaleCtrl'
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/loading');

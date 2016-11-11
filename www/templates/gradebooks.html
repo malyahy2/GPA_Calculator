@@ -4,7 +4,7 @@
       <h1 class="title">APP Name</h1>
     </ion-header-bar>
   </div>
-  <div class="header-1">
+  <!-- <div class="header-1">
     <div class="header-2">
     </div>
     <div class="header-3">
@@ -12,7 +12,7 @@
     </div>
     <div class="header-4">
     </div>
-  </div>
+  </div> -->
   <ion-content padding="false">
     <div ng-class="{'blur-effect': settingsButtonClicked}">
       <div class="list">
@@ -23,11 +23,11 @@
           </div>
           <div class="item-GPA">
             <div class="data">{{ gradebook.GPA }}</div>
-            <!-- <div class="label"><strong>GPA</strong></div> -->
+            <div class="label"><strong>GPA</strong></div>
           </div>
           <div class="item-hours">
             <div class="data">{{ gradebook.hours }}</div>
-            <!-- <div class="label"><strong>Hours</strong></div> -->
+            <div class="label"><strong>Hours</strong></div>
           </div>
           <div class="item-icon  item-icon-right">
             <i class="icon ion-android-more-vertical" ng-click="openPopover($event, gradebook.id)"></i>

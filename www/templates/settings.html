@@ -11,17 +11,21 @@
         Grading Scales
       </a>
       <div class="item indented" ng-show="GradingScaleSettings">
-        <a class="item item-icon-left">
-          <i class="icon ion-archive"></i>
-          Set Grading Scales
+        <a class="item item-icon-left" ng-click="autoFillClicked()">
+          <i class="icon ion-android-radio-button-off"></i>
+          Use Default 4.00 Scale
+        </a>
+        <a class="item item-icon-left" ng-click="autoFillClicked()">
+          <i class="icon ion-android-radio-button-on"></i>
+          Use Default 4.333 Scale
         </a>
         <a class="item item-icon-left">
-          <i class="icon ion-plus-round"></i>
-          New Grading Scale
+          <i class="icon ion-android-radio-button-off"></i>
+          Use Default Traditional Scale
         </a>
-        <a class="item item-icon-left">
+        <a class="item item-icon-left"  ng-click="goToGradingScaleEditor()">
           <i class="icon ion-edit"></i>
-          Edit Grading Scale
+          Edit Current Grading Scale
         </a>
       </div>
 

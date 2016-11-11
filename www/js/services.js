@@ -162,7 +162,7 @@ angular.module('gpaCalc.services', [])
       newGradebook.name = gradeBookName;
 
     addObject(newGradebook);
-    GradingScaleManager.addNewAssociation(newGradebook.id, GradingScaleManager.getInitialGradingScaleID());
+    //GradingScaleManager.addNewAssociation(newGradebook.id, GradingScaleManager.getInitialGradingScaleID());
     return newGradebook;
   }
 
@@ -239,7 +239,7 @@ angular.module('gpaCalc.services', [])
     for(var i=0; i<currentGradebook.terms.length; i++){
       TermManager.deleteTerm(currentGradebook.terms[i]);
     }
-    GradingScaleManager.deleteAssociation(gradebookID);
+    //GradingScaleManager.deleteAssociation(gradebookID);
     AppManager.deleteObject(gradebookID);
   }
 
@@ -437,151 +437,28 @@ angular.module('gpaCalc.services', [])
 
 .factory('GradingScaleManager', function(DatabaseAccessor, IDGenerator) {
 
-  var gradingScalesRefrence = { key: "gradingScalesRefrence", list: [] };
-  var gradingScales = { key: "gradingScales", list: [] };
-
-  var initialGradingScale;
+  var gradingScaleKey = "gradingScale";
 
   var resetLocalStorage = function () {
-    DatabaseAccessor.deleteData(gradingScalesRefrence.key);
-    DatabaseAccessor.deleteData(gradingScales.key);
+    // DatabaseAccessor.deleteData("gradingScalesRefrence");
+    // DatabaseAccessor.deleteData("gradingScales");
+    DatabaseAccessor.deleteData(gradingScaleKey);
   };
 
-  //resetLocalStorage();
+  // resetLocalStorage();
 
-  var printList = function(list, location) {
-    var idList = location + " ";
-    for( var i=0; i<list.length; i++) {
-      idList += list[i].id;
-      idList += ", ";
-    }
-    console.log(idList);
+  var gradingScale = [];
+
+  var updateGradingScale = function() {
+    DatabaseAccessor.setDataObject(gradingScaleKey, gradingScale);
   }
 
-
-  var getInitialDataList = function (key) {
-    var dataList = DatabaseAccessor.getDataObject(key);
-    if(dataList == undefined){
-      dataList = [];
-      DatabaseAccessor.setDataObject(key, dataList);
-    }
-    return dataList;
-  };
-
-  gradingScalesRefrence.list = getInitialDataList(gradingScalesRefrence.key);
-  gradingScales.list = getInitialDataList(gradingScales.key);
-
-  var updateDataList = function(dataList) {
-    DatabaseAccessor.setDataObject(dataList.key, dataList.list);
+  var clearGradingScale = function () {
+    gradingScale = [];
+    updateGradingScale();
   }
 
-  var createInitialGradingScale = function() {
-    initialGradingScale = createGradingScale("Default Grading Scale");
-    createGrade(initialGradingScale.id, "A+", 4.333);
-    createGrade(initialGradingScale.id, "A", 4.00);
-    createGrade(initialGradingScale.id, "A-", 3.667);
-    createGrade(initialGradingScale.id, "B+", 3.333);
-    createGrade(initialGradingScale.id, "B", 3.00);
-    createGrade(initialGradingScale.id, "B-", 2.667);
-    createGrade(initialGradingScale.id, "C+", 2.333);
-    createGrade(initialGradingScale.id, "C", 2.00);
-    createGrade(initialGradingScale.id, "C-", 1.667);
-    createGrade(initialGradingScale.id, "D+", 1.333);
-    createGrade(initialGradingScale.id, "D", 1.00);
-    createGrade(initialGradingScale.id, "D-", 0.667);
-    createGrade(initialGradingScale.id, "F", 0.0);
-  }
-
-  var getInitialGradingScale = function() {
-    if(initialGradingScale == undefined) {
-        //printList(gradingScales.list + "getInitialGradingScale");
-      initialGradingScale =  gradingScales.list.find(function(object) {
-          //console.log("looking for default scale: "+object.name);
-          return object.name == "Default Grading Scale";
-      });
-      if(initialGradingScale == undefined)
-        createInitialGradingScale();
-    }
-    return initialGradingScale;
-  }
-
-  var getInitialGradingScaleID = function() {
-    return getInitialGradingScale().id;
-  }
-
-  var addGradingScale = function(newObject) {
-    var listObject = gradingScales;
-    listObject.list.push(newObject);
-    updateDataList(listObject);
-  }
-
-  var getGradingScale = function(gradingScaleID) {
-    var objectList = gradingScales.list;
-    return objectList.find(function(object) {
-        return object.id == gradingScaleID;
-    });
-  }
-
-  // var deleteGradingScale = function(objectID) {
-  //   var listObject = getListObject(objectID);
-  //   var objectIndex = listObject.list.indexOf(objectID);
-  //   listObject.list.splice(objectIndex, 1);
-  //   updateDataList(listObject);
-  // }
-
-  var getAssociatedGradingScale = function(gradebookID) {
-    var gradingScaleIndex =  gradingScalesRefrence.list.findIndex(function(object) {
-        return object.gradebookID == gradebookID;
-    });
-    return getGradingScale(gradingScalesRefrence.list[gradingScaleIndex].gradingScaleID);
-  }
-
-  var addNewAssociation = function(gradebookID, gradingScaleID) {
-    var newAssociation = { gradebookID: "",
-                            gradingScaleID:""};
-    newAssociation.gradebookID = gradebookID;
-    newAssociation.gradingScaleID = gradingScaleID;
-    gradingScalesRefrence.list.push(newAssociation);
-    updateDataList(gradingScalesRefrence);
-  }
-
-  var deleteAssociation = function(gradebookID) {
-
-    var gradingScaleIndex =  gradingScalesRefrence.list.findIndex(function(object) {
-      // console.log("looking for: "+gradebookID+" and found: "+object.gradebookID+" which is associated with: "+object.gradingScaleID);
-        return object.gradebookID == gradebookID;
-    });
-    // console.log("deleting index: "+gradingScaleIndex+" for: "+gradingScalesRefrence.list[gradingScaleIndex].gradebookID+" which is associated with: "+gradingScalesRefrence.list[gradingScaleIndex].gradingScaleID);
-    gradingScalesRefrence.list.splice(gradingScaleIndex, 1);
-    updateDataList(gradingScalesRefrence);
-  }
-
-  var updateAssociation = function(gradebookID, gradingScaleID) {
-    var gradingScaleIndex =  gradingScalesRefrence.list.findIndex(function(object) {
-        return object.gradebookID == gradebookID;
-    });
-    gradingScalesRefrence.list[gradingScaleIndex].gradingScaleID = gradingScaleID;
-    updateDataList(gradingScalesRefrence);
-  }
-
-  var createGradingScale = function (gradingScaleName) {
-    var newID = IDGenerator.getNewID("scale");
-    var newGradingScale = { id: "",
-                            name:"",
-                            grades:[] };
-    newGradingScale.id = newID;
-
-    if(gradingScaleName != undefined)
-      newGradingScale.name = gradingScaleName;
-
-    //gradingScales.list.push(newGradingScale);
-    addGradingScale(newGradingScale);
-    //console.log("new scale id: "+newGradingScale.id + "new scale name: "+newGradingScale.name);
-    //printList(gradingScales.list + "createGradingScale");
-    return newGradingScale;
-  }
-
-  var createGrade = function (gradingScaleID, gradeName, gradePoints) {
+  var createGrade = function (gradeName, gradePoints) {
     var newID = IDGenerator.getNewID("grade");
     var newGrade = {  id: "",
                       name:"",
@@ -594,26 +471,98 @@ angular.module('gpaCalc.services', [])
     if(gradePoints != undefined)
       newGrade.points = gradePoints;
 
-    var currentGradingScale = getGradingScale(gradingScaleID);
-    currentGradingScale.grades.push(newGrade);
-    updateDataList(gradingScales);
-    //console.log("grade pushed to: "+currentGradingScale.id);
+    gradingScale.push(newGrade);
+    updateGradingScale();
 
     return newGrade;
   }
 
+  var setDefaultGradingScale_APlus = function() {
+    clearGradingScale();
+    createGrade("A+", 4.333);
+    createGrade("A", 4.00);
+    createGrade("A-", 3.667);
+    createGrade("B+", 3.333);
+    createGrade("B", 3.00);
+    createGrade("B-", 2.667);
+    createGrade("C+", 2.333);
+    createGrade("C", 2.00);
+    createGrade("C-", 1.667);
+    createGrade("D+", 1.333);
+    createGrade("D", 1.00);
+    createGrade("D-", 0.667);
+    createGrade("F", 0.0);
+  }
+
+  var setDefaultGradingScale_A = function() {
+    clearGradingScale();
+    createGrade("A+", 4.00);
+    createGrade("A", 4.00);
+    createGrade("A-", 3.667);
+    createGrade("B+", 3.333);
+    createGrade("B", 3.00);
+    createGrade("B-", 2.667);
+    createGrade("C+", 2.333);
+    createGrade("C", 2.00);
+    createGrade("C-", 1.667);
+    createGrade("D+", 1.333);
+    createGrade("D", 1.00);
+    createGrade("D-", 0.667);
+    createGrade("F", 0.0);
+  }
+
+  var setDefaultGradingScale_Traditional = function() {
+    clearGradingScale();
+    createGrade("A", 4.00);
+    createGrade("B", 3.00);
+    createGrade("C", 2.00);
+    createGrade("D", 1.00);
+    createGrade("F", 0.0);
+  }
+
+  var getGradingScale = function() {
+    return gradingScale;
+  }
+
+  var deleteGrade = function(gradeID){
+    var gradeIndex = gradingScale.findIndex(function(gradeObject) {
+        return gradeObject.id == gradeID;
+    });
+    gradingScale.splice(gradeIndex, 1);
+  }
+
+  var updateGradeName = function(gradeID, newName){
+    var grade = gradingScale.find(function(gradeObject) {
+        return gradeObject.id == gradeID;
+    });
+    grade.name = newName;
+  }
+
+  var updateGradePoints = function(gradeID, newPoints){
+    var grade = gradingScale.find(function(gradeObject) {
+        return gradeObject.id == gradeID;
+    });
+    grade.points = newPoints;
+  }
+
+
+  gradingScale = DatabaseAccessor.getDataObject(gradingScaleKey);
+  if(gradingScale == undefined){
+    setDefaultGradingScale_APlus();
+    DatabaseAccessor.setDataObject(gradingScaleKey, gradingScale);
+  }
+
   return {
-    getInitialGradingScale: getInitialGradingScale,
-    getInitialGradingScaleID: getInitialGradingScaleID,
-    addGradingScale: addGradingScale,
-    getGradingScale: getGradingScale,
-    getAssociatedGradingScale: getAssociatedGradingScale,
-    addNewAssociation: addNewAssociation,
-    deleteAssociation: deleteAssociation,
-    updateAssociation: updateAssociation,
-    createGradingScale: createGradingScale,
+    resetLocalStorage: resetLocalStorage,
+    clearGradingScale: clearGradingScale,
     createGrade: createGrade,
-    resetLocalStorage: resetLocalStorage
+    deleteGrade: deleteGrade,
+    setDefaultGradingScale_APlus: setDefaultGradingScale_APlus,
+    setDefaultGradingScale_A: setDefaultGradingScale_A,
+    setDefaultGradingScale_Traditional: setDefaultGradingScale_Traditional,
+    getGradingScale: getGradingScale,
+    updateGradeName: updateGradeName,
+    updateGradePoints: updateGradePoints
   }
 })
 

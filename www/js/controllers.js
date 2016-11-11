@@ -30,6 +30,10 @@ angular.module('gpaCalc.controllers', [])
       $state.go(currentHome.state);
   }
 
+  $scope.goToGradingScaleEditor = function() {
+    $state.go('gpaScale');
+  }
+
   $scope.deleteEverything = function() {
     var confirmPopup = $ionicPopup.confirm({
       title: 'Deleting All Data',
@@ -50,22 +54,45 @@ angular.module('gpaCalc.controllers', [])
     });
   }
 
+  var checkedBoxIcon = "ion-android-checkbox-outline";
+  var unCheckedBoxIcon = "ion-android-checkbox-outline-blank";
+
   $scope.autoFillNames = SettingsReference.useDefaultNames();
   if($scope.autoFillNames) {
-    $scope.autoFillCheckBox = "ion-android-checkbox-outline";
+    $scope.autoFillCheckBox = checkedBoxIcon;
   } else {
-    $scope.autoFillCheckBox = "ion-android-checkbox-outline-blank";
+    $scope.autoFillCheckBox = unCheckedBoxIcon;
   }
 
   $scope.autoFillClicked = function() {
     $scope.autoFillNames = !$scope.autoFillNames;
     if($scope.autoFillNames) {
-      $scope.autoFillCheckBox = "ion-android-checkbox-outline";
+      $scope.autoFillCheckBox = checkedBoxIcon;
     } else {
-      $scope.autoFillCheckBox = "ion-android-checkbox-outline-blank";
+      $scope.autoFillCheckBox = unCheckedBoxIcon;
     }
     SettingsReference.setDefaultNamesUsage($scope.autoFillNames);
   };
+
+  var chosenRadioButtonIcon = "ion-android-radio-button-on";
+  var clearRadioButtonIcon = "ion-android-radio-button-off";
+
+  // $scope.autoFillNames = SettingsReference.useDefaultNames();
+  // if($scope.autoFillNames) {
+  //   $scope.autoFillCheckBox = checkedBoxIcon;
+  // } else {
+  //   $scope.autoFillCheckBox = unCheckedBoxIcon;
+  // }
+  //
+  // $scope.autoFillClicked = function() {
+  //   $scope.autoFillNames = !$scope.autoFillNames;
+  //   if($scope.autoFillNames) {
+  //     $scope.autoFillCheckBox = checkedBoxIcon;
+  //   } else {
+  //     $scope.autoFillCheckBox = unCheckedBoxIcon;
+  //   }
+  //   SettingsReference.setDefaultNamesUsage($scope.autoFillNames);
+  // };
 
   var colorSchemeArray = ['#218D9B', '#ad001c', '#f7a102'];
   var colorIndex = 0;
@@ -77,10 +104,27 @@ angular.module('gpaCalc.controllers', [])
       colorIndex = 0;
     $scope.colorScheme = colorSchemeArray[colorIndex];
   };
-
-
-
 })
+
+.controller('gpaScaleCtrl', function($scope, $state, GradingScaleManager) {
+  $scope.gradesList = GradingScaleManager.getGradingScale();
+  $scope.updateName = function(gradeID, newName) {
+    GradingScaleManager.updateGradeName(gradeID, newName);
+  }
+  $scope.updatePoints = function(gradeID, newPoints) {
+    GradingScaleManager.updateGradePoints(gradeID, newPoints);
+  }
+  $scope.createGrade = function() {
+    GradingScaleManager.createGrade();
+  }
+  $scope.deleteGrade = function(gradeID) {
+    GradingScaleManager.deleteGrade(gradeID);
+  }
+  $scope.goBack = function() {
+    $state.go('settings');
+  }
+})
+
 
 .controller('gradebooksCtrl', function($scope, $state, AppManager, HomeReference, SettingsReference, $ionicPopover, GradebookManager, $ionicPopup) {
   $scope.gradebooksList = AppManager.getGradebooks();
@@ -592,7 +636,7 @@ $scope.showInitialGPAPopup = function(gradebookID) {
   $scope.selectedGrade = null;
   $scope.inputHours = null;
 
-  $scope.gradingScaleList = GradingScaleManager.getAssociatedGradingScale($scope.currentGradebook.id).grades;
+  $scope.gradingScaleList = GradingScaleManager.getGradingScale();
 
   $scope.updateGrade = function(courseID, newGrade) {
     console.log("changed Grade for: "+courseID+" to: "+newGrade);
