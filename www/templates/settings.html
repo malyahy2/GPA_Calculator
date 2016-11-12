@@ -11,21 +11,22 @@
         Grading Scales
       </a>
       <div class="item indented" ng-show="GradingScaleSettings">
-        <a class="item item-icon-left" ng-click="autoFillClicked()">
-          <i class="icon ion-android-radio-button-off"></i>
+        <a class="item item-icon-left" ng-click="gradingScaleOptionClicked(0)">
+          <i class="icon ng-class: scaleOptions[0] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';"></i>
           Use Default 4.00 Scale
         </a>
-        <a class="item item-icon-left" ng-click="autoFillClicked()">
-          <i class="icon ion-android-radio-button-on"></i>
+        <a class="item item-icon-left" ng-click="gradingScaleOptionClicked(1)">
+          <i class="icon ng-class: scaleOptions[1] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';"></i>
           Use Default 4.333 Scale
         </a>
-        <a class="item item-icon-left">
-          <i class="icon ion-android-radio-button-off"></i>
+        <a class="item item-icon-left" ng-click="gradingScaleOptionClicked(2)">
+          <i class="icon ng-class: scaleOptions[2] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';"></i>
           Use Default Traditional Scale
         </a>
-        <a class="item item-icon-left"  ng-click="goToGradingScaleEditor()">
-          <i class="icon ion-edit"></i>
-          Edit Current Grading Scale
+        <a class="item item-icon-left item-icon-right" ng-click="gradingScaleOptionClicked(3)">
+          <i class="icon ng-class: scaleOptions[3] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';"></i>
+          Use Edited Grading Scale
+          <i class="icon ion-edit" ng-style="{'font-size':'22px'}" ></i>
         </a>
       </div>
 
@@ -36,7 +37,7 @@
       </a>
       <div class="item indented" ng-show="usabilitySettings">
         <a class="item item-icon-left" ng-click="autoFillClicked()">
-          <i class="icon {{autoFillCheckBox}}"></i>
+          <i class="icon ng-class: autoFillNames ? 'ion-android-checkbox-outline' : 'ion-android-checkbox-outline-blank';"></i>
           Auto Fill Names
         </a>
         <a class="item item-icon-left" ng-click="changeColorScheme()">

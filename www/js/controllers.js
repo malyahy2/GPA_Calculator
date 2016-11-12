@@ -21,17 +21,13 @@ angular.module('gpaCalc.controllers', [])
 
 })
 
-.controller('settingsCtrl', function($scope, $state, HomeReference, SettingsReference, $ionicPopup, $ionicHistory, $window) {
+.controller('settingsCtrl', function($scope, $state, HomeReference, SettingsReference, GradingScaleManager, $ionicPopup, $ionicHistory, $window) {
   $scope.goHome = function() {
     var currentHome = HomeReference.getHome();
     if(currentHome.stateParams != null)
       $state.go(currentHome.state, {id: currentHome.stateParams});
     else
       $state.go(currentHome.state);
-  }
-
-  $scope.goToGradingScaleEditor = function() {
-    $state.go('gpaScale');
   }
 
   $scope.deleteEverything = function() {
@@ -54,45 +50,30 @@ angular.module('gpaCalc.controllers', [])
     });
   }
 
-  var checkedBoxIcon = "ion-android-checkbox-outline";
-  var unCheckedBoxIcon = "ion-android-checkbox-outline-blank";
-
   $scope.autoFillNames = SettingsReference.useDefaultNames();
-  if($scope.autoFillNames) {
-    $scope.autoFillCheckBox = checkedBoxIcon;
-  } else {
-    $scope.autoFillCheckBox = unCheckedBoxIcon;
-  }
+  $scope.scaleOptions = [false, false, false, false];
+  var gradingScaleIndex = SettingsReference.getGradingScaleOptionIndex();
+  $scope.scaleOptions[gradingScaleIndex] = true;
 
   $scope.autoFillClicked = function() {
     $scope.autoFillNames = !$scope.autoFillNames;
-    if($scope.autoFillNames) {
-      $scope.autoFillCheckBox = checkedBoxIcon;
-    } else {
-      $scope.autoFillCheckBox = unCheckedBoxIcon;
-    }
     SettingsReference.setDefaultNamesUsage($scope.autoFillNames);
   };
 
-  var chosenRadioButtonIcon = "ion-android-radio-button-on";
-  var clearRadioButtonIcon = "ion-android-radio-button-off";
-
-  // $scope.autoFillNames = SettingsReference.useDefaultNames();
-  // if($scope.autoFillNames) {
-  //   $scope.autoFillCheckBox = checkedBoxIcon;
-  // } else {
-  //   $scope.autoFillCheckBox = unCheckedBoxIcon;
-  // }
-  //
-  // $scope.autoFillClicked = function() {
-  //   $scope.autoFillNames = !$scope.autoFillNames;
-  //   if($scope.autoFillNames) {
-  //     $scope.autoFillCheckBox = checkedBoxIcon;
-  //   } else {
-  //     $scope.autoFillCheckBox = unCheckedBoxIcon;
-  //   }
-  //   SettingsReference.setDefaultNamesUsage($scope.autoFillNames);
-  // };
+  $scope.gradingScaleOptionClicked = function(clickedIndex) {
+    $scope.scaleOptions = [false, false, false, false];
+    $scope.scaleOptions[clickedIndex] = true;
+    SettingsReference.setGradingScaleOptionIndex(clickedIndex);
+    if(clickedIndex == 0){
+      GradingScaleManager.setDefaultGradingScale_A();
+    } else if(clickedIndex == 1){
+      GradingScaleManager.setDefaultGradingScale_APlus();
+    } else if(clickedIndex == 2){
+      GradingScaleManager.setDefaultGradingScale_Traditional();
+    } else if(clickedIndex == 3){
+      $state.go('gpaScale');
+    }
+  };
 
   var colorSchemeArray = ['#218D9B', '#ad001c', '#f7a102'];
   var colorIndex = 0;

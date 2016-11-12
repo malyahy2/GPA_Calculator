@@ -28,7 +28,7 @@ angular.module('gpaCalc.services', [])
 
   var settings = DatabaseAccessor.getDataObject(key);
   if(settings == undefined){
-    settings = { defaultNames: true};
+    settings = { defaultNames: true, gradingScale: 1};
     DatabaseAccessor.setDataObject(key, settings);
   }
 
@@ -38,6 +38,13 @@ angular.module('gpaCalc.services', [])
     },
     setDefaultNamesUsage: function (setting) {
       settings.defaultNames = setting;
+      DatabaseAccessor.setDataObject(key, settings);
+    },
+    getGradingScaleOptionIndex: function () {
+      return settings.gradingScale;
+    },
+    setGradingScaleOptionIndex: function (gradingScaleIndex) {
+      settings.gradingScale = gradingScaleIndex;
       DatabaseAccessor.setDataObject(key, settings);
     },
     deleteEverything: function() {
