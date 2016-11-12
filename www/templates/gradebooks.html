@@ -18,16 +18,18 @@
       <div class="list">
       <div class=" item"  ng-repeat="gradebook in gradebooksList track by $index">
         <div class="item-wrapper">
-          <div class="item-name"  ng-click="goToGradebook(gradebook.id)">
-            </strong>{{ gradebook.name }}</strong>
-          </div>
-          <div class="item-GPA">
-            <div class="data">{{ gradebook.GPA }}</div>
-            <div class="label"><strong>GPA</strong></div>
-          </div>
-          <div class="item-hours">
-            <div class="data">{{ gradebook.hours }}</div>
-            <div class="label"><strong>Hours</strong></div>
+          <div ng-click="goToGradebook(gradebook.id)">
+            <div class="item-name">
+              </strong>{{ gradebook.name }}</strong>
+            </div>
+            <div class="item-GPA">
+              <div class="data">{{ gradebook.GPA }}</div>
+              <div class="label"><strong>GPA</strong></div>
+            </div>
+            <div class="item-hours">
+              <div class="data">{{ gradebook.hours }}</div>
+              <div class="label"><strong>Hours</strong></div>
+            </div>
           </div>
           <div class="item-icon  item-icon-right">
             <i class="icon ion-android-more-vertical" ng-click="openPopover($event, gradebook.id)"></i>

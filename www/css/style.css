@@ -183,6 +183,7 @@ ion-popover-view.fit span {
    height: 8vw;
   /*margin-bottom: 20px;*/
   text-align: center;
+  background: transparent;
    border-bottom: 2px solid #218D9B;
 }
 

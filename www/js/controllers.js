@@ -4,9 +4,7 @@ angular.module('gpaCalc.controllers', [])
   $scope.loadingComplete = false;
   var loadHome = function() {
     var currentHome = HomeReference.getHome();
-    $ionicHistory.nextViewOptions({
-       historyRoot: true
-    });
+       console.log("loading history back: ", $ionicHistory.viewHistory());
     if(currentHome.stateParams != null) {
       $state.go(currentHome.state, {id: currentHome.stateParams});
     } else {
@@ -112,31 +110,34 @@ angular.module('gpaCalc.controllers', [])
   $scope.data = {};
   $scope.settingsButtonClicked = false;
 
-  $scope.settingsButtons = [
-    {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings')"}
-    // {name: "Gradebooks List", icon: "ion-android-more-vertical", onClick:"doMethod('Gradebooks List')"},
-    // {name: "Set Home", icon: "ion-plus-round", onClick:"doMethod('Set Home')"},
-    // {name: "New Gradebook", icon: "ion-ios-arrow-right", onClick:"doMethod('New Gradebook')"},
-    // {name: "New Term", icon: "ion-android-more-vertical", onClick:"doMethod('New Term')"},
-    // {name: "What If", icon: "ion-plus-round", onClick:"doMethod('What If')"},
-    // {name: "Set Initial GPA", icon: "ion-ios-arrow-right", onClick:"doMethod('Set Initial GPA')"},
-    // {name: "Set Grading Scale", icon: "ion-android-more-vertical", onClick:"doMethod('GS')"},
-    // {name: "Huhh", icon: "ion-plus-round", onClick:"doMethod('Huhh')"}
-  ];
+  $scope.settingsButtons = [];
 
-  var currentHome = HomeReference.getHome();
-  if(currentHome.state != 'gradebooks'){
-    var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"};
-    var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
-    $scope.settingsButtons.splice(1, 0, goHome, setHome);
+  var updateSettingsButtons = function () {
+    $scope.settingsButtons = [
+      {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings')"}
+      // {name: "New Gradebook", icon: "ion-ios-arrow-right", onClick:"doMethod('New Gradebook')"}
+    ];
+
+    var currentHome = HomeReference.getHome();
+    if(currentHome.state != 'gradebooks'){
+      var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"};
+      var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
+      $scope.settingsButtons.splice(1, 0, goHome, setHome);
+    }
+
+    $scope.settingsButtons.reverse();
   }
 
-  $scope.settingsButtons.reverse();
+  $scope.$on("$ionicView.beforeEnter", function(event, data){
+     console.log("Opening Page: ", data.stateParams);
+     updateSettingsButtons();
+  });
 
   $scope.setHome = function() {
     var newHome = { state: "gradebooks", stateParams: null};
     HomeReference.setHome(newHome);
     $scope.removeOverlay();
+    updateSettingsButtons();
   }
 
   $scope.goTo = function(state, stateParams) {
@@ -161,7 +162,7 @@ angular.module('gpaCalc.controllers', [])
     var defaultNameOption = SettingsReference.useDefaultNames();
     if(defaultNameOption) {
       var newGradebook = AppManager.createGradebook("Testing Gradebook");
-      GradebookManager.updateName(newGradebook.id, "Gradebook "+newGradebook.id.slice(newGradebook.id.indexOf("_")+1));
+      GradebookManager.updateName(newGradebook.id, "Gradebook "+($scope.gradebooksList.length));
     } else{
         $scope.showPopup("create");
     }
@@ -272,9 +273,10 @@ angular.module('gpaCalc.controllers', [])
        ]
      });
      myPopup.then(function(res) {
-       if(action == "update")
+       $scope.data.value = null;
+       if(action == "update" && res != undefined)
         GradebookManager.updateName(res.id, res.newName);
-      else if(action == "create")
+      else if(action == "create" && res != undefined)
         AppManager.createGradebook(res.newName);
        console.log('Tapped!', res);
      });
@@ -292,34 +294,46 @@ angular.module('gpaCalc.controllers', [])
   $scope.data = {};
   $scope.settingsButtonClicked = false;
 
-  $scope.settingsButtons = [
-    {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings')"},
-    {name: "Gradebooks List", icon: "ion-ios-bookmarks", onClick:"goTo('gradebooks', null)"},
-    {name: "Set Initial Data", icon: "ion-information", onClick:"showInitialGPAPopup('"+$scope.currentGradebook.id+"')"},
-    // {name: "New Gradebook", icon: "ion-ios-arrow-right", onClick:"doMethod('New Gradebook')"},
-    // {name: "New Term", icon: "ion-android-more-vertical", onClick:"doMethod('New Term')"},
-    // {name: "What If", icon: "ion-plus-round", onClick:"doMethod('What If')"},
-    // {name: "Set Initial GPA", icon: "ion-ios-arrow-right", onClick:"doMethod('Set Initial GPA')"},
-    // {name: "Set Grading Scale", icon: "ion-android-more-vertical", onClick:"doMethod('GS')"},
-    // {name: "Huhh", icon: "ion-plus-round", onClick:"doMethod('Huhh')"}
-  ];
+  $scope.$watchCollection(function () {
+      return $scope.currentGradebook.terms;
+    }, function() {
+      $scope.termsList = GradebookManager.getTerms($scope.currentGradebook.id);
+  });
 
-  var currentHome = HomeReference.getHome();
-  if(currentHome.state != 'gradebook'){
-    var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"}
-    var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
-    if(currentHome.state == 'gradebooks')
-      $scope.settingsButtons.splice(1, 1, goHome, setHome);
-    else
-      $scope.settingsButtons.splice(1, 0, goHome, setHome);
+  $scope.settingsButtons = [];
+
+  var updateSettingsButtons = function () {
+    $scope.settingsButtons = [
+      {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings')"},
+      {name: "Gradebooks List", icon: "ion-ios-bookmarks", onClick:"goTo('gradebooks', null)"},
+      {name: "Set Initial Data", icon: "ion-information", onClick:"showInitialGPAPopup('"+$scope.currentGradebook.id+"')"},
+      // {name: "New Term", icon: "ion-android-more-vertical", onClick:"doMethod('New Term')"},
+      // {name: "What If", icon: "ion-plus-round", onClick:"doMethod('What If')"}
+    ];
+
+    var currentHome = HomeReference.getHome();
+    if(currentHome.state != 'gradebook'){
+      var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"}
+      var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
+      if(currentHome.state == 'gradebooks')
+        $scope.settingsButtons.splice(1, 1, goHome, setHome);
+      else
+        $scope.settingsButtons.splice(1, 0, goHome, setHome);
+    }
+
+    $scope.settingsButtons.reverse();
   }
 
-  $scope.settingsButtons.reverse();
+  $scope.$on("$ionicView.beforeEnter", function(event, data){
+     console.log("Opening Page: ", data.stateParams);
+     updateSettingsButtons();
+  });
 
   $scope.setHome = function() {
     var newHome = { state: "gradebook", stateParams: $stateParams.id};
     HomeReference.setHome(newHome);
     $scope.removeOverlay();
+    updateSettingsButtons();
   }
 
   $scope.goTo = function(state, stateParams) {
@@ -346,19 +360,19 @@ angular.module('gpaCalc.controllers', [])
   // }
   //console.log(termsIDs);
 
-  var updatePageList = function(){
-    $scope.termsList = GradebookManager.getTerms($scope.currentGradebook.id);
-  }
+  // var updatePageList = function(){
+  //   $scope.termsList = GradebookManager.getTerms($scope.currentGradebook.id);
+  // }
 
   $scope.createTerm = function() {
     var defaultNameOption = SettingsReference.useDefaultNames();
     if(defaultNameOption) {
       var newTerm = GradebookManager.createTerm($scope.currentGradebook.id, "Testing Term");
-      TermManager.updateName(newTerm.id, "Term "+newTerm.id.slice(newTerm.id.indexOf("_")+1));
+      TermManager.updateName(newTerm.id, "Term "+($scope.termsList.length+1));
     } else{
       $scope.showPopup("create", $scope.currentGradebook.id);
     }
-    updatePageList();
+    // updatePageList();
     //console.log("createTerm termsList length: "+$scope.termsList.length);
     // var termsIDs2 = "createTerm Terms List: ";
     // for(var i=0; i<$scope.termsList.length; i++){
@@ -381,14 +395,14 @@ angular.module('gpaCalc.controllers', [])
   $scope.copyObject = function(termID) {
     console.log("copyObject for: "+termID);
     GradebookManager.copyTerm(termID);
-    updatePageList();
+    //updatePageList();
     $scope.closePopover();
   }
 
   $scope.moveObject = function(termID, gradebookID) {
     console.log("move: "+termID+" to: "+gradebookID);
     TermManager.moveTerm(termID, gradebookID);
-    updatePageList();
+    //updatePageList();
     $scope.closeMoveTOPopover();
     $scope.closePopover();
   }
@@ -396,7 +410,7 @@ angular.module('gpaCalc.controllers', [])
   $scope.deleteObject = function(termID) {
     console.log("deleteObject for: "+termID);
     TermManager.deleteTerm(termID);
-    updatePageList();
+    //updatePageList();
     $scope.closePopover();
   }
 
@@ -494,9 +508,12 @@ $scope.showInitialGPAPopup = function(gradebookID) {
      ]
    });
    myPopup.then(function(res) {
-     GradebookManager.setInitialData(res.id, res.initialGPA, res.initialHours);
-      updatePageList();
-      $scope.removeOverlay();
+    $scope.data.GPA = null;
+    $scope.data.hours = null;
+    if(res != undefined)
+      GradebookManager.setInitialData(res.id, res.initialGPA, res.initialHours);
+    //updatePageList();
+    $scope.removeOverlay();
    });
   //  $timeout(function() {
   //     myPopup.close(); //close the popup after 3 seconds for some reason
@@ -529,11 +546,12 @@ $scope.showInitialGPAPopup = function(gradebookID) {
        ]
      });
      myPopup.then(function(res) {
-       if(action == "update")
+       $scope.data.value = null;
+       if(action == "update" && res != undefined)
         TermManager.updateName(res.id, res.newName);
-      else if(action == "create") {
+      else if(action == "create" && res != undefined) {
         GradebookManager.createTerm(termID, res.newName);
-        updatePageList();
+        //updatePageList();
       }
        console.log('Tapped!', res);
      });
@@ -551,29 +569,39 @@ $scope.showInitialGPAPopup = function(gradebookID) {
   $scope.data = {};
   $scope.settingsButtonClicked = false;
 
-  $scope.settingsButtons = [
-    {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings', null)"},
-    {name: "Gradebooks List", icon: "ion-ios-bookmarks", onClick:"goTo('gradebooks', null)"},
-    {name: "Terms List", icon: "ion-android-document", onClick:"goTo('gradebook', '"+$scope.currentGradebook.id+"')"},
-    // {name: "New Gradebook", icon: "ion-ios-arrow-right", onClick:"doMethod('New Gradebook')"},
-    // {name: "New Term", icon: "ion-android-more-vertical", onClick:"doMethod('New Term')"},
-    // {name: "What If", icon: "ion-plus-round", onClick:"doMethod('What If')"},
-    // {name: "Set Initial GPA", icon: "ion-ios-arrow-right", onClick:"doMethod('Set Initial GPA')"},
-    // {name: "Set Grading Scale", icon: "ion-android-more-vertical", onClick:"doMethod('GS')"},
-    // {name: "Huhh", icon: "ion-plus-round", onClick:"doMethod('Huhh')"}
-  ];
+  $scope.$watchCollection(function () {
+      return $scope.currentTerm.courses;
+    }, function() {
+      $scope.coursesList = TermManager.getCourses($scope.currentTerm.id);
+  });
 
-  var currentHome = HomeReference.getHome();
-  if(currentHome.state != 'term'){
-    var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"};
-    var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
-    if(currentHome.state == 'gradebooks')
-      $scope.settingsButtons.splice(1, 1, goHome, setHome);
-    else
-      $scope.settingsButtons.splice(1, 0, goHome, setHome);
+  $scope.settingsButtons = [];
+
+  var updateSettingsButtons = function () {
+    $scope.settingsButtons = [
+      {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings', null)"},
+      {name: "Gradebooks List", icon: "ion-ios-bookmarks", onClick:"goTo('gradebooks', null)"},
+      {name: "Terms List", icon: "ion-android-document", onClick:"goTo('gradebook', '"+$scope.currentGradebook.id+"')"}
+      // {name: "What If", icon: "ion-plus-round", onClick:"doMethod('What If')"}
+    ];
+
+    var currentHome = HomeReference.getHome();
+    if(currentHome.state != 'term'){
+      var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"};
+      var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
+      if(currentHome.state == 'gradebooks')
+        $scope.settingsButtons.splice(1, 1, goHome, setHome);
+      else
+        $scope.settingsButtons.splice(1, 0, goHome, setHome);
+    }
+
+    $scope.settingsButtons.reverse();
   }
 
-  $scope.settingsButtons.reverse();
+  $scope.$on("$ionicView.beforeEnter", function(event, data){
+     console.log("Opening Page: ", data.stateParams);
+     updateSettingsButtons();
+  });
 
   $scope.onSwipeLeft = function() {
     $scope.currentTerm = TermManager.getTerm($stateParams.id);
@@ -595,6 +623,7 @@ $scope.showInitialGPAPopup = function(gradebookID) {
     var newHome = { state: "term", stateParams: $stateParams.id};
     HomeReference.setHome(newHome);
     $scope.removeOverlay();
+    updateSettingsButtons();
   }
 
   $scope.goTo = function(state, stateParams) {
@@ -629,9 +658,9 @@ $scope.showInitialGPAPopup = function(gradebookID) {
     CourseManager.updateHours(courseID,newHours);
   }
 
-  var updatePageList = function(){
-    $scope.coursesList = TermManager.getCourses($scope.currentTerm.id);
-  }
+  // var updatePageList = function(){
+  //   $scope.coursesList = TermManager.getCourses($scope.currentTerm.id);
+  // }
 
   $scope.createCourse = function() {
     var defaultNameOption = SettingsReference.useDefaultNames();
@@ -641,7 +670,7 @@ $scope.showInitialGPAPopup = function(gradebookID) {
     } else{
       $scope.showPopup("create", $scope.currentTerm.id);
     }
-    updatePageList();
+    //updatePageList();
   }
 
   $scope.renameObject = function(courseID) {
@@ -653,14 +682,14 @@ $scope.showInitialGPAPopup = function(gradebookID) {
   $scope.copyObject = function(courseID) {
     console.log("copyObject for: "+courseID);
     CourseManager.copyCourse(courseID);
-    updatePageList();
+    //updatePageList();
     $scope.closePopover();
   }
 
   $scope.moveObject = function(courseID, termID) {
     console.log("move: "+courseID+" to: "+termID);
     CourseManager.moveCourse(courseID, termID);
-    updatePageList();
+    //updatePageList();
     $scope.closeMoveTOPopover();
     $scope.closePopover();
   }
@@ -668,7 +697,7 @@ $scope.showInitialGPAPopup = function(gradebookID) {
   $scope.deleteObject = function(courseID) {
     console.log("deleteObject for: "+courseID);
     CourseManager.deleteCourse(courseID);
-    updatePageList();
+    //updatePageList();
     $scope.closePopover();
   }
 
@@ -762,11 +791,12 @@ $scope.$on('popover.removed', function() {
        ]
      });
      myPopup.then(function(res) {
-       if(action == "update")
+       $scope.data.value = null;
+       if(action == "update" && res != undefined)
         TermManager.updateName(res.id, res.newName);
-      else if(action == "create") {
+      else if(action == "create" && res != undefined) {
         TermManager.createCourse(courseID, res.newName);
-        updatePageList();
+        //updatePageList();
       }
        console.log('Tapped!', res);
      });

@@ -376,11 +376,18 @@ angular.module('gpaCalc.services', [])
 })
 
 .factory('CourseManager', function(AppManager, AppCalculator, TermManager) {
+
+  var updateName = function (courseID, newName) {
+    var currentCourse = AppManager.getObject(courseID);
+    currentCourse.name = newName;
+    AppManager.updateObject(currentCourse);
+  }
+
   var updateGrade = function (courseID, newGrade) {
     var currentCourse = AppManager.getObject(courseID);
     currentCourse.grade = newGrade;
     AppManager.updateObject(currentCourse);
-    if(currentCourse.grade != 0 && currentCourse.hours != 0 && currentCourse.grade != null && currentCourse.hours != null){
+    if(/*currentCourse.grade != 0 && currentCourse.hours != 0 &&*/ currentCourse.grade != null && currentCourse.hours != null){
       AppCalculator.calculateTermData(AppManager.getParentObject(courseID).id);
       AppCalculator.calculateCumulativeData(AppManager.getParentObject(AppManager.getParentObject(courseID).id).id);
     }
@@ -390,20 +397,16 @@ angular.module('gpaCalc.services', [])
     var currentCourse = AppManager.getObject(courseID);
     currentCourse.hours = newHours;
     AppManager.updateObject(currentCourse);
-    if(currentCourse.grade != 0 && currentCourse.hours != 0 && currentCourse.grade != null && currentCourse.hours != null){
+    if(/*currentCourse.grade != 0 && currentCourse.hours != 0 &&*/ currentCourse.grade != null && currentCourse.hours != null){
       AppCalculator.calculateTermData(AppManager.getParentObject(courseID).id);
       AppCalculator.calculateCumulativeData(AppManager.getParentObject(AppManager.getParentObject(courseID).id).id);
     }
   }
 
   return {
-    updateName: function (courseID, newName) {
-      var currentCourse = AppManager.getObject(courseID);
-      currentCourse.name = newName;
-      AppManager.updateObject(currentCourse);
-    },
-    updateGrade:updateGrade,
-    updateHours:updateHours,
+    updateName: updateName,
+    updateGrade: updateGrade,
+    updateHours: updateHours,
     deleteCourse: function (courseID) {
       var parentTerm = AppManager.getParentObject(courseID);
       var courseIndex = parentTerm.courses.indexOf(courseID);

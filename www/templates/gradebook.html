@@ -19,16 +19,18 @@
       <div class="list">
         <div class=" item"  ng-repeat="term in termsList track by $index">
           <div class="item-wrapper">
-            <div class="item-name"  ng-click="goToTerm(term.id)">
-              </strong>{{ term.name }}</strong>
-            </div>
-            <div class="item-GPA">
-              <div class="data">{{ term.GPA }}</div>
-              <div class="label"><strong>GPA</strong></div>
-            </div>
-            <div class="item-hours">
-              <div class="data">{{ term.hours }}</div>
-              <div class="label"><strong>Hours</strong></div>
+            <div ng-click="goToTerm(term.id)">
+              <div class="item-name">
+                </strong>{{ term.name }}</strong>
+              </div>
+              <div class="item-GPA">
+                <div class="data">{{ term.GPA }}</div>
+                <div class="label"><strong>GPA</strong></div>
+              </div>
+              <div class="item-hours">
+                <div class="data">{{ term.hours }}</div>
+                <div class="label"><strong>Hours</strong></div>
+              </div>
             </div>
             <div class="item-icon  item-icon-right">
               <i class="icon ion-android-more-vertical"  ng-click="openPopover($event, term.id)"></i>
