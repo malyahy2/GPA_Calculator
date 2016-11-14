@@ -594,12 +594,17 @@ angular.module('gpaCalc.services', [])
     var termHours = 0;
     for(var i=0; i<termCourses.length; i++){
       var currentCourse = termCourses[i];
-      termPoints += (parseFloat(currentCourse.grade) * parseFloat(currentCourse.hours));
-      termHours += parseFloat(currentCourse.hours);
+      if(currentCourse.grade != null && currentCourse.hours != null){
+        termPoints += (parseFloat(currentCourse.grade) * parseFloat(currentCourse.hours));
+        termHours += parseFloat(currentCourse.hours);
+      }
     }
     currentTerm.hours = termHours;
     currentTerm.points = termPoints.toFixed(2);
-    currentTerm.GPA = (termPoints / termHours).toFixed(2);
+    if(termHours != 0)
+      currentTerm.GPA = (termPoints / termHours).toFixed(2);
+    else
+      currentTerm.GPA = 0;
     AppManager.updateObject(currentTerm);
     return currentTerm;
   }
@@ -621,7 +626,10 @@ angular.module('gpaCalc.services', [])
         cumulativeHours += parseFloat(gradebookTerms[i].hours);
       }
       currentGradebook.hours = cumulativeHours;
-      currentGradebook.GPA = (cumulativePoints / cumulativeHours).toFixed(2);
+      if(cumulativeHours != 0)
+        currentGradebook.GPA = (cumulativePoints / cumulativeHours).toFixed(2);
+      else
+        currentGradebook.GPA = 0;
       AppManager.updateObject(currentGradebook);
       return currentGradebook;
     },

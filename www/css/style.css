@@ -29,14 +29,14 @@
 }
 
 .item_header {
-  height: 16vh;
+  height: 30vw;
   display: block;
   color: black;
 }
 
 .item_header .itemTitle{
-  padding-top: 1vh;
-  padding-bottom: 1vh;
+  padding-top: 3vw;
+  padding-bottom: 3vw;
   margin-right: 12vw;
   margin-left: 12vw;
   text-align: center;
@@ -45,7 +45,7 @@
 }
 
 .item_header .item_Data{
-  margin-top: 2vh;
+  margin-top: 6vw;
   text-align: center;
   display: inline-block;
 }
@@ -84,7 +84,7 @@
 }
 
 .item_content {
-  top: 16vh;
+  top: 30vw;
 }
 
 .plus-circle {

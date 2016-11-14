@@ -21,7 +21,7 @@
           <div class="item-wrapper">
             <div ng-click="goToTerm(term.id)">
               <div class="item-name">
-                </strong>{{ term.name }}</strong>
+                <strong>{{ term.name }}</strong>
               </div>
               <div class="item-GPA">
                 <div class="data">{{ term.GPA }}</div>
@@ -58,10 +58,10 @@
       </div>
     </div>
   </ion-content>
-  <div ng-class="{'trans-overlay': settingsButtonClicked}" ng-click="removeOverlay()"></div>
+  <div ng-class="{'trans-overlay': settingsButtonClicked}" ng-click="settingsButtonClicked = false;"></div>
   <div class="float-button">
       <a class="content" ng-click="settingsButtonClicked = !settingsButtonClicked">
-        <i class="ion-ios-arrow-right"> </i>
+        <i class="ion-navicon-round"> </i>
       </a>
   </div>
   <div class="settings-buttons" ng-show="settingsButtonClicked">

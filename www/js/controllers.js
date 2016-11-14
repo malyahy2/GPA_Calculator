@@ -12,6 +12,12 @@ angular.module('gpaCalc.controllers', [])
     }
   }
 
+  $scope.$on("$ionicView.beforeEnter", function(event, data){
+     console.log("Opening Page: ", data.stateParams);
+     if($scope.loadingComplete == true)
+      loadHome();
+  });
+
   $ionicPlatform.ready(function() {
     $scope.loadingComplete = true;
     loadHome();
@@ -151,10 +157,6 @@ angular.module('gpaCalc.controllers', [])
   $scope.doMethod = function(thingy) {
     $scope.removeOverlay();
     console.log("Trying to do: "+thingy);
-  }
-
-  $scope.removeOverlay = function(){
-    $scope.settingsButtonClicked = false;
   }
   // AppManager.printList($scope.gradebooksList, "gradebooksCtrl - After:");
 
@@ -347,10 +349,6 @@ angular.module('gpaCalc.controllers', [])
   $scope.doMethod = function(thingy) {
     $scope.removeOverlay();
     console.log("Trying to do: "+thingy);
-  }
-
-  $scope.removeOverlay = function(){
-    $scope.settingsButtonClicked = false;
   }
 
   //console.log("gradebookCtrl termsList length: "+$scope.termsList.length);
@@ -637,10 +635,6 @@ $scope.showInitialGPAPopup = function(gradebookID) {
   $scope.doMethod = function(thingy) {
     $scope.removeOverlay();
     console.log("Trying to do: "+thingy);
-  }
-
-  $scope.removeOverlay = function(){
-    $scope.settingsButtonClicked = false;
   }
 
   $scope.selectedGrade = null;
