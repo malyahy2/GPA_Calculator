@@ -158,6 +158,10 @@ angular.module('gpaCalc.controllers', [])
     $scope.removeOverlay();
     console.log("Trying to do: "+thingy);
   }
+
+  $scope.removeOverlay = function(){
+    $scope.settingsButtonClicked = false;
+  }
   // AppManager.printList($scope.gradebooksList, "gradebooksCtrl - After:");
 
   $scope.createGradebook = function() {
@@ -349,6 +353,10 @@ angular.module('gpaCalc.controllers', [])
   $scope.doMethod = function(thingy) {
     $scope.removeOverlay();
     console.log("Trying to do: "+thingy);
+  }
+
+  $scope.removeOverlay = function(){
+    $scope.settingsButtonClicked = false;
   }
 
   //console.log("gradebookCtrl termsList length: "+$scope.termsList.length);
@@ -635,6 +643,10 @@ $scope.showInitialGPAPopup = function(gradebookID) {
   $scope.doMethod = function(thingy) {
     $scope.removeOverlay();
     console.log("Trying to do: "+thingy);
+  }
+
+  $scope.removeOverlay = function(){
+    $scope.settingsButtonClicked = false;
   }
 
   $scope.selectedGrade = null;
