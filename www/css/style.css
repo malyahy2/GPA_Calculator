@@ -33,6 +33,35 @@
     /*background-color: #008000;*/
 }
 
+.container {
+  position: relative;
+  /*top: 0;*/
+  /*left: -12vw;*/
+}
+.circle {
+  position: absolute;
+  top:2vw;
+  left: 2vw;
+    border-radius: 16px;
+    border-right-color: purple;
+    border-top-color: purple;
+    border-bottom-color: pink;
+    border-left-color: pink;
+    border-width: 16px;
+    border-style: solid;
+    height: 0px;
+    width: 0px;
+    /*filter:drop-shadow(5px 5px 10px grey);*/
+}
+
+.letter {
+  position: absolute;
+  top:3.5vw;
+  left: 3.5vw;
+  font-size: 25px;
+  color:white;
+}
+
 .item_header {
   height: 30vw;
   display: block;
@@ -111,6 +140,7 @@ ion-popover-view.fit ion-content {
 
 .platform-android ion-popover-view.fit {
   margin-top: 10px !important;
+  border-radius: 5px !important;
 }
 
 ion-popover-view.fit span {
@@ -127,7 +157,7 @@ ion-popover-view.fit span {
 }
 
 .options-delete {
-  color:red;
+  color: red !important;
   /*font-weight:bold;*/
 }
 
@@ -156,6 +186,7 @@ ion-popover-view.fit span {
   height: 100%;
   width: 100%;
   text-align: center;
+  color: #218D9B;
   font-size: 24px;
   margin-top: -12px; /* Note, this must be half the font size */
   color: $light;
@@ -169,70 +200,73 @@ ion-popover-view.fit span {
 	height: 30px;
 	/*margin: 25px;*/
 }
-.button-icon span {
+.button-icon .contain {
+  background-color: black;
+}
+.button-icon .line {
 	margin: 0 auto;
 	position: relative;
 	top: 12px;
 }
-.button-icon span:before, .button-icon span:after {
+.button-icon .line:before, .button-icon .line:after {
 	position: absolute;
 	content: '';
 }
-.button-icon span, .button-icon span:before, .button-icon span:after {
+.button-icon .line, .button-icon .line:before, .button-icon .line:after {
 	width: 20px;
 	height: 4px;
-	background-color: #218D9B;
+	background-color: inherit;
 	display: block;
   border-radius: 5px;
 }
-.button-icon span:before {
+.button-icon .line:before {
 	margin-top: -8px;
 }
-.button-icon span:after {
+.button-icon .line:after {
 	margin-top: 8px;
   /*button-icon-animation*/
 }
 
-.clicked span {
+.clicked .line {
 	-webkit-transition-duration: 0s; transition-duration: 0s;
 	-webkit-transition-delay: 0.1s; transition-delay: 0.1s;
 }
-.clicked span {
+.clicked .line {
 	background-color: rgba(0,0,0,0.0);
 	-webkit-transition-delay: 0.1s; transition-delay: 0.1s;
 }
-.clicked span:before {
+.clicked .line:before {
 	-webkit-transition-property: margin, -webkit-transform; transition-property: margin, transform;
 	-webkit-transition-duration: 0.1s; transition-duration: 0.1s;
 	-webkit-transition-delay: 0.1s, 0s; transition-delay: 0.1s, 0s;
 }
-.clicked span:before {
+.clicked .line:before {
 	margin-top: 0;
 	-webkit-transform: rotate(45deg); transform: rotate(45deg);
 	-webkit-transition-delay: 0s, 0.1s; transition-delay: 0s, 0.1s;
 }
-.clicked span:after {
+.clicked .line:after {
 	-webkit-transition-property: margin, -webkit-transform; transition-property: margin, transform;
 	-webkit-transition-duration: 0.1s; transition-duration: 0.1s;
 	-webkit-transition-delay: 0.1s, 0s; transition-delay: 0.1s, 0s;
 }
-.clicked span:after {
+.clicked .line:after {
 	margin-top: 0;
 	-webkit-transform: rotate(-45deg); transform: rotate(-45deg);
 	-webkit-transition-delay: 0s, 0.1s; transition-delay: 0s, 0.1s;
 }
 
 
-.unClicked span {
+.unClicked .line {
 	-webkit-transition-duration: 0s; transition-duration: 0s;
 	-webkit-transition-delay: 0.1s; transition-delay: 0.1s;
 }
-.unClicked span:before {
+.unClicked .line:before {
 	-webkit-transition-property: margin, -webkit-transform; transition-property: margin, transform;
 	-webkit-transition-duration: 0.1s; transition-duration: 0.1s;
 	-webkit-transition-delay: 0.1s, 0s; transition-delay: 0.1s, 0s;
 }
-.unClicked span:after {
+.unClicked .line:after {
 	-webkit-transition-property: margin, -webkit-transform; transition-property: margin, transform;
 	-webkit-transition-duration: 0.1s; transition-duration: 0.1s;
 	-webkit-transition-delay: 0.1s, 0s; transition-delay: 0.1s, 0s;
@@ -269,6 +303,14 @@ ion-popover-view.fit span {
    border-bottom: 2px solid #218D9B;
 }
 
+.course-item option {
+  color: black;
+}
+
+.placeholder {
+  color: lightgrey;
+}
+
 .course-item input {
   display: inline-block;
   /*background: green;*/
@@ -279,6 +321,10 @@ ion-popover-view.fit span {
   /*margin-bottom: 20px;*/
   text-align: center;
   border-bottom: 2px solid #218D9B;
+}
+
+.course-item .invalid {
+  border-bottom: 2px solid red;
 }
 
 .course-name {

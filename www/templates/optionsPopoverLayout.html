@@ -6,13 +6,13 @@
 
    <ion-content>
      <div class="list">
-        <span class="item popover-item-top" ng-click="renameObject(objectID)">
+        <span class="item popover-item-top" ng-style="{'color' : '{{colorPalette.textColor}}'}" ng-click="renameObject(objectID)">
           Rename
         </span>
-        <span class="item" ng-click="copyObject(objectID)">
-          Copy
+        <span class="item" ng-style="{'color' : '{{colorPalette.textColor}}'}" ng-click="copyObject(objectID)">
+          Duplicate
         </span>
-        <span class="item" ng-hide="objectID.includes('gradebook')" ng-click="openMoveTOPopover($event, objectID)">
+        <span class="item" ng-style="{'color' : '{{colorPalette.textColor}}'}" ng-hide="objectID.includes('gradebook')" ng-click="openMoveTOPopover($event, objectID)">
           Move
         </span>
         <span class="item popover-item-bottom options-delete" ng-click="deleteObject(objectID)">

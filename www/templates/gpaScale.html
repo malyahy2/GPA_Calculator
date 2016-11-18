@@ -1,26 +1,30 @@
 <ion-view title="GPA Scale View">
-  <ion-header-bar align-title="center" class="app_header">
-    <h1 class="title">Edit Grading Scale</h1>
+  <ion-header-bar align-title="center" class="app_header" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
+    <h1 class="title" ng-style="{'color' : '{{colorPalette.textColor}}'}"><strong>Edit Grading Scale</strong></h1>
   </ion-header-bar>
   <ion-content>
     <div class="list">
       <div class=" item item-text-wrap item-icon-left"  ng-repeat="grade in gradesList track by $index">
         <div class="course-item">
-          <input type="text"  ng-model="inputName" ng-value="'{{grade.name}}'" ng-change="updateName(grade.id, inputName)">
-          <input type="tel"  ng-model="inputPoints" ng-value="{{grade.points}}" ng-change="updatePoints(grade.id, inputPoints)">
+          <input type="text"
+          ng-style="{'border-bottom' : '2px solid {{colorPalette.secondaryColor}}'}"
+          ng-model="inputName" ng-value="'{{grade.name}}'" ng-change="updateName(grade.id, inputName)">
+          <input type="number"
+          ng-style="{'border-bottom' : '2px solid {{colorPalette.secondaryColor}}'}"
+          ng-model="inputPoints" ng-value="{{grade.points}}" ng-change="updatePoints(grade.id, inputPoints)">
           <i class="icon ion-android-remove-circle" ng-style="{'color': 'red','font-size':'27px'}" ng-click="deleteGrade(grade.id)"></i>
         </div>
       </div>
     </div>
     <div class="row">
        <div class="col text-right">
-         <button class="button icon ion-plus-round plus-circle" ng-click="createGrade()"></button>
+         <button class="button icon ion-plus-round plus-circle" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}" ng-click="createGrade()"></button>
        </div>
     </div>
   </ion-content>
-  <div class="float-button">
+  <div class="float-button" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
       <a class="content" ng-click="goBack()">
-        <i class="ion-ios-undo"> </i>
+        <i class="ion-ios-undo" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"> </i>
       </a>
   </div>
 </ion-view>

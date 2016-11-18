@@ -23,6 +23,49 @@ angular.module('gpaCalc.services', [])
   }
 })
 
+.factory('AppColors', function(DatabaseAccessor) {
+  var key = "chosenColorPalette";
+  var colorSchemes = [
+    {mainColor : "#45CEE0", secondaryColor: "#218D9B", textColor: "#000000"},
+    {mainColor : "#e02dff", secondaryColor: "#00c853", textColor: "#1b5e20"},
+    {mainColor : "#FAA1DD", secondaryColor: "#FD1934", textColor: "#8902F1"},
+    {mainColor : "pink", secondaryColor: "purple", textColor: "red"},
+    {mainColor : "yellow", secondaryColor: "orange", textColor: "green"}
+  ];
+
+  var colorPaletteIndex = DatabaseAccessor.getDataObject(key);
+  if(colorPaletteIndex == undefined){
+    colorPaletteIndex = 0;
+    DatabaseAccessor.setDataObject(key, colorPaletteIndex);
+  }
+
+  var colorPalette = colorSchemes[colorPaletteIndex];
+
+  return {
+    getColorPalette: function () {
+      return colorPalette;
+    },
+    getColorSchemes: function() {
+      return colorSchemes;
+    },
+    setColorPaletteToNextScheme: function() {
+      colorPaletteIndex++;
+      if(colorPaletteIndex == colorSchemes.length)
+        colorPaletteIndex = 0;
+
+      DatabaseAccessor.setDataObject(key, colorPaletteIndex);
+      colorPalette = colorSchemes[colorPaletteIndex];
+    },
+    setColorPaletteTo: function(newIndex) {
+      if(newIndex < colorSchemes.length){
+        colorPaletteIndex = newIndex;
+        DatabaseAccessor.setDataObject(key, colorPaletteIndex);
+        colorPalette = colorSchemes[colorPaletteIndex];
+      }
+    }
+  }
+})
+
 .factory('SettingsReference', function(DatabaseAccessor, HomeReference, AppManager, GradingScaleManager, IDGenerator) {
   var key = "settings";
 
@@ -506,7 +549,6 @@ angular.module('gpaCalc.services', [])
 
   var setDefaultGradingScale_A = function() {
     clearGradingScale();
-    createGrade("A+", 4.00);
     createGrade("A", 4.00);
     createGrade("A-", 3.667);
     createGrade("B+", 3.333);

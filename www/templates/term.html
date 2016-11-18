@@ -1,15 +1,15 @@
 <ion-view title="Term View">
   <div ng-class="{'blur-effect': settingsButtonClicked}">
-    <ion-header-bar align-title="center" class="app_header item_header">
-      <div class="itemTitle">{{currentTerm.name}}</div>
+    <ion-header-bar align-title="center" class="app_header item_header" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
+      <div class="itemTitle" ng-style="{'color' : '{{colorPalette.textColor}}', 'border-bottom' : '1px dotted {{colorPalette.secondaryColor}}'}">{{currentTerm.name}}</div>
       <div class="item_Data">
         <span class="termGPA">
-          <div class="data"> {{currentTerm.GPA}}</div>
-            <div class="label"><strong>Term</strong></div>
+          <div class="data" ng-style="{'color' : '{{colorPalette.textColor}}'}"> {{currentTerm.GPA}}</div>
+            <div class="label" ng-style="{'color' : '{{colorPalette.textColor}}', 'border-bottom' : '1px solid {{colorPalette.secondaryColor}}'}"><strong>Term</strong></div>
         </span>
         <span class="cumliGPA">
-          <div class="data"> {{currentGradebook.GPA}}</div>
-          <div class="label"><strong>Cumulative</strong></div>
+          <div class="data" ng-style="{'color' : '{{colorPalette.textColor}}'}"> {{currentGradebook.GPA}}</div>
+          <div class="label" ng-style="{'color' : '{{colorPalette.textColor}}', 'border-bottom' : '1px solid {{colorPalette.secondaryColor}}'}"><strong>Cumulative</strong></div>
         </span>
       </div>
     </ion-header-bar>
@@ -28,16 +28,22 @@
         <div class="course-item">
           <!-- <strong>Grade: </strong> -->
           <select ng-model="selectedGrade" ng-init="selectedGrade= course.grade"  ng-selected="selectedGrade" ng-change="updateGrade(course.id, selectedGrade)"
-          ng-options="grade.points as grade.name for grade in gradingScaleList">
+          ng-options="grade.points as grade.name for grade in gradingScaleList"
+          ng-class="{ 'placeholder': course.grade==null}"
+          ng-style="{'border-bottom' : '2px solid {{colorPalette.secondaryColor}}'}">
+            <option value="" disabled selected hidden>Grade</option>
             <!-- <option ng-repeat="grade in gradingScaleList track by $index"  ng-value="grade.points" ng-selected="grade.points == course.grade">{{grade.name}}</option> -->
             <!-- <option selected ng-repeat="grade in gradingScaleList track by $index"  ng-value="grade.points" ng-if="grade.points == course.grade">{{grade.name}}</option> -->
             <!-- <option ng-repeat="grade in gradingScaleList track by $index"  ng-value="grade.points" ng-if="grade.points < course.grade">{{grade.name}}</option> -->
           </select>
           <!-- <strong>, Hours: </strong> -->
-          <input type="tel"  ng-model="inputHours" ng-value="{{course.hours}}" ng-change="updateHours(course.id, inputHours)">
-          <i class="icon ion-android-more-vertical"  ng-click="openPopover($event, course.id)"></i>
+          <input type="number" class="ng-class:{ 'invalid': inputHours<0 };"
+          ng-style="{'border-bottom' : '2px solid {{colorPalette.secondaryColor}}'}"
+          placeholder="Hours" ng-model="inputHours" ng-value="{{course.hours}}"
+          ng-change="updateHours(course.id, inputHours)">
+          <i class="icon ion-android-more-vertical" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}" ng-click="openPopover($event, course.id)"></i>
         </div>
-        <div class="course-name" ng-if="course.name != ''">
+        <div class="course-name" ng-style="{'color' : '{{colorPalette.textColor}}'}" ng-if="course.name != ''">
           <strong>{{ course.name }}</strong>
           <!-- <i class="icon ion-android-more-vertical"  ng-click="openPopover($event, course.id)"></i> -->
         </div>
@@ -45,30 +51,30 @@
       </div>
       <div class="row">
          <div class="col text-right">
-           <button class="button icon ion-plus-round plus-circle" ng-click="createCourse()"></button>
+           <button class="button icon ion-plus-round plus-circle" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}" ng-click="createCourse()"></button>
          </div>
       </div>
     </div>
   </ion-content>
   <div ng-class="{'trans-overlay': settingsButtonClicked}" ng-click="settingsButtonClicked = false;"></div>
-  <div class="float-button">
+  <div class="float-button" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
       <a class="content button-icon  ng-class: settingsButtonClicked ? 'clicked' : 'unClicked';"
       ng-click="settingsButtonClicked = !settingsButtonClicked">
         <!-- <i class="ion-navicon-round"> </i> -->
-        <span></span>
+        <span class="contain" ng-style="{'background-color' : '{{colorPalette.secondaryColor}}'}"><div class="line"></div></span>
       </a>
   </div>
   <div class="settings-buttons" ng-show="settingsButtonClicked">
     <span class="height-fix">
       <ul class="content">
-        <li ng-repeat="button in settingsButtons"  ng-click="{{button.onClick}}">
-          <div class="button-wraper">
-            <i class="{{button.icon}}"> </i>
-          </div>
-          <div class="text-wraper">
-            {{button.name}}
-          </div>
-        </li>
+          <li ng-repeat="button in settingsButtons"  ng-click="{{button.onClick}}">
+            <div class="button-wraper" ng-style="{'background-color' : '{{colorPalette.mainColor}}', 'border': '1px solid {{colorPalette.secondaryColor}}'}">
+              <i class="{{button.icon}}" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"> </i>
+            </div>
+            <div class="text-wraper" ng-style="{'color' : '{{colorPalette.mainColor}}'}">
+              {{button.name}}
+            </div>
+          </li>
       </ul>
     </span>
   </div>

@@ -25,7 +25,9 @@ angular.module('gpaCalc.controllers', [])
 
 })
 
-.controller('settingsCtrl', function($scope, $state, HomeReference, SettingsReference, GradingScaleManager, $ionicPopup, $ionicHistory, $window) {
+.controller('settingsCtrl', function($scope, $state, AppColors, HomeReference, SettingsReference, GradingScaleManager, $ionicPopup, $ionicHistory, $window) {
+  $scope.colorPalette = AppColors.getColorPalette();
+
   $scope.goHome = function() {
     var currentHome = HomeReference.getHome();
     if(currentHome.stateParams != null)
@@ -79,19 +81,19 @@ angular.module('gpaCalc.controllers', [])
     }
   };
 
-  var colorSchemeArray = ['#218D9B', '#ad001c', '#f7a102'];
-  var colorIndex = 0;
-  $scope.colorScheme = colorSchemeArray[colorIndex];
-
   $scope.changeColorScheme = function() {
-    colorIndex++;
-    if(colorIndex == colorSchemeArray.length)
-      colorIndex = 0;
-    $scope.colorScheme = colorSchemeArray[colorIndex];
+    console.log("colorChanged");
+    AppColors.setColorPaletteToNextScheme();
+      $ionicHistory.clearHistory();
+      setTimeout(function (){
+             $window.location.reload(true);
+      }, 100);
   };
 })
 
-.controller('gpaScaleCtrl', function($scope, $state, GradingScaleManager) {
+.controller('gpaScaleCtrl', function($scope, $state, GradingScaleManager, AppColors) {
+  $scope.colorPalette = AppColors.getColorPalette();
+
   $scope.gradesList = GradingScaleManager.getGradingScale();
   $scope.updateName = function(gradeID, newName) {
     GradingScaleManager.updateGradeName(gradeID, newName);
@@ -111,7 +113,9 @@ angular.module('gpaCalc.controllers', [])
 })
 
 
-.controller('gradebooksCtrl', function($scope, $state, AppManager, HomeReference, SettingsReference, $ionicPopover, GradebookManager, $ionicPopup) {
+.controller('gradebooksCtrl', function($scope, $state, AppColors, AppManager, HomeReference, SettingsReference, $ionicPopover, GradebookManager, $ionicPopup) {
+  $scope.colorPalette = AppColors.getColorPalette();
+
   $scope.gradebooksList = AppManager.getGradebooks();
   $scope.data = {};
   $scope.settingsButtonClicked = false;
@@ -120,6 +124,7 @@ angular.module('gpaCalc.controllers', [])
 
   var updateSettingsButtons = function () {
     $scope.settingsButtons = [
+      {name: "New Gradebook", icon: "ion-plus-round", onClick:"createGradebook()"},
       {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings')"}
       // {name: "New Gradebook", icon: "ion-ios-arrow-right", onClick:"doMethod('New Gradebook')"}
     ];
@@ -128,7 +133,7 @@ angular.module('gpaCalc.controllers', [])
     if(currentHome.state != 'gradebooks'){
       var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"};
       var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
-      $scope.settingsButtons.splice(1, 0, goHome, setHome);
+      $scope.settingsButtons.splice(2, 0, goHome, setHome);
     }
 
     $scope.settingsButtons.reverse();
@@ -293,7 +298,9 @@ angular.module('gpaCalc.controllers', [])
 
 })
 
-.controller('gradebookCtrl', function($scope, $state, $stateParams, HomeReference, SettingsReference, AppManager, GradebookManager, TermManager, $ionicPopover, $ionicPopup) {
+.controller('gradebookCtrl', function($scope, $state, $stateParams, AppColors, HomeReference, SettingsReference, AppManager, GradebookManager, TermManager, $ionicPopover, $ionicPopup) {
+  $scope.colorPalette = AppColors.getColorPalette();
+
   $scope.currentGradebook = GradebookManager.getGradebook($stateParams.id);
   //console.log("gradebookCtrl ID: "+$scope.currentGradebook.id);
   $scope.termsList = GradebookManager.getTerms($scope.currentGradebook.id);
@@ -310,6 +317,7 @@ angular.module('gpaCalc.controllers', [])
 
   var updateSettingsButtons = function () {
     $scope.settingsButtons = [
+      {name: "New Term", icon: "ion-plus-round", onClick:"createTerm()"},
       {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings')"},
       {name: "Gradebooks List", icon: "ion-ios-bookmarks", onClick:"goTo('gradebooks', null)"},
       {name: "Set Initial Data", icon: "ion-information", onClick:"showInitialGPAPopup('"+$scope.currentGradebook.id+"')"},
@@ -322,9 +330,9 @@ angular.module('gpaCalc.controllers', [])
       var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"}
       var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
       if(currentHome.state == 'gradebooks')
-        $scope.settingsButtons.splice(1, 1, goHome, setHome);
+        $scope.settingsButtons.splice(2, 1, goHome, setHome);
       else
-        $scope.settingsButtons.splice(1, 0, goHome, setHome);
+        $scope.settingsButtons.splice(2, 0, goHome, setHome);
     }
 
     $scope.settingsButtons.reverse();
@@ -488,9 +496,19 @@ $scope.$on('popover.removed', function() {
 
 $scope.showInitialGPAPopup = function(gradebookID) {
 
+    var iGPA = '';
+    var iHours = '';
+
+    if($scope.currentGradebook.initialHours != 0) {
+      if($scope.currentGradebook.initialGPA != 4.00) {
+        iGPA = ''+$scope.currentGradebook.initialGPA;
+        iHours = ''+$scope.currentGradebook.initialHours;
+      }
+    }
+
    // An elaborate, custom popup
    var myPopup = $ionicPopup.show({
-     template: 'GPA: <input type="tel" ng-model="data.GPA"> Hours: <input type="tel" ng-model="data.hours">',
+     template: '<input type="number" placeholder="Initial GPA" ng-value="'+iGPA+'" ng-model="data.GPA"></br><input type="number" placeholder="Credit Hours" ng-value="'+iHours+'" ng-model="data.hours">',
      title: 'Enter Your Previous GPA and Hours',
      scope: $scope,
      buttons: [
@@ -567,7 +585,9 @@ $scope.showInitialGPAPopup = function(gradebookID) {
   };
 })
 
-.controller('termCtrl', function($scope, $state, $stateParams, HomeReference, SettingsReference, TermManager, CourseManager, GradingScaleManager, AppManager, GradebookManager, $ionicPopover, $ionicPopup) {
+.controller('termCtrl', function($scope, $state, $stateParams, AppColors, HomeReference, SettingsReference, TermManager, CourseManager, GradingScaleManager, AppManager, GradebookManager, $ionicPopover, $ionicPopup) {
+  $scope.colorPalette = AppColors.getColorPalette();
+
   $scope.currentTerm = TermManager.getTerm($stateParams.id);
   $scope.currentGradebook = TermManager.getGradebook($stateParams.id);
 
@@ -585,6 +605,7 @@ $scope.showInitialGPAPopup = function(gradebookID) {
 
   var updateSettingsButtons = function () {
     $scope.settingsButtons = [
+      {name: "New Course", icon: "ion-plus-round", onClick:"createCourse()"},
       {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings', null)"},
       {name: "Gradebooks List", icon: "ion-ios-bookmarks", onClick:"goTo('gradebooks', null)"},
       {name: "Terms List", icon: "ion-android-document", onClick:"goTo('gradebook', '"+$scope.currentGradebook.id+"')"}
@@ -596,9 +617,9 @@ $scope.showInitialGPAPopup = function(gradebookID) {
       var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"};
       var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
       if(currentHome.state == 'gradebooks')
-        $scope.settingsButtons.splice(1, 1, goHome, setHome);
+        $scope.settingsButtons.splice(2, 1, goHome, setHome);
       else
-        $scope.settingsButtons.splice(1, 0, goHome, setHome);
+        $scope.settingsButtons.splice(2, 0, goHome, setHome);
     }
 
     $scope.settingsButtons.reverse();
@@ -649,7 +670,7 @@ $scope.showInitialGPAPopup = function(gradebookID) {
     $scope.settingsButtonClicked = false;
   }
 
-  $scope.selectedGrade = null;
+  $scope.selectedGrade = "Grade";
   $scope.inputHours = null;
 
   $scope.gradingScaleList = GradingScaleManager.getGradingScale();
@@ -661,7 +682,8 @@ $scope.showInitialGPAPopup = function(gradebookID) {
 
   $scope.updateHours = function(courseID, newHours) {
     console.log("changed Hours for: "+courseID+" to: "+newHours);
-    CourseManager.updateHours(courseID,newHours);
+    if(newHours >= 0)
+      CourseManager.updateHours(courseID,newHours);
   }
 
   // var updatePageList = function(){
