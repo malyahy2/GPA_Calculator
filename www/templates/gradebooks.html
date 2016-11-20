@@ -16,7 +16,7 @@
   <ion-content padding="false">
     <div ng-class="{'blur-effect': settingsButtonClicked}">
       <div class="list">
-      <div class=" item"  ng-repeat="gradebook in gradebooksList track by $index">
+      <div class=" item"  ng-repeat="gradebook in gradebooksList track by gradebook.id">
         <div class="item-wrapper">
           <div ng-click="goToGradebook(gradebook.id)">
             <div class="item-name" ng-style="{'color' : '{{colorPalette.textColor}}'}">
@@ -24,11 +24,11 @@
             </div>
             <div class="item-GPA" ng-if="gradebook.GPA > 0">
               <div class="data"  ng-style="{'color' : '{{colorPalette.textColor}}'}">{{ gradebook.GPA }}</div>
-              <div class="label"  ng-style="{'color' : '{{colorPalette.textColor}}'}"><strong>GPA</strong></div>
+              <div class="label"  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"><strong>GPA</strong></div>
             </div>
             <div class="item-hours" ng-if="gradebook.hours > 0">
               <div class="data"  ng-style="{'color' : '{{colorPalette.textColor}}'}">{{ gradebook.hours }}</div>
-              <div class="label"  ng-style="{'color' : '{{colorPalette.textColor}}'}" ><strong>Hours</strong></div>
+              <div class="label"  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}" ><strong>Hours</strong></div>
             </div>
           </div>
           <div class="item-icon  item-icon-right">
@@ -66,11 +66,22 @@
       <a class="content button-icon  ng-class: settingsButtonClicked ? 'clicked' : 'unClicked';"
       ng-click="settingsButtonClicked = !settingsButtonClicked">
         <!-- <i class="ion-navicon-round"> </i> -->
-        <span class="contain" ng-style="{'background-color' : '{{colorPalette.secondaryColor}}'}"><div class="line"></div></span>
+          <div class="line"></div>
+          <style type="text/css">
+              .unClicked .line {
+            	   background-color: {{colorPalette.secondaryColor}};
+              }
+              .unClicked .line:after , .unClicked .line:before {
+            	   background-color: {{colorPalette.secondaryColor}};
+              }
+              .clicked .line:after , .clicked .line:before {
+            	   background-color: {{colorPalette.secondaryColor}};
+              }
+          </style>
       </a>
   </div>
   <div class="settings-buttons" ng-show="settingsButtonClicked">
-    <span class="height-fix">
+    <span class="height-fix ng-class: settingsButtonClicked ? 'clicked' : 'unClicked';">
       <ul class="content">
           <li ng-repeat="button in settingsButtons"  ng-click="{{button.onClick}}">
             <div class="button-wraper" ng-style="{'background-color' : '{{colorPalette.mainColor}}', 'border': '1px solid {{colorPalette.secondaryColor}}'}">

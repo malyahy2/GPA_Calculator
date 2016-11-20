@@ -5,7 +5,7 @@
       <div class="item_Data">
         <span class="cumliGPA">
           <div class="data" ng-style="{'color' : '{{colorPalette.textColor}}'}"> {{currentGradebook.GPA}}</div>
-          <div class="label" ng-style="{'color' : '{{colorPalette.textColor}}', 'border-bottom' : '1px solid {{colorPalette.secondaryColor}}'}"><strong>GPA</strong></div>
+          <div class="label" ng-style="{'color' : '{{colorPalette.secondaryColor}}', 'border-bottom' : '0px solid {{colorPalette.secondaryColor}}'}"><strong>GPA</strong></div>
         </span>
       </div>
     </ion-header-bar>
@@ -17,7 +17,7 @@
       </div> -->
       <!-- <div class="app_header"> <h2>Gradebooks</h2></Div> -->
       <div class="list">
-        <div class=" item"  ng-repeat="term in termsList track by $index">
+        <div class=" item"  ng-repeat="term in termsList track by term.id">
           <div class="item-wrapper">
             <div ng-click="goToTerm(term.id)">
               <div class="item-name" ng-style="{'color' : '{{colorPalette.textColor}}'}">
@@ -25,11 +25,11 @@
               </div>
               <div class="item-GPA" ng-if="term.hours > 0">
                 <div class="data"  ng-style="{'color' : '{{colorPalette.textColor}}'}">{{ term.GPA }}</div>
-                <div class="label"  ng-style="{'color' : '{{colorPalette.textColor}}'}"><strong>GPA</strong></div>
+                <div class="label"  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"><strong>GPA</strong></div>
               </div>
               <div class="item-hours" ng-if="term.hours > 0">
                 <div class="data"  ng-style="{'color' : '{{colorPalette.textColor}}'}">{{ term.hours }}</div>
-                <div class="label"  ng-style="{'color' : '{{colorPalette.textColor}}'}"><strong>Hours</strong></div>
+                <div class="label"  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"><strong>Hours</strong></div>
               </div>
             </div>
             <div class="item-icon  item-icon-right">
@@ -63,11 +63,22 @@
       <a class="content button-icon  ng-class: settingsButtonClicked ? 'clicked' : 'unClicked';"
       ng-click="settingsButtonClicked = !settingsButtonClicked">
         <!-- <i class="ion-navicon-round"> </i> -->
-        <span class="contain" ng-style="{'background-color' : '{{colorPalette.secondaryColor}}'}"><div class="line"></div></span>
+        <div class="line"></div>
+        <style type="text/css">
+            .unClicked .line {
+               background-color: {{colorPalette.secondaryColor}};
+            }
+            .unClicked .line:after , .unClicked .line:before {
+               background-color: {{colorPalette.secondaryColor}};
+            }
+            .clicked .line:after , .clicked .line:before {
+               background-color: {{colorPalette.secondaryColor}};
+            }
+        </style>
       </a>
   </div>
   <div class="settings-buttons" ng-show="settingsButtonClicked">
-    <span class="height-fix">
+    <span class="height-fix ng-class: settingsButtonClicked ? 'clicked' : 'unClicked';">
       <ul class="content">
           <li ng-repeat="button in settingsButtons"  ng-click="{{button.onClick}}">
             <div class="button-wraper" ng-style="{'background-color' : '{{colorPalette.mainColor}}', 'border': '1px solid {{colorPalette.secondaryColor}}'}">

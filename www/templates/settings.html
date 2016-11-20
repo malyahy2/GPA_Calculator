@@ -21,10 +21,14 @@
         </a>
         <a class="item item-icon-left" ng-click="gradingScaleOptionClicked(2)">
           <i class="icon ng-class: scaleOptions[2] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          Use Default 5.0 Scale
+        </a>
+        <a class="item item-icon-left" ng-click="gradingScaleOptionClicked(3)">
+          <i class="icon ng-class: scaleOptions[3] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
           Use Default Traditional Scale
         </a>
-        <a class="item item-icon-left item-icon-right" ng-click="gradingScaleOptionClicked(3)">
-          <i class="icon ng-class: scaleOptions[3] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+        <a class="item item-icon-left item-icon-right" ng-click="gradingScaleOptionClicked(4)">
+          <i class="icon ng-class: scaleOptions[4] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
           Use Edited Grading Scale
           <i class="icon ion-edit" ng-style="{'font-size':'22px', 'color' : '{{colorPalette.secondaryColor}}'}"></i>
         </a>
@@ -40,7 +44,7 @@
           <i class="icon ng-class: autoFillNames ? 'ion-android-checkbox-outline' : 'ion-android-checkbox-outline-blank';"  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
           Auto Fill Names
         </a>
-        <a class="item item-icon-left" ng-click="changeColorScheme()">
+        <a class="item item-icon-left" ng-click="showColorSchemesPopup()">
           <div calss="container">
             <div class="circle"
             ng-style="{'border-right-color' : '{{colorPalette.mainColor}}', 'border-top-color' : '{{colorPalette.mainColor}}',
@@ -50,13 +54,13 @@
           <!-- <i class="icon ion-record" ng-style="{'color': colorScheme}"></i> -->
           Color Scheme
         </a>
-        <a class="item item-icon-left">
+        <!-- <a class="item item-icon-left">
           <i class="icon ion-social-usd" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
           Remove Ads
-        </a>
+        </a> -->
       </div>
 
-      <a class="item item-icon-left" ng-model="backupSettings" ng-init="backupSettings = false"
+      <!-- <a class="item item-icon-left" ng-model="backupSettings" ng-init="backupSettings = false"
       ng-click="backupSettings = !backupSettings">
         <i class="icon ion-folder" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
         Backup Options
@@ -86,7 +90,7 @@
           <i class="icon ion-android-star" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
           Rate Us
         </a>
-      </div>
+      </div> -->
 
       <a class="item item-icon-left" ng-model="formatSettings" ng-init="formatSettings = false"
       ng-click="formatSettings = !formatSettings">

@@ -4,7 +4,7 @@
   </ion-header-bar>
   <ion-content>
     <div class="list">
-      <div class=" item item-text-wrap item-icon-left"  ng-repeat="grade in gradesList track by $index">
+      <div class=" item item-text-wrap item-icon-left"  ng-repeat="grade in gradesList track by grade.id">
         <div class="course-item">
           <input type="text"
           ng-style="{'border-bottom' : '2px solid {{colorPalette.secondaryColor}}'}"

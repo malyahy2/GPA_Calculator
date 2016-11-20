@@ -5,11 +5,11 @@
       <div class="item_Data">
         <span class="termGPA">
           <div class="data" ng-style="{'color' : '{{colorPalette.textColor}}'}"> {{currentTerm.GPA}}</div>
-            <div class="label" ng-style="{'color' : '{{colorPalette.textColor}}', 'border-bottom' : '1px solid {{colorPalette.secondaryColor}}'}"><strong>Term</strong></div>
+            <div class="label" ng-style="{'color' : '{{colorPalette.secondaryColor}}', 'border-bottom' : '0px solid {{colorPalette.secondaryColor}}'}"><strong>Term</strong></div>
         </span>
         <span class="cumliGPA">
           <div class="data" ng-style="{'color' : '{{colorPalette.textColor}}'}"> {{currentGradebook.GPA}}</div>
-          <div class="label" ng-style="{'color' : '{{colorPalette.textColor}}', 'border-bottom' : '1px solid {{colorPalette.secondaryColor}}'}"><strong>Cumulative</strong></div>
+          <div class="label" ng-style="{'color' : '{{colorPalette.secondaryColor}}', 'border-bottom' : '0px solid {{colorPalette.secondaryColor}}'}"><strong>Cumulative</strong></div>
         </span>
       </div>
     </ion-header-bar>
@@ -23,7 +23,7 @@
       <!-- termGPA: {{currentTerm.GPA}}, termHours: {{currentTerm.hours}}
       cumulGPA: {{currentGradebook.GPA}}, cumulHours: {{currentGradebook.hours}} -->
       <div class="list">
-      <div class="item item-text-wrap item-icon-right" ng-repeat="course in coursesList track by $index">
+      <div class="item item-text-wrap item-icon-right" ng-repeat="course in coursesList track by course.id">
 
         <div class="course-item">
           <!-- <strong>Grade: </strong> -->
@@ -61,11 +61,22 @@
       <a class="content button-icon  ng-class: settingsButtonClicked ? 'clicked' : 'unClicked';"
       ng-click="settingsButtonClicked = !settingsButtonClicked">
         <!-- <i class="ion-navicon-round"> </i> -->
-        <span class="contain" ng-style="{'background-color' : '{{colorPalette.secondaryColor}}'}"><div class="line"></div></span>
+        <div class="line"></div>
+        <style type="text/css">
+            .unClicked .line {
+               background-color: {{colorPalette.secondaryColor}};
+            }
+            .unClicked .line:after , .unClicked .line:before {
+               background-color: {{colorPalette.secondaryColor}};
+            }
+            .clicked .line:after , .clicked .line:before {
+               background-color: {{colorPalette.secondaryColor}};
+            }
+        </style>
       </a>
   </div>
   <div class="settings-buttons" ng-show="settingsButtonClicked">
-    <span class="height-fix">
+    <span class="height-fix ng-class: settingsButtonClicked ? 'clicked' : 'unClicked';">
       <ul class="content">
           <li ng-repeat="button in settingsButtons"  ng-click="{{button.onClick}}">
             <div class="button-wraper" ng-style="{'background-color' : '{{colorPalette.mainColor}}', 'border': '1px solid {{colorPalette.secondaryColor}}'}">

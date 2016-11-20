@@ -20,6 +20,53 @@ angular.module('gpaCalc', ['ionic', 'gpaCalc.controllers', 'gpaCalc.services'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+    // if( ionic.Platform.isAndroid() )  {
+    //    admobid = { // for Android
+    //       banner: 'ca-app-pub-6889063447180231/8847517304' // Change this to your Ad Unit Id for banner...
+    //    };
+    //
+    //    if(AdMob)
+    //       AdMob.createBanner( {
+    //          adId:admobid.banner,
+    //          position:AdMob.AD_POSITION.BOTTOM_CENTER,
+    //          autoShow:true
+    //       } );
+    // }
+
+    var admobid = {};
+        // select the right Ad Id according to platform
+        if( /(android)/i.test(navigator.userAgent) ) {
+            admobid = { // for Android
+                banner: 'ca-app-pub-6889063447180231/8847517304'
+            };
+        } else if(/(ipod|iphone|ipad)/i.test(navigator.userAgent)) {
+            admobid = { // for iOS
+                banner: 'ca-app-pub-6889063447180231/2382181307'
+            };
+        }
+
+    if(window.AdMob) AdMob.createBanner( {
+        adId:admobid.banner,
+        position:AdMob.AD_POSITION.BOTTOM_RIGHT,
+        autoShow:true} );
+
+    document.addEventListener('onAdLoaded', function(e){
+      console.log('onAdLoaded');
+    });
+    document.addEventListener('onAdFailLoad', function(e){
+      console.log('onAdFailLoad');
+    });
+    document.addEventListener('onAdPresent', function(e){
+      console.log('onAdPresent');
+    });
+    document.addEventListener('onAdDismiss', function(e){
+      console.log('onAdDismiss');
+    });
+    document.addEventListener('onAdLeaveApp', function(e){
+      console.log('onAdLeaveApp');
+    });
+
   });
 })
 

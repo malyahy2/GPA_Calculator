@@ -1,0 +1,52 @@
+<input type="text" placeholder="Enter New Name" ng-model="data.value">
+<style type="text/css">
+  .my-popup {
+  }
+  .my-popup .popup{
+          width: 90vw;
+          border-radius: 2vw;
+          background: {{colorPalette.mainColor}};
+  }
+  .my-popup .popup-title{
+    color: {{colorPalette.textColor}};
+  }
+
+  .my-popup .popup-head {
+    /*background: orange;*/
+  }
+
+  .my-popup .popup-sub-title {
+    /*background: orange;*/
+  }
+
+  .my-popup .popup-body {
+    display: inline-block;
+    padding-right: 2vw;
+    padding-left: 2vw;
+    text-align: center;
+    /*background: blue;*/
+  }
+
+  .my-popup .popup-body input {
+    display: inline-block;
+    background: transparent;
+    width: 35vw;
+    margin-left: 3vw;
+    /*height: 8vw;*/
+    text-align: center;
+    border-bottom: 2px solid {{colorPalette.secondaryColor}};
+  }
+
+  .my-popup .popup-buttons.row {
+    /*background: green;*/
+  }
+
+  .my-popup .popup-buttons .button {
+    background: transparent;
+      color: {{colorPalette.textColor}};
+  }
+  .my-popup .popup-buttons .save {
+    background: transparent;
+      color: {{colorPalette.secondaryColor}};
+  }
+</style>

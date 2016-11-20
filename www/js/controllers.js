@@ -1,6 +1,8 @@
 angular.module('gpaCalc.controllers', [])
 
-.controller('loadingCtrl', function($scope, $state, $ionicPlatform, $ionicHistory, HomeReference) {
+.controller('loadingCtrl', function($scope, $state, AppInitializer, AppColors, $ionicPlatform, $ionicHistory, HomeReference) {
+  $scope.colorPalette = AppColors.getColorPalette();
+
   $scope.loadingComplete = false;
   var loadHome = function() {
     var currentHome = HomeReference.getHome();
@@ -20,6 +22,7 @@ angular.module('gpaCalc.controllers', [])
 
   $ionicPlatform.ready(function() {
     $scope.loadingComplete = true;
+    AppInitializer.launchApp();
     loadHome();
   });
 
@@ -75,8 +78,10 @@ angular.module('gpaCalc.controllers', [])
     } else if(clickedIndex == 1){
       GradingScaleManager.setDefaultGradingScale_APlus();
     } else if(clickedIndex == 2){
-      GradingScaleManager.setDefaultGradingScale_Traditional();
+      GradingScaleManager.setDefaultGradingScale_5();
     } else if(clickedIndex == 3){
+      GradingScaleManager.setDefaultGradingScale_Traditional();
+    } else if(clickedIndex == 4){
       $state.go('gpaScale');
     }
   };
@@ -89,6 +94,34 @@ angular.module('gpaCalc.controllers', [])
              $window.location.reload(true);
       }, 100);
   };
+
+  $scope.showColorSchemesPopup = function() {
+
+      $scope.colorSchemes = AppColors.getColorSchemes();
+
+     // An elaborate, custom popup
+     var myPopup = $ionicPopup.show({
+       templateUrl: 'templates/colorSchemesList.html',
+       title: '<b>Chose Color Scheme<b>',
+       cssClass: 'my-popup',
+       scope: $scope,
+       buttons: [
+         { text: '<b>Cancel<b>' },
+       ]
+     });
+     myPopup.then(function(res) {
+     });
+
+     $scope.changeColorSchemeTo = function(chosenIndex) {
+       AppColors.setColorPaletteTo(chosenIndex);
+       myPopup.close();
+         $ionicHistory.clearHistory();
+         setTimeout(function (){
+                $window.location.reload(true);
+         }, 100);
+     }
+  };
+
 })
 
 .controller('gpaScaleCtrl', function($scope, $state, GradingScaleManager, AppColors) {
@@ -97,15 +130,19 @@ angular.module('gpaCalc.controllers', [])
   $scope.gradesList = GradingScaleManager.getGradingScale();
   $scope.updateName = function(gradeID, newName) {
     GradingScaleManager.updateGradeName(gradeID, newName);
+    // $scope.gradesList = GradingScaleManager.getGradingScale();
   }
   $scope.updatePoints = function(gradeID, newPoints) {
     GradingScaleManager.updateGradePoints(gradeID, newPoints);
+    // $scope.gradesList = GradingScaleManager.getGradingScale();
   }
   $scope.createGrade = function() {
     GradingScaleManager.createGrade();
+    // $scope.gradesList = GradingScaleManager.getGradingScale();
   }
   $scope.deleteGrade = function(gradeID) {
     GradingScaleManager.deleteGrade(gradeID);
+    // $scope.gradesList = GradingScaleManager.getGradingScale();
   }
   $scope.goBack = function() {
     $state.go('settings');
@@ -124,8 +161,8 @@ angular.module('gpaCalc.controllers', [])
 
   var updateSettingsButtons = function () {
     $scope.settingsButtons = [
-      {name: "New Gradebook", icon: "ion-plus-round", onClick:"createGradebook()"},
-      {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings')"}
+      {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings')"},
+      {name: "New Gradebook", icon: "ion-plus-round", onClick:"createGradebook()"}
       // {name: "New Gradebook", icon: "ion-ios-arrow-right", onClick:"doMethod('New Gradebook')"}
     ];
 
@@ -133,7 +170,7 @@ angular.module('gpaCalc.controllers', [])
     if(currentHome.state != 'gradebooks'){
       var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"};
       var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
-      $scope.settingsButtons.splice(2, 0, goHome, setHome);
+      $scope.settingsButtons.splice(1, 0, goHome, setHome);
     }
 
     $scope.settingsButtons.reverse();
@@ -171,6 +208,7 @@ angular.module('gpaCalc.controllers', [])
 
   $scope.createGradebook = function() {
     var defaultNameOption = SettingsReference.useDefaultNames();
+    $scope.removeOverlay();
     if(defaultNameOption) {
       var newGradebook = AppManager.createGradebook("Testing Gradebook");
       GradebookManager.updateName(newGradebook.id, "Gradebook "+($scope.gradebooksList.length));
@@ -262,14 +300,15 @@ angular.module('gpaCalc.controllers', [])
 
      // An elaborate, custom popup
      var myPopup = $ionicPopup.show({
-       template: '<input type="text" ng-model="data.value">',
-       title: 'Enter New Name',
+       templateUrl: 'templates/newName.html',
+       title: 'Rename Gradebook',
+       cssClass: 'my-popup',
        scope: $scope,
        buttons: [
          { text: 'Cancel' },
          {
            text: '<b>Save</b>',
-           type: 'button-positive',
+           type: 'save',
            onTap: function() {
              if (!$scope.data.value) {
                //don't allow the user to close unless he enters wifi password
@@ -317,10 +356,10 @@ angular.module('gpaCalc.controllers', [])
 
   var updateSettingsButtons = function () {
     $scope.settingsButtons = [
-      {name: "New Term", icon: "ion-plus-round", onClick:"createTerm()"},
       {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings')"},
       {name: "Gradebooks List", icon: "ion-ios-bookmarks", onClick:"goTo('gradebooks', null)"},
       {name: "Set Initial Data", icon: "ion-information", onClick:"showInitialGPAPopup('"+$scope.currentGradebook.id+"')"},
+      {name: "New Term", icon: "ion-plus-round", onClick:"createTerm()"},
       // {name: "New Term", icon: "ion-android-more-vertical", onClick:"doMethod('New Term')"},
       // {name: "What If", icon: "ion-plus-round", onClick:"doMethod('What If')"}
     ];
@@ -330,9 +369,9 @@ angular.module('gpaCalc.controllers', [])
       var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"}
       var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
       if(currentHome.state == 'gradebooks')
-        $scope.settingsButtons.splice(2, 1, goHome, setHome);
+        $scope.settingsButtons.splice(1, 1, goHome, setHome);
       else
-        $scope.settingsButtons.splice(2, 0, goHome, setHome);
+        $scope.settingsButtons.splice(1, 0, goHome, setHome);
     }
 
     $scope.settingsButtons.reverse();
@@ -380,6 +419,7 @@ angular.module('gpaCalc.controllers', [])
 
   $scope.createTerm = function() {
     var defaultNameOption = SettingsReference.useDefaultNames();
+    $scope.removeOverlay();
     if(defaultNameOption) {
       var newTerm = GradebookManager.createTerm($scope.currentGradebook.id, "Testing Term");
       TermManager.updateName(newTerm.id, "Term "+($scope.termsList.length+1));
@@ -496,26 +536,27 @@ $scope.$on('popover.removed', function() {
 
 $scope.showInitialGPAPopup = function(gradebookID) {
 
-    var iGPA = '';
-    var iHours = '';
+    $scope.data.iGPA = '';
+    $scope.data.iHours = '';
 
     if($scope.currentGradebook.initialHours != 0) {
       if($scope.currentGradebook.initialGPA != 4.00) {
-        iGPA = ''+$scope.currentGradebook.initialGPA;
-        iHours = ''+$scope.currentGradebook.initialHours;
+        $scope.data.iGPA = ''+$scope.currentGradebook.initialGPA;
+        $scope.data.iHours = ''+$scope.currentGradebook.initialHours;
       }
     }
 
    // An elaborate, custom popup
    var myPopup = $ionicPopup.show({
-     template: '<input type="number" placeholder="Initial GPA" ng-value="'+iGPA+'" ng-model="data.GPA"></br><input type="number" placeholder="Credit Hours" ng-value="'+iHours+'" ng-model="data.hours">',
+     templateUrl: 'templates/editInitialData.html',
      title: 'Enter Your Previous GPA and Hours',
+     cssClass: 'my-popup',
      scope: $scope,
      buttons: [
        { text: 'Cancel' },
        {
          text: '<b>Save</b>',
-         type: 'button-positive',
+         type: 'save',
          onTap: function() {
            if (!$scope.data.GPA || !$scope.data.hours) {
              //don't allow the user to close unless he enters wifi password
@@ -548,14 +589,15 @@ $scope.showInitialGPAPopup = function(gradebookID) {
 
      // An elaborate, custom popup
      var myPopup = $ionicPopup.show({
-       template: '<input type="text" ng-model="data.value">',
-       title: 'Enter New Name',
+       templateUrl: 'templates/newName.html',
+       title: 'Rename Term',
+       cssClass: 'my-popup',
        scope: $scope,
        buttons: [
          { text: 'Cancel' },
          {
            text: '<b>Save</b>',
-           type: 'button-positive',
+           type: 'save',
            onTap: function() {
              if (!$scope.data.value) {
                //don't allow the user to close unless he enters wifi password
@@ -605,10 +647,10 @@ $scope.showInitialGPAPopup = function(gradebookID) {
 
   var updateSettingsButtons = function () {
     $scope.settingsButtons = [
-      {name: "New Course", icon: "ion-plus-round", onClick:"createCourse()"},
       {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings', null)"},
       {name: "Gradebooks List", icon: "ion-ios-bookmarks", onClick:"goTo('gradebooks', null)"},
-      {name: "Terms List", icon: "ion-android-document", onClick:"goTo('gradebook', '"+$scope.currentGradebook.id+"')"}
+      {name: "Terms List", icon: "ion-android-document", onClick:"goTo('gradebook', '"+$scope.currentGradebook.id+"')"},
+      {name: "New Course", icon: "ion-plus-round", onClick:"createCourse()"}
       // {name: "What If", icon: "ion-plus-round", onClick:"doMethod('What If')"}
     ];
 
@@ -617,9 +659,9 @@ $scope.showInitialGPAPopup = function(gradebookID) {
       var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"};
       var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
       if(currentHome.state == 'gradebooks')
-        $scope.settingsButtons.splice(2, 1, goHome, setHome);
+        $scope.settingsButtons.splice(1, 1, goHome, setHome);
       else
-        $scope.settingsButtons.splice(2, 0, goHome, setHome);
+        $scope.settingsButtons.splice(1, 0, goHome, setHome);
     }
 
     $scope.settingsButtons.reverse();
@@ -692,6 +734,7 @@ $scope.showInitialGPAPopup = function(gradebookID) {
 
   $scope.createCourse = function() {
     var defaultNameOption = SettingsReference.useDefaultNames();
+    $scope.removeOverlay();
     if(defaultNameOption) {
       var newCourse = TermManager.createCourse($scope.currentTerm.id, "");
       //CourseManager.updateName(newCourse.id, "Course "+newCourse.id.slice(newCourse.id.indexOf("_")+1));
@@ -797,14 +840,15 @@ $scope.$on('popover.removed', function() {
 
      // An elaborate, custom popup
      var myPopup = $ionicPopup.show({
-       template: '<input type="text" ng-model="data.value">',
-       title: 'Enter New Name',
+       templateUrl: 'templates/newName.html',
+       title: 'Rename Course',
+       cssClass: 'my-popup',
        scope: $scope,
        buttons: [
          { text: 'Cancel' },
          {
            text: '<b>Save</b>',
-           type: 'button-positive',
+           type: 'save',
            onTap: function() {
              if (!$scope.data.value) {
                //don't allow the user to close unless he enters wifi password

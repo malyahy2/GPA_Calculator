@@ -1,5 +1,34 @@
 angular.module('gpaCalc.services', [])
 
+.service('AppInitializer', function(DatabaseAccessor, HomeReference, AppManager, GradebookManager, TermManager) {
+  var key = "appInitalAccessFlags";
+
+  DatabaseAccessor.deleteData(key);
+  var initialData = DatabaseAccessor.getDataObject(key);
+  if(initialData == undefined){
+    initialData = { appLaunched: false};
+    DatabaseAccessor.setDataObject(key, initialData);
+  }
+
+  var updateData = function () {
+    DatabaseAccessor.setDataObject(key, initialData);
+  }
+
+  return {
+    launchApp: function () {
+      if(!initialData.appLaunched){
+        var initialGradebook = AppManager.createGradebook("Initial Gradebook");
+        var initialTerm = GradebookManager.createTerm(initialGradebook.id, "Initial Term");
+        var initialCourse = TermManager.createCourse(initialTerm.id, "Initial Course");
+        var newHome = { state: "gradebook", stateParams: initialGradebook.id};
+        HomeReference.setHome(newHome);
+        initialData.appLaunched = true;
+        updateData();
+      }
+    }
+  }
+})
+
 .factory('HomeReference', function(DatabaseAccessor) {
   var key = "Home";
   var initialHome = { state: "gradebooks", stateParams: null};
@@ -26,11 +55,12 @@ angular.module('gpaCalc.services', [])
 .factory('AppColors', function(DatabaseAccessor) {
   var key = "chosenColorPalette";
   var colorSchemes = [
-    {mainColor : "#45CEE0", secondaryColor: "#218D9B", textColor: "#000000"},
-    {mainColor : "#e02dff", secondaryColor: "#00c853", textColor: "#1b5e20"},
-    {mainColor : "#FAA1DD", secondaryColor: "#FD1934", textColor: "#8902F1"},
-    {mainColor : "pink", secondaryColor: "purple", textColor: "red"},
-    {mainColor : "yellow", secondaryColor: "orange", textColor: "green"}
+    {name : "blue", mainColor : "#2397f2", secondaryColor: "#1e4078", textColor: "#000000"},
+    {name : "Purple Green", mainColor : "#e02dff", secondaryColor: "#00c853", textColor: "#1b5e20"},
+    {name : "Orange Yellow", mainColor : "#ff840a", secondaryColor: "#ddda08", textColor: "#C83300"},
+    {name : "Pink Red", mainColor : "#FAA1DD", secondaryColor: "#FD1934", textColor: "#8902F1"},
+    {name : "Pink Purple", mainColor : "pink", secondaryColor: "purple", textColor: "red"},
+    {name : "Yellow", mainColor : "yellow", secondaryColor: "orange", textColor: "green"}
   ];
 
   var colorPaletteIndex = DatabaseAccessor.getDataObject(key);
@@ -528,38 +558,54 @@ angular.module('gpaCalc.services', [])
     updateGradingScale();
 
     return newGrade;
-  }
 
+  }
   var setDefaultGradingScale_APlus = function() {
     clearGradingScale();
-    createGrade("A+", 4.333);
+    createGrade("A+", 4.33);
     createGrade("A", 4.00);
-    createGrade("A-", 3.667);
-    createGrade("B+", 3.333);
+    createGrade("A-", 3.67);
+    createGrade("B+", 3.33);
     createGrade("B", 3.00);
-    createGrade("B-", 2.667);
-    createGrade("C+", 2.333);
+    createGrade("B-", 2.67);
+    createGrade("C+", 2.33);
     createGrade("C", 2.00);
-    createGrade("C-", 1.667);
-    createGrade("D+", 1.333);
+    createGrade("C-", 1.67);
+    createGrade("D+", 1.33);
     createGrade("D", 1.00);
-    createGrade("D-", 0.667);
+    createGrade("D-", 0.67);
     createGrade("F", 0.0);
   }
 
   var setDefaultGradingScale_A = function() {
     clearGradingScale();
     createGrade("A", 4.00);
-    createGrade("A-", 3.667);
-    createGrade("B+", 3.333);
+    createGrade("A-", 3.67);
+    createGrade("B+", 3.33);
     createGrade("B", 3.00);
-    createGrade("B-", 2.667);
-    createGrade("C+", 2.333);
+    createGrade("B-", 2.67);
+    createGrade("C+", 2.33);
     createGrade("C", 2.00);
-    createGrade("C-", 1.667);
-    createGrade("D+", 1.333);
+    createGrade("C-", 1.67);
+    createGrade("D+", 1.33);
     createGrade("D", 1.00);
-    createGrade("D-", 0.667);
+    createGrade("D-", 0.67);
+    createGrade("F", 0.0);
+  }
+
+  var setDefaultGradingScale_5 = function() {
+    clearGradingScale();
+    createGrade("A", 5.00);
+    createGrade("A-", 4.67);
+    createGrade("B+", 4.33);
+    createGrade("B", 4.00);
+    createGrade("B-", 3.67);
+    createGrade("C+", 3.33);
+    createGrade("C", 3.00);
+    createGrade("C-", 2.67);
+    createGrade("D+", 2.33);
+    createGrade("D", 2.00);
+    createGrade("D-", 1.67);
     createGrade("F", 0.0);
   }
 
@@ -577,10 +623,16 @@ angular.module('gpaCalc.services', [])
   }
 
   var deleteGrade = function(gradeID){
+    console.log("gradeID: ", gradeID);
     var gradeIndex = gradingScale.findIndex(function(gradeObject) {
+        console.log("gradeObject: ", gradeObject);
+        console.log("gradeObject.id: ", gradeObject.id);
         return gradeObject.id == gradeID;
     });
+    console.log("gradingScale before: ", gradingScale);
     gradingScale.splice(gradeIndex, 1);
+    console.log("gradingScale after: ", gradingScale);
+    updateGradingScale();
   }
 
   var updateGradeName = function(gradeID, newName){
@@ -588,6 +640,7 @@ angular.module('gpaCalc.services', [])
         return gradeObject.id == gradeID;
     });
     grade.name = newName;
+    updateGradingScale();
   }
 
   var updateGradePoints = function(gradeID, newPoints){
@@ -595,6 +648,7 @@ angular.module('gpaCalc.services', [])
         return gradeObject.id == gradeID;
     });
     grade.points = newPoints;
+    updateGradingScale();
   }
 
 
@@ -611,6 +665,7 @@ angular.module('gpaCalc.services', [])
     deleteGrade: deleteGrade,
     setDefaultGradingScale_APlus: setDefaultGradingScale_APlus,
     setDefaultGradingScale_A: setDefaultGradingScale_A,
+    setDefaultGradingScale_5: setDefaultGradingScale_5,
     setDefaultGradingScale_Traditional: setDefaultGradingScale_Traditional,
     getGradingScale: getGradingScale,
     updateGradeName: updateGradeName,
