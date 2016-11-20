@@ -56,11 +56,12 @@ angular.module('gpaCalc.services', [])
   var key = "chosenColorPalette";
   var colorSchemes = [
     {name : "blue", mainColor : "#2397f2", secondaryColor: "#1e4078", textColor: "#000000"},
-    {name : "Purple Green", mainColor : "#e02dff", secondaryColor: "#00c853", textColor: "#1b5e20"},
-    {name : "Orange Yellow", mainColor : "#ff840a", secondaryColor: "#ddda08", textColor: "#C83300"},
-    {name : "Pink Red", mainColor : "#FAA1DD", secondaryColor: "#FD1934", textColor: "#8902F1"},
+    {name : "Purple Greenish", mainColor : "#ba68c8", secondaryColor: "#4a148c", textColor: "#00c853"},
     {name : "Pink Purple", mainColor : "pink", secondaryColor: "purple", textColor: "red"},
-    {name : "Yellow", mainColor : "yellow", secondaryColor: "orange", textColor: "green"}
+    {name : "Orange Golden", mainColor : "orange", secondaryColor: "#a08a14", textColor: "#C83300"},
+    {name : "Bloody Blue", mainColor : "#800000", secondaryColor: "#00baba", textColor: "#ff3d3d"},
+    {name : "Bloody Orange", mainColor : "#800000", secondaryColor: "#ff3d3d", textColor: "orange"},
+    {name : "Light Grey", mainColor : "#bdbdbd", secondaryColor: "#424242", textColor: "black"}
   ];
 
   var colorPaletteIndex = DatabaseAccessor.getDataObject(key);
