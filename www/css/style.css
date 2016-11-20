@@ -117,7 +117,7 @@
 }
 
 .item_header {
-  height: 30vw;
+  height: 30vw !important;
   display: block;
   color: black;
 }
@@ -172,18 +172,14 @@
 }
 
 .item_content {
-  top: 30vw;
+  top: 30vw !important;
 }
 
-/* iOS Specific Overrides to fix logo overlap */
-.platform-ios7.platform-cordova:not(.fullscreen) .bar-header:not(.bar-subheader) > * {
-  margin-top: 25px;
+.platform-ios7.platform-cordova:not(.fullscreen) .item_header {
+  height: 30vw !important;
 }
-.platform-ios7.platform-cordova:not(.fullscreen) .bar-header:not(.bar-subheader) {
-  height: 30vw;
-}
-.platform-ios7.platform-cordova:not(.fullscreen) .has-header {
-  top: 30vw;
+.platform-ios7.platform-cordova:not(.fullscreen) .item_content {
+  top: 30vw !important;
 }
 
 .plus-circle {

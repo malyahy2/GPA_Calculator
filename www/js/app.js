@@ -48,7 +48,8 @@ angular.module('gpaCalc', ['ionic', 'gpaCalc.controllers', 'gpaCalc.services'])
 
     if(window.AdMob) AdMob.createBanner( {
         adId:admobid.banner,
-        position:AdMob.AD_POSITION.BOTTOM_RIGHT,
+        position:AdMob.AD_POSITION.BOTTOM_CENTER,
+        overlap: false,
         autoShow:true} );
 
     document.addEventListener('onAdLoaded', function(e){
