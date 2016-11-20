@@ -3,7 +3,7 @@ angular.module('gpaCalc.services', [])
 .service('AppInitializer', function(DatabaseAccessor, HomeReference, AppManager, GradebookManager, TermManager) {
   var key = "appInitalAccessFlags";
 
-  DatabaseAccessor.deleteData(key);
+  // DatabaseAccessor.deleteData(key);
   var initialData = DatabaseAccessor.getDataObject(key);
   if(initialData == undefined){
     initialData = { appLaunched: false};
