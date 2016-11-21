@@ -1,10 +1,10 @@
 <ion-view title="Gradebook View">
   <div ng-class="{'blur-effect': settingsButtonClicked}">
     <ion-header-bar align-title="center" class="app_header item_header" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
-      <div class="itemTitle" ng-style="{'color' : '{{colorPalette.textColor}}', 'border-bottom' : '1px dotted {{colorPalette.secondaryColor}}'}">{{currentGradebook.name}}</div>
+      <div class="itemTitle" ng-style="{'color' : '{{colorPalette.lightTextColor}}', 'border-bottom' : '1px dotted {{colorPalette.secondaryColor}}'}">{{currentGradebook.name}}</div>
       <div class="item_Data">
         <span class="cumliGPA">
-          <div class="data" ng-style="{'color' : '{{colorPalette.textColor}}'}"> {{currentGradebook.GPA}}</div>
+          <div class="data" ng-style="{'color' : '{{colorPalette.lightTextColor}}'}"> {{currentGradebook.GPA}}</div>
           <div class="label" ng-style="{'color' : '{{colorPalette.secondaryColor}}', 'border-bottom' : '0px solid {{colorPalette.secondaryColor}}'}"><strong>GPA</strong></div>
         </span>
       </div>
@@ -20,15 +20,15 @@
         <div class=" item"  ng-repeat="term in termsList track by term.id">
           <div class="item-wrapper">
             <div ng-click="goToTerm(term.id)">
-              <div class="item-name" ng-style="{'color' : '{{colorPalette.textColor}}'}">
+              <div class="item-name" ng-style="{'color' : '{{colorPalette.darkTextColor}}'}">
                 <strong>{{ term.name }}</strong>
               </div>
               <div class="item-GPA" ng-if="term.hours > 0">
-                <div class="data"  ng-style="{'color' : '{{colorPalette.textColor}}'}">{{ term.GPA }}</div>
+                <div class="data"  ng-style="{'color' : '{{colorPalette.darkTextColor}}'}">{{ term.GPA }}</div>
                 <div class="label"  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"><strong>GPA</strong></div>
               </div>
               <div class="item-hours" ng-if="term.hours > 0">
-                <div class="data"  ng-style="{'color' : '{{colorPalette.textColor}}'}">{{ term.hours }}</div>
+                <div class="data"  ng-style="{'color' : '{{colorPalette.darkTextColor}}'}">{{ term.hours }}</div>
                 <div class="label"  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"><strong>Hours</strong></div>
               </div>
             </div>

@@ -1,14 +1,14 @@
 <ion-view title="Term View">
   <div ng-class="{'blur-effect': settingsButtonClicked}">
     <ion-header-bar align-title="center" class="app_header item_header" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
-      <div class="itemTitle" ng-style="{'color' : '{{colorPalette.textColor}}', 'border-bottom' : '1px dotted {{colorPalette.secondaryColor}}'}">{{currentTerm.name}}</div>
+      <div class="itemTitle" ng-style="{'color' : '{{colorPalette.lightTextColor}}', 'border-bottom' : '1px dotted {{colorPalette.secondaryColor}}'}">{{currentTerm.name}}</div>
       <div class="item_Data">
         <span class="termGPA">
-          <div class="data" ng-style="{'color' : '{{colorPalette.textColor}}'}"> {{currentTerm.GPA}}</div>
+          <div class="data" ng-style="{'color' : '{{colorPalette.lightTextColor}}'}"> {{currentTerm.GPA}}</div>
             <div class="label" ng-style="{'color' : '{{colorPalette.secondaryColor}}', 'border-bottom' : '0px solid {{colorPalette.secondaryColor}}'}"><strong>Term</strong></div>
         </span>
         <span class="cumliGPA">
-          <div class="data" ng-style="{'color' : '{{colorPalette.textColor}}'}"> {{currentGradebook.GPA}}</div>
+          <div class="data" ng-style="{'color' : '{{colorPalette.lightTextColor}}'}"> {{currentGradebook.GPA}}</div>
           <div class="label" ng-style="{'color' : '{{colorPalette.secondaryColor}}', 'border-bottom' : '0px solid {{colorPalette.secondaryColor}}'}"><strong>Cumulative</strong></div>
         </span>
       </div>
@@ -43,7 +43,7 @@
           ng-change="updateHours(course.id, inputHours)">
           <i class="icon ion-android-more-vertical" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}" ng-click="openPopover($event, course.id)"></i>
         </div>
-        <div class="course-name" ng-style="{'color' : '{{colorPalette.textColor}}'}" ng-if="course.name != ''">
+        <div class="course-name" ng-style="{'color' : '{{colorPalette.darkTextColor}}'}" ng-if="course.name != ''">
           <strong>{{ course.name }}</strong>
           <!-- <i class="icon ion-android-more-vertical"  ng-click="openPopover($event, course.id)"></i> -->
         </div>

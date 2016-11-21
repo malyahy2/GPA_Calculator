@@ -337,7 +337,7 @@ angular.module('gpaCalc.controllers', [])
 
 })
 
-.controller('gradebookCtrl', function($scope, $state, $stateParams, AppColors, HomeReference, SettingsReference, AppManager, GradebookManager, TermManager, $ionicPopover, $ionicPopup) {
+.controller('gradebookCtrl', function($scope, $state, $stateParams, AppColors, HomeReference, GradingScaleManager, $ionicModal, SettingsReference, AppManager, GradebookManager, TermManager, $ionicPopover, $ionicPopup) {
   $scope.colorPalette = AppColors.getColorPalette();
 
   $scope.currentGradebook = GradebookManager.getGradebook($stateParams.id);
@@ -359,6 +359,7 @@ angular.module('gpaCalc.controllers', [])
       {name: "Settings", icon: "ion-android-settings", onClick:"goTo('settings')"},
       {name: "Gradebooks List", icon: "ion-ios-bookmarks", onClick:"goTo('gradebooks', null)"},
       {name: "Set Initial Data", icon: "ion-information", onClick:"showInitialGPAPopup('"+$scope.currentGradebook.id+"')"},
+      {name: "Improve Your GPA", icon: "ion-medkit", onClick:"openModal()"},
       {name: "New Term", icon: "ion-plus-round", onClick:"createTerm()"},
       // {name: "New Term", icon: "ion-android-more-vertical", onClick:"doMethod('New Term')"},
       // {name: "What If", icon: "ion-plus-round", onClick:"doMethod('What If')"}
@@ -625,6 +626,61 @@ $scope.showInitialGPAPopup = function(gradebookID) {
     //     myPopup.close(); //close the popup after 3 seconds for some reason
     //  }, 3000);
   };
+
+  $scope.calculateCreditHoursNeeded = function() {
+    if($scope.data.desiredGPA != null && $scope.data.targetedGrade!= null) {
+      var currentHours = parseFloat($scope.currentGradebook.hours);
+      var currentGPA = parseFloat($scope.currentGradebook.GPA);
+      var wantedGPA = $scope.data.desiredGPA;
+      var expectedGrade = $scope.data.targetedGrade;
+      if(wantedGPA == expectedGrade)
+        expectedGrade += 0.001;
+
+      $scope.data.neededHours = Math.ceil((((wantedGPA - currentGPA) * currentHours)/(expectedGrade - wantedGPA)));
+    }
+  };
+
+  $scope.updateGradeOptions = function() {
+    $scope.gradingScaleList = [];
+    if($scope.data.desiredGPA != null) {
+      var gradesList = GradingScaleManager.getGradingScale();
+      for(var i=0; i< gradesList.length; i++ ) {
+        if(gradesList[i].points >= $scope.data.desiredGPA)
+          $scope.gradingScaleList.push(gradesList[i]);
+      }
+      $scope.calculateCreditHoursNeeded();
+    }
+  };
+
+  $ionicModal.fromTemplateUrl('templates/fixGPA.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modal = modal;
+  });
+  $scope.openModal = function() {
+    $scope.data.desiredGPA = null;
+    $scope.data.neededHours = 0;
+    $scope.updateGradeOptions();
+    $scope.modal.show();
+    $scope.removeOverlay();
+  };
+  $scope.closeModal = function() {
+    $scope.data.desiredGPA = null;
+    $scope.modal.hide();
+  };
+  // Cleanup the modal when we're done with it!
+  $scope.$on('$destroy', function() {
+    $scope.modal.remove();
+  });
+  // Execute action on hide modal
+  $scope.$on('modal.hidden', function() {
+    // Execute action
+  });
+  // Execute action on remove modal
+  $scope.$on('modal.removed', function() {
+    // Execute action
+  });
 })
 
 .controller('termCtrl', function($scope, $state, $stateParams, AppColors, HomeReference, SettingsReference, TermManager, CourseManager, GradingScaleManager, AppManager, GradebookManager, $ionicPopover, $ionicPopup) {

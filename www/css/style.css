@@ -106,13 +106,14 @@
     height: 0px;
     width: 0px;
     /*filter:drop-shadow(5px 5px 10px grey);*/
+  	-webkit-transform: rotate(45deg); transform: rotate(45deg);
 }
 
 .letter {
   position: absolute;
   top:4vw;
-  left: 3.5vw;
-  font-size: 25px;
+  left: 3.0vw;
+  font-size: 20px;
   color:white;
 }
 
@@ -168,6 +169,16 @@
   position: relative;
   font-size: 35px;
   display: inline-block;
+  /*background: green;*/
+}
+
+.item_Data .data input{
+  background: transparent;
+  text-align: center;
+  color: white;
+  font-size: 35px;
+  width: 40vw;
+  border-bottom: 2px solid #218D9B;
   /*background: green;*/
 }
 
@@ -343,6 +354,37 @@ ion-popover-view.fit span {
   background-color: inherit;
   /*left: 20px;*/
   top: 0px;
+}
+
+.fix-GPA-Data {
+  display: block;
+  text-align: center;
+}
+
+.fix-GPA-Data select {
+  display: block;
+   border: none;
+   margin-left: 10vw;
+   margin-top: 15vw;
+   width: 80vw;
+   height: 10vw;
+  /*margin-bottom: 20px;*/
+  text-align: left;
+  background: transparent;
+   border-bottom: 2px solid #218D9B;
+}
+
+.fix-GPA-Data input {
+  display: block;
+   border: none;
+   margin-left: 10vw;
+   margin-top: 30vw;
+   width: 80vw;
+   height: 10vw;
+  /*margin-bottom: 20px;*/
+  text-align: left;
+  background: transparent;
+   border-bottom: 2px solid #218D9B;
 }
 
 .course-item {

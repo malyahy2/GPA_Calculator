@@ -5,7 +5,7 @@
       <div class="circle"
       ng-style="{'border-right-color' : '{{colorScheme.secondaryColor}}', 'border-top-color' : '{{colorScheme.secondaryColor}}',
                 'border-bottom-color' : '{{colorScheme.mainColor}}', 'border-left-color' : '{{colorScheme.mainColor}}'}"></div>
-      <div class="letter" ng-style="{'color' : '{{colorScheme.textColor}}'}"><strong>G</strong></div>
+      <div class="letter"><span ng-style="{'color' : '{{colorScheme.darkTextColor}}'}"><strong>C</strong></span><span ng-style="{'color' : '{{colorScheme.lightTextColor}}'}"><strong>S</strong> </span></div>
     </div>
     <!-- <i class="icon ion-record" ng-style="{'color': colorScheme}"></i> -->
     {{colorScheme.name}}
@@ -20,7 +20,7 @@
           /*background: {{colorPalette.mainColor}};*/
   }
   .my-popup .popup-title{
-    color: {{colorPalette.secondaryColor}};
+    color: {{colorPalette.lightTextColor}};
   }
 
   .my-popup .popup-head {
@@ -45,7 +45,7 @@
     background: transparent;
     text-align: center;
     border: none;
-      color: {{colorPalette.textColor}};
+      color: {{colorPalette.darkTextColor}};
       border-bottom: 1px solid {{colorPalette.secondaryColor}};
   }
 

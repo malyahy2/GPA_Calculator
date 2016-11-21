@@ -55,13 +55,13 @@ angular.module('gpaCalc.services', [])
 .factory('AppColors', function(DatabaseAccessor) {
   var key = "chosenColorPalette";
   var colorSchemes = [
-    {name : "blue", mainColor : "#2397f2", secondaryColor: "#1e4078", textColor: "#000000"},
-    {name : "Purple Greenish", mainColor : "#ba68c8", secondaryColor: "#4a148c", textColor: "#00c853"},
-    {name : "Pink Purple", mainColor : "pink", secondaryColor: "purple", textColor: "red"},
-    {name : "Orange Golden", mainColor : "orange", secondaryColor: "#a08a14", textColor: "#C83300"},
-    {name : "Bloody Blue", mainColor : "#800000", secondaryColor: "#00baba", textColor: "#ff3d3d"},
-    {name : "Bloody Orange", mainColor : "#800000", secondaryColor: "#ff3d3d", textColor: "orange"},
-    {name : "Light Grey", mainColor : "#bdbdbd", secondaryColor: "#424242", textColor: "black"}
+    {name : "Ocean Blue", mainColor : "#2397f2", secondaryColor: "#1e4078", lightTextColor: "#ffffff", darkTextColor: "#000000"},
+    {name : "light Purple", mainColor : "#C38EC7", secondaryColor: "purple", lightTextColor: "#ffffff", darkTextColor: "#000000"},
+    {name : "Pink Purple", mainColor : "pink", secondaryColor: "purple", lightTextColor: "#ffffff", darkTextColor: "#000000"},
+    {name : "Forest Green", mainColor : "#4E9258", secondaryColor: "#254117", lightTextColor: "#ffffff", darkTextColor: "#000000"},
+    {name : "Bloody Orange", mainColor : "#F88017", secondaryColor: "#800000", lightTextColor: "#ffffff", darkTextColor: "#000000"},
+    {name : "Golden Sand", mainColor : "#EDDA74", secondaryColor: "#AF7817", lightTextColor: "#ffffff", darkTextColor: "#000000"},
+    {name : "Light Grey", mainColor : "#bdbdbd", secondaryColor: "#424242", lightTextColor: "#ffffff", darkTextColor: "#000000"}
   ];
 
   var colorPaletteIndex = DatabaseAccessor.getDataObject(key);
@@ -418,6 +418,8 @@ angular.module('gpaCalc.services', [])
     }
 
     AppManager.deleteObject(termID);
+
+    AppCalculator.calculateCumulativeData(parentGradebook.id);
   }
 
   var moveTerm = function (termID, newGradebookID) {

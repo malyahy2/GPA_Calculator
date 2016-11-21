@@ -6,7 +6,7 @@
 
    <ion-content>
      <div class="list">
-        <span class="item" ng-style="{'color' : '{{colorPalette.textColor}}'}" ng-repeat="object in objectsList track by object.id"
+        <span class="item" ng-style="{'color' : '{{colorPalette.darkTextColor}}'}" ng-repeat="object in objectsList track by object.id"
                                             ng-click="moveObject(objectID, object.id)">
           {{object.name}}
         </span>
