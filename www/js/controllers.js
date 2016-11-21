@@ -337,7 +337,7 @@ angular.module('gpaCalc.controllers', [])
 
 })
 
-.controller('gradebookCtrl', function($scope, $state, $stateParams, AppColors, HomeReference, GradingScaleManager, $ionicModal, SettingsReference, AppManager, GradebookManager, TermManager, $ionicPopover, $ionicPopup) {
+.controller('gradebookCtrl', function($scope, $state, $stateParams, $ionicLoading, AppColors, HomeReference, GradingScaleManager, $ionicModal, SettingsReference, AppManager, GradebookManager, TermManager, $ionicPopover, $ionicPopup) {
   $scope.colorPalette = AppColors.getColorPalette();
 
   $scope.currentGradebook = GradebookManager.getGradebook($stateParams.id);
@@ -537,14 +537,16 @@ $scope.$on('popover.removed', function() {
 
 $scope.showInitialGPAPopup = function(gradebookID) {
 
-    $scope.data.iGPA = '';
-    $scope.data.iHours = '';
+    // $scope.data.iGPA = null;
+    // $scope.data.iHours = null;
+    //
+    //
+    //   console.log("old initialGPA: ", $scope.data.iGPA);
+    //   console.log("old initialHours: ", $scope.data.iHours);
 
     if($scope.currentGradebook.initialHours != 0) {
-      if($scope.currentGradebook.initialGPA != 4.00) {
-        $scope.data.iGPA = ''+$scope.currentGradebook.initialGPA;
-        $scope.data.iHours = ''+$scope.currentGradebook.initialHours;
-      }
+        $scope.data.GPA = $scope.currentGradebook.initialGPA;
+        $scope.data.hours = $scope.currentGradebook.initialHours;
     }
 
    // An elaborate, custom popup
@@ -558,12 +560,18 @@ $scope.showInitialGPAPopup = function(gradebookID) {
        {
          text: '<b>Save</b>',
          type: 'save',
-         onTap: function() {
-           if (!$scope.data.GPA || !$scope.data.hours) {
+         onTap: function(e) {
+           if ($scope.data.GPA == null) {
              //don't allow the user to close unless he enters wifi password
              console.log($scope.data.GPA);
              console.log($scope.data.hours);
-             //e.preventDefault();
+             $ionicLoading.show({ template: 'No GPA Provided', noBackdrop: true, duration: 2000 });
+             e.preventDefault();
+           } else if($scope.data.hours == null) {
+             console.log($scope.data.GPA);
+             console.log($scope.data.hours);
+             $ionicLoading.show({ template: 'No Hours Provided', noBackdrop: true, duration: 2000 });
+             e.preventDefault();
            } else {
              console.log($scope.data.GPA);
              console.log($scope.data.hours);
@@ -577,6 +585,10 @@ $scope.showInitialGPAPopup = function(gradebookID) {
     $scope.data.GPA = null;
     $scope.data.hours = null;
     if(res != undefined)
+      // console.log("old initialGPA: ", $scope.data.iGPA);
+      // console.log("old initialGPA: ", $scope.data.iHours);
+      console.log("new initialGPA: ", res.initialGPA);
+      console.log("new initialHours: ", res.initialHours);
       GradebookManager.setInitialData(res.id, res.initialGPA, res.initialHours);
     //updatePageList();
     $scope.removeOverlay();

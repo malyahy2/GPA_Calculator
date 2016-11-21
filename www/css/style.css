@@ -374,6 +374,10 @@ ion-popover-view.fit span {
    border-bottom: 2px solid #218D9B;
 }
 
+.loading {
+    margin-top: 35% !important;
+}
+
 .fix-GPA-Data input {
   display: block;
    border: none;
