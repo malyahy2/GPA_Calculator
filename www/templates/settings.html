@@ -1,5 +1,114 @@
 <ion-view title="Settings View">
+  <ion-header-bar align-title="center" class="app_header" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
+    <h1 class="title" ng-style="{'color' : '{{colorPalette.lightTextColor}}'}"><strong>Settings</strong></h1>
+  </ion-header-bar>
   <ion-content>
-    Settings List
+    <div class="list card">
+
+      <a class="item item-icon-left" ng-model="GradingScaleSettings" ng-init="GradingScaleSettings = false"
+      ng-click="GradingScaleSettings = !GradingScaleSettings">
+        <i class="icon ion-compose" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+        Grading Scales
+      </a>
+      <div class="item indented" ng-show="GradingScaleSettings">
+        <a class="item item-icon-left" ng-click="gradingScaleOptionClicked(0)">
+          <i class="icon ng-class: scaleOptions[0] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          Use Default A Scale
+        </a>
+        <a class="item item-icon-left" ng-click="gradingScaleOptionClicked(1)">
+          <i class="icon ng-class: scaleOptions[1] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          Use Default A+ Scale
+        </a>
+        <a class="item item-icon-left" ng-click="gradingScaleOptionClicked(2)">
+          <i class="icon ng-class: scaleOptions[2] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          Use Default 5.0 Scale
+        </a>
+        <a class="item item-icon-left" ng-click="gradingScaleOptionClicked(3)">
+          <i class="icon ng-class: scaleOptions[3] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          Use Default Traditional Scale
+        </a>
+        <a class="item item-icon-left item-icon-right" ng-click="gradingScaleOptionClicked(4)">
+          <i class="icon ng-class: scaleOptions[4] ? 'ion-android-radio-button-on' : 'ion-android-radio-button-off';" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          Use Edited Grading Scale
+          <i class="icon ion-edit" ng-style="{'font-size':'22px', 'color' : '{{colorPalette.secondaryColor}}'}"></i>
+        </a>
+      </div>
+
+      <a class="item item-icon-left" ng-model="usabilitySettings" ng-init="usabilitySettings = false"
+      ng-click="usabilitySettings = !usabilitySettings">
+        <i class="icon ion-android-options" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+        Usability
+      </a>
+      <div class="item indented" ng-show="usabilitySettings">
+        <a class="item item-icon-left" ng-click="autoFillClicked()">
+          <i class="icon ng-class: autoFillNames ? 'ion-android-checkbox-outline' : 'ion-android-checkbox-outline-blank';"  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          Auto Fill Names
+        </a>
+        <a class="item item-icon-left" ng-click="showColorSchemesPopup()">
+          <div calss="container">
+            <div class="circle"
+            ng-style="{'border-right-color' : '{{colorPalette.mainColor}}', 'border-top-color' : '{{colorPalette.mainColor}}',
+                      'border-bottom-color' : '{{colorPalette.secondaryColor}}', 'border-left-color' : '{{colorPalette.secondaryColor}}'}"></div>
+            <div class="letter"><span ng-style="{'color' : '{{colorPalette.darkTextColor}}'}"><strong>C</strong></span><span ng-style="{'color' : '{{colorPalette.lightTextColor}}'}"><strong>S</strong></span></div>
+          </div>
+          <!-- <i class="icon ion-record" ng-style="{'color': colorScheme}"></i> -->
+          Color Scheme
+        </a>
+        <!-- <a class="item item-icon-left">
+          <i class="icon ion-social-usd" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          Remove Ads
+        </a> -->
+      </div>
+
+      <!-- <a class="item item-icon-left" ng-model="backupSettings" ng-init="backupSettings = false"
+      ng-click="backupSettings = !backupSettings">
+        <i class="icon ion-folder" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+        Backup Options
+      </a>
+      <div class="item indented" ng-show="backupSettings">
+        <a class="item item-icon-left">
+          <i class="icon ion-alert" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          Coming Soon
+        </a>
+      </div>
+
+      <a class="item item-icon-left" ng-model="supportSettings" ng-init="supportSettings = false"
+      ng-click="supportSettings = !supportSettings">
+        <i class="icon ion-android-chat" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+        Support
+      </a>
+      <div class="item indented" ng-show="supportSettings">
+        <a class="item item-icon-left">
+          <i class="icon ion-help" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          FAQs
+        </a>
+        <a class="item item-icon-left">
+          <i class="icon ion-email" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          Contact Us
+        </a>
+        <a class="item item-icon-left">
+          <i class="icon ion-android-star" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+          Rate Us
+        </a>
+      </div> -->
+
+      <a class="item item-icon-left" ng-model="formatSettings" ng-init="formatSettings = false"
+      ng-click="formatSettings = !formatSettings">
+        <i class="icon ion-trash-b" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"></i>
+        Format Data
+      </a>
+      <div class="item indented" ng-show="formatSettings">
+        <a class="item item-icon-left"  ng-click="deleteEverything()">
+          <i class="icon ion-close-circled" ng-style="{'color': 'red'}"></i>
+          Delete Everything
+        </a>
+      </div>
+
+    </div>
   </ion-content>
+  <div class="float-button" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
+      <a class="content" ng-click="goHome()">
+        <i class="ion-android-home" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"> </i>
+      </a>
+  </div>
 </ion-view>

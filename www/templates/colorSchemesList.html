@@ -1,0 +1,63 @@
+<div class="list">
+  <a class="item item-icon-left"   ng-repeat="colorScheme in colorSchemes track by $index"
+  ng-click="changeColorSchemeTo($index)">
+    <div calss="container">
+      <div class="circle"
+      ng-style="{'border-right-color' : '{{colorScheme.secondaryColor}}', 'border-top-color' : '{{colorScheme.secondaryColor}}',
+                'border-bottom-color' : '{{colorScheme.mainColor}}', 'border-left-color' : '{{colorScheme.mainColor}}'}"></div>
+      <div class="letter"><span ng-style="{'color' : '{{colorScheme.darkTextColor}}'}"><strong>C</strong></span><span ng-style="{'color' : '{{colorScheme.lightTextColor}}'}"><strong>S</strong> </span></div>
+    </div>
+    <!-- <i class="icon ion-record" ng-style="{'color': colorScheme}"></i> -->
+    {{colorScheme.name}}
+  </a>
+</div>
+<style type="text/css">
+  .my-popup {
+  }
+  .my-popup .popup{
+          width: 90vw;
+          border-radius: 2vw;
+          /*background: {{colorPalette.mainColor}};*/
+  }
+  .my-popup .popup-title{
+    color: {{colorPalette.lightTextColor}};
+  }
+
+  .my-popup .popup-head {
+    /*background: orange;*/
+    border-top-right-radius: 2vw;
+    border-top-left-radius: 2vw;
+    background: {{colorPalette.mainColor}};
+  }
+
+  .my-popup .popup-sub-title {
+    /*background: orange;*/
+  }
+
+  .my-popup .popup-body {
+  }
+
+  .my-popup .popup-body .list {
+    border: none;
+  }
+
+  .my-popup .popup-body a {
+    background: transparent;
+    text-align: center;
+    border: none;
+      color: {{colorPalette.darkTextColor}};
+      border-bottom: 1px solid {{colorPalette.secondaryColor}};
+  }
+
+  .my-popup .popup-buttons.row {
+  }
+
+  .my-popup .popup-buttons .button {
+    background: transparent;
+      color: {{colorPalette.secondaryColor}};
+  }
+  .my-popup .popup-buttons .save {
+    background: transparent;
+      color: {{colorPalette.secondaryColor}};
+  }
+</style>

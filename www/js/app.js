@@ -20,6 +20,54 @@ angular.module('gpaCalc', ['ionic', 'gpaCalc.controllers', 'gpaCalc.services'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+    // if( ionic.Platform.isAndroid() )  {
+    //    admobid = { // for Android
+    //       banner: 'ca-app-pub-6889063447180231/8847517304' // Change this to your Ad Unit Id for banner...
+    //    };
+    //
+    //    if(AdMob)
+    //       AdMob.createBanner( {
+    //          adId:admobid.banner,
+    //          position:AdMob.AD_POSITION.BOTTOM_CENTER,
+    //          autoShow:true
+    //       } );
+    // }
+
+    var admobid = {};
+        // select the right Ad Id according to platform
+        if( /(android)/i.test(navigator.userAgent) ) {
+            admobid = { // for Android
+                banner: 'ca-app-pub-6889063447180231/8847517304'
+            };
+        } else if(/(ipod|iphone|ipad)/i.test(navigator.userAgent)) {
+            admobid = { // for iOS
+                banner: 'ca-app-pub-6889063447180231/2382181307'
+            };
+        }
+
+    if(window.AdMob) AdMob.createBanner( {
+        adId:admobid.banner,
+        position:AdMob.AD_POSITION.BOTTOM_CENTER,
+        overlap: false,
+        autoShow:true} );
+
+    document.addEventListener('onAdLoaded', function(e){
+      console.log('onAdLoaded');
+    });
+    document.addEventListener('onAdFailLoad', function(e){
+      console.log('onAdFailLoad');
+    });
+    document.addEventListener('onAdPresent', function(e){
+      console.log('onAdPresent');
+    });
+    document.addEventListener('onAdDismiss', function(e){
+      console.log('onAdDismiss');
+    });
+    document.addEventListener('onAdLeaveApp', function(e){
+      console.log('onAdLeaveApp');
+    });
+
   });
 })
 
@@ -34,27 +82,32 @@ angular.module('gpaCalc', ['ionic', 'gpaCalc.controllers', 'gpaCalc.services'])
 
     .state('gradebooks', {
     url: '/gradebooks',
-    templateUrl: 'templates/gradebooks.html'
+    templateUrl: 'templates/gradebooks.html',
+    controller: 'gradebooksCtrl'
   })
 
     .state('gradebook', {
-    url: '/gradebook',
-    templateUrl: 'templates/gradebook.html'
+    url: '/gradebook/:id',
+    templateUrl: 'templates/gradebook.html',
+    controller: 'gradebookCtrl'
   })
 
     .state('term', {
-    url: '/term',
-    templateUrl: 'templates/term.html'
+    url: '/term/:id',
+    templateUrl: 'templates/term.html',
+    controller: 'termCtrl'
   })
 
     .state('settings', {
     url: '/settings',
-    templateUrl: 'templates/settings.html'
+    templateUrl: 'templates/settings.html',
+    controller: 'settingsCtrl'
   })
 
     .state('gpaScale', {
     url: '/gpaScale',
-    templateUrl: 'templates/gpaScale.html'
+    templateUrl: 'templates/gpaScale.html',
+    controller: 'gpaScaleCtrl'
   });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/loading');

@@ -1,5 +1,97 @@
 <ion-view title="Gradebooks View">
-  <ion-content>
-    Gradebooks List
+  <div ng-class="{'blur-effect': settingsButtonClicked}">
+    <ion-header-bar align-title="center" class="app_header" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
+      <h1 class="title" ng-style="{'color' : '{{colorPalette.lightTextColor}}'}"><strong>GPA Calculator</strong></h1>
+    </ion-header-bar>
+  </div>
+  <!-- <div class="header-1">
+    <div class="header-2">
+    </div>
+    <div class="header-3">
+      <strong> GPA | Hours</strong>
+    </div>
+    <div class="header-4">
+    </div>
+  </div> -->
+  <ion-content padding="false">
+    <div ng-class="{'blur-effect': settingsButtonClicked}">
+      <div class="list">
+      <div class=" item"  ng-repeat="gradebook in gradebooksList track by gradebook.id">
+        <div class="item-wrapper">
+          <div ng-click="goToGradebook(gradebook.id)">
+            <div class="item-name" ng-style="{'color' : '{{colorPalette.darkTextColor}}'}">
+              <strong>{{ gradebook.name }}</strong>
+            </div>
+            <div class="item-GPA" ng-if="gradebook.GPA > 0">
+              <div class="data"  ng-style="{'color' : '{{colorPalette.darkTextColor}}'}">{{ gradebook.GPA }}</div>
+              <div class="label"  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"><strong>GPA</strong></div>
+            </div>
+            <div class="item-hours" ng-if="gradebook.hours > 0">
+              <div class="data"  ng-style="{'color' : '{{colorPalette.darkTextColor}}'}">{{ gradebook.hours }}</div>
+              <div class="label"  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}" ><strong>Hours</strong></div>
+            </div>
+          </div>
+          <div class="item-icon  item-icon-right">
+            <i class="icon ion-android-more-vertical"  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}" ng-click="openPopover($event, gradebook.id)"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+      <!-- <div class="bar bar-header bar-stable">
+        <h1 class="title">Gradebooks</h1>
+      </div> -->
+      <!-- <div class="app_header"> <h2>Gradebooks</h2></Div> -->
+      <!-- <div class="card" ng-repeat="gradebook in gradebooksList track by $index"
+                        >
+        <div class="item item-text-wrap item-icon-right">
+          <div ng-click="goToGradebook(gradebook.id)">{{ gradebook.name }}</div>
+          <i class="icon ion-android-more-vertical" ng-click="openPopover($event, gradebook.id)"></i>
+        </div>
+        <div class="item item-divider">
+          <strong>GPA: </strong>
+          {{ gradebook.GPA }}
+          <strong>, Hours: </strong>
+          {{ gradebook.hours }}
+        </div>
+      </div> -->
+      <div class="row">
+         <div class="col text-right">
+           <button class="button icon ion-plus-round plus-circle" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}" ng-click="createGradebook()"></button>
+         </div>
+      </div>
+    </div>
   </ion-content>
+  <div ng-class="{'trans-overlay': settingsButtonClicked}" ng-click="settingsButtonClicked = false;"></div>
+  <div class="float-button" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
+      <a class="content button-icon  ng-class: settingsButtonClicked ? 'clicked' : 'unClicked';"
+      ng-click="settingsButtonClicked = !settingsButtonClicked">
+        <!-- <i class="ion-navicon-round"> </i> -->
+          <div class="line"></div>
+          <style type="text/css">
+              .unClicked .line {
+            	   background-color: {{colorPalette.secondaryColor}};
+              }
+              .unClicked .line:after , .unClicked .line:before {
+            	   background-color: {{colorPalette.secondaryColor}};
+              }
+              .clicked .line:after , .clicked .line:before {
+            	   background-color: {{colorPalette.secondaryColor}};
+              }
+          </style>
+      </a>
+  </div>
+  <div class="settings-buttons" ng-show="settingsButtonClicked">
+    <span class="height-fix ng-class: settingsButtonClicked ? 'clicked' : 'unClicked';">
+      <ul class="content">
+          <li ng-repeat="button in settingsButtons"  ng-click="{{button.onClick}}">
+            <div class="button-wraper" ng-style="{'background-color' : '{{colorPalette.mainColor}}', 'border': '1px solid {{colorPalette.secondaryColor}}'}">
+              <i class="{{button.icon}}" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"> </i>
+            </div>
+            <div class="text-wraper" ng-style="{'color' : '{{colorPalette.mainColor}}'}">
+              {{button.name}}
+            </div>
+          </li>
+      </ul>
+    </span>
+  </div>
 </ion-view>

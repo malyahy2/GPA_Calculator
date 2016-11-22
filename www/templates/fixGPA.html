@@ -1,0 +1,38 @@
+<ion-modal-view>
+  <ion-header-bar align-title="center" class="app_header item_header" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
+    <div class="itemTitle" ng-style="{'color' : '{{colorPalette.lightTextColor}}', 'border-bottom' : '1px dotted {{colorPalette.secondaryColor}}'}">Improve Your GPA</div>
+    <div class="item_Data">
+      <span class="cumliGPA">
+        <div class="data" ng-style="{'color' : '{{colorPalette.lightTextColor}}'}">{{data.neededHours}}</div>
+        <div class="label" ng-style="{'color' : '{{colorPalette.secondaryColor}}', 'border-bottom' : '0px solid {{colorPalette.secondaryColor}}'}"><strong>Needed Hours</strong></div>
+      </span>
+    </div>
+  </ion-header-bar>
+  <ion-content padding="false" class="item_content">
+    <div class="fix-GPA-Data">
+    <input type="number" placeholder="Desired GPA"
+    ng-style="{'color' : '{{colorPalette.darkTextColor}}', 'border-bottom': '2px solid {{colorPalette.secondaryColor}}'}" ng-value=""
+    ng-model="data.desiredGPA"
+    ng-change="updateGradeOptions()">
+    <span ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"><b>Desired GPA</b></span>
+      <!-- <strong>Grade: </strong> -->
+      <select ng-model="data.targetedGrade" ng-change="calculateCreditHoursNeeded()"
+      ng-options="grade.points as grade.name for grade in gradingScaleList"
+      ng-class="{ 'placeholder': data.targetedGrade==null}"
+      ng-style="{'border-bottom' : '2px solid {{colorPalette.secondaryColor}}'}">
+        <option value="" disabled selected hidden>Expected Grade</option>
+        <!-- <option ng-repeat="grade in gradingScaleList track by grade.id"
+        ng-value="grade.points">{{grade.name}}</option> -->
+        <!-- <option selected ng-repeat="grade in gradingScaleList track by $index"  ng-value="grade.points" ng-if="grade.points == course.grade">{{grade.name}}</option> -->
+        <!-- <option ng-repeat="grade in gradingScaleList track by $index"  ng-value="grade.points" ng-if="grade.points < course.grade">{{grade.name}}</option> -->
+      </select>
+      <span  ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"><b>Expected Grade</b></span>
+      <!-- <strong>, Hours: </strong> -->
+    </div>
+  </ion-content>
+  <div class="float-button" ng-style="{'background-color' : '{{colorPalette.mainColor}}'}">
+      <a class="content" ng-click="closeModal()">
+        <i class="ion-ios-undo" ng-style="{'color' : '{{colorPalette.secondaryColor}}'}"> </i>
+      </a>
+  </div>
+</ion-modal-view>
