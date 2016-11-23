@@ -18,7 +18,7 @@ angular.module('gpaCalc', ['ionic', 'gpaCalc.controllers', 'gpaCalc.services'])
       cordova.plugins.Keyboard.disableScroll(true);
     }
     if(window.StatusBar) {
-      // StatusBar.styleDefault();
+      StatusBar.styleDefault();
     }
 
     // if( ionic.Platform.isAndroid() )  {
