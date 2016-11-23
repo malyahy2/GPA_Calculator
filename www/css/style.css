@@ -79,6 +79,7 @@
     /*#218D9B;#45CEE0;*/
     border-radius: 3px;
     color: #fff;
+    filter:drop-shadow(0px 1px 2px grey);
     /*display: block;*/
     /*font-size: 30px;*/
     /*margin: 0 0 10px;*/
