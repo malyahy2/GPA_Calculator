@@ -50,7 +50,7 @@ angular.module('gpaCalc', ['ionic', 'gpaCalc.controllers', 'gpaCalc.services'])
         adId:admobid.banner,
         position:AdMob.AD_POSITION.BOTTOM_CENTER,
         overlap: false,
-        autoShow:true} );
+        autoShow:false} );
 
     document.addEventListener('onAdLoaded', function(e){
       console.log('onAdLoaded');

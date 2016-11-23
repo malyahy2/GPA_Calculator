@@ -79,13 +79,13 @@
     /*#218D9B;#45CEE0;*/
     border-radius: 3px;
     color: #fff;
-    filter:drop-shadow(0px 1px 2px grey);
     /*display: block;*/
     /*font-size: 30px;*/
     /*margin: 0 0 10px;*/
     /*padding: 10px;*/
     text-align: center;
     /*background-color: #008000;*/
+    filter:drop-shadow(0px 1px 2px grey);
 }
 
 .container {
@@ -107,7 +107,7 @@
     height: 0px;
     width: 0px;
     /*filter:drop-shadow(5px 5px 10px grey);*/
-  	-webkit-transform: rotate(45deg); transform: rotate(45deg);
+/*  	-webkit-transform: rotate(45deg); transform: rotate(45deg);*/
 }
 
 .letter {
@@ -370,7 +370,7 @@ ion-popover-view.fit span {
    width: 80vw;
    height: 10vw;
   /*margin-bottom: 20px;*/
-  text-align: left;
+  text-align: center;
   background: transparent;
    border-bottom: 2px solid #218D9B;
 }
@@ -387,7 +387,7 @@ ion-popover-view.fit span {
    width: 80vw;
    height: 10vw;
   /*margin-bottom: 20px;*/
-  text-align: left;
+  text-align: center;
   background: transparent;
    border-bottom: 2px solid #218D9B;
 }

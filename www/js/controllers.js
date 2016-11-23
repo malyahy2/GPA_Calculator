@@ -38,6 +38,10 @@ angular.module('gpaCalc.controllers', [])
     else
       $state.go(currentHome.state);
   }
+            
+            $scope.$on("$ionicView.beforeEnter", function(event, data){
+                       AdMob.showBanner(AdMob.AD_POSITION.BOTTOM_CENTER);
+                       });
 
   $scope.deleteEverything = function() {
     var confirmPopup = $ionicPopup.confirm({
@@ -92,7 +96,12 @@ angular.module('gpaCalc.controllers', [])
       $ionicHistory.clearHistory();
       setTimeout(function (){
              $window.location.reload(true);
+//                 AdMob.hideBanner();
+//                 setTimeout(function (){
+//                            AdMob.showBanner(AdMob.AD_POSITION.BOTTOM_CENTER);
+//                            }, 100);
       }, 100);
+            
   };
 
   $scope.showColorSchemesPopup = function() {
@@ -126,6 +135,10 @@ angular.module('gpaCalc.controllers', [])
 
 .controller('gpaScaleCtrl', function($scope, $state, GradingScaleManager, AppColors) {
   $scope.colorPalette = AppColors.getColorPalette();
+            
+            $scope.$on("$ionicView.beforeEnter", function(event, data){
+                       AdMob.showBanner(AdMob.AD_POSITION.BOTTOM_CENTER);
+                       });
 
   $scope.gradesList = GradingScaleManager.getGradingScale();
   $scope.updateName = function(gradeID, newName) {
@@ -179,6 +192,7 @@ angular.module('gpaCalc.controllers', [])
   $scope.$on("$ionicView.beforeEnter", function(event, data){
      console.log("Opening Page: ", data.stateParams);
      updateSettingsButtons();
+             AdMob.showBanner(AdMob.AD_POSITION.BOTTOM_CENTER);
   });
 
   $scope.setHome = function() {
@@ -381,6 +395,7 @@ angular.module('gpaCalc.controllers', [])
   $scope.$on("$ionicView.beforeEnter", function(event, data){
      console.log("Opening Page: ", data.stateParams);
      updateSettingsButtons();
+             AdMob.showBanner(AdMob.AD_POSITION.BOTTOM_CENTER);
   });
 
   $scope.setHome = function() {
@@ -536,6 +551,8 @@ $scope.$on('popover.removed', function() {
 });
 
 $scope.showInitialGPAPopup = function(gradebookID) {
+            
+            $scope.removeOverlay();
 
     // $scope.data.iGPA = null;
     // $scope.data.iHours = null;
@@ -738,6 +755,7 @@ $scope.showInitialGPAPopup = function(gradebookID) {
   $scope.$on("$ionicView.beforeEnter", function(event, data){
      console.log("Opening Page: ", data.stateParams);
      updateSettingsButtons();
+            AdMob.showBanner(AdMob.AD_POSITION.BOTTOM_CENTER);
   });
 
   $scope.onSwipeLeft = function() {
