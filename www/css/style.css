@@ -187,11 +187,11 @@
   top: 30vw !important;
 }
 
-.platform-ios7.platform-cordova:not(.fullscreen) .item_header {
-  height: 30vw !important;
+.platform-ios.platform-cordova:not(.fullscreen) .item_header {
+  height: 21.5vh !important;
 }
-.platform-ios7.platform-cordova:not(.fullscreen) .item_content {
-  top: 30vw !important;
+.platform-ios.platform-cordova:not(.fullscreen) .item_content {
+  top: 21.5vh !important;
 }
 
 .plus-circle {
