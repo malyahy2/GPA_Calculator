@@ -14,11 +14,11 @@ angular.module('gpaCalc.controllers', [])
     }
   }
 
-  $scope.$on("$ionicView.beforeEnter", function(event, data){
-     console.log("Opening Page: ", data.stateParams);
-     if($scope.loadingComplete == true)
-      loadHome();
-  });
+  // $scope.$on("$ionicView.beforeEnter", function(event, data){
+  //    console.log("Opening Page: ", data.stateParams);
+  //    if($scope.loadingComplete == true)
+  //     loadHome();
+  // });
 
   $ionicPlatform.ready(function() {
     $scope.loadingComplete = true;
@@ -38,7 +38,7 @@ angular.module('gpaCalc.controllers', [])
     else
       $state.go(currentHome.state);
   }
-            
+
             $scope.$on("$ionicView.beforeEnter", function(event, data){
                        AdMob.showBanner(AdMob.AD_POSITION.BOTTOM_CENTER);
                        });
@@ -101,7 +101,7 @@ angular.module('gpaCalc.controllers', [])
 //                            AdMob.showBanner(AdMob.AD_POSITION.BOTTOM_CENTER);
 //                            }, 100);
       }, 100);
-            
+
   };
 
   $scope.showColorSchemesPopup = function() {
@@ -135,7 +135,7 @@ angular.module('gpaCalc.controllers', [])
 
 .controller('gpaScaleCtrl', function($scope, $state, GradingScaleManager, AppColors) {
   $scope.colorPalette = AppColors.getColorPalette();
-            
+
             $scope.$on("$ionicView.beforeEnter", function(event, data){
                        AdMob.showBanner(AdMob.AD_POSITION.BOTTOM_CENTER);
                        });
@@ -163,11 +163,53 @@ angular.module('gpaCalc.controllers', [])
 })
 
 
-.controller('gradebooksCtrl', function($scope, $state, AppColors, AppManager, HomeReference, SettingsReference, $ionicPopover, GradebookManager, $ionicPopup) {
+.controller('gradebooksCtrl', function($scope, $state, AppColors, AppManager, HomeReference, SettingsReference, $ionicPopover, GradebookManager, $ionicPopup, $ionicHistory, $ionicPlatform) {
   $scope.colorPalette = AppColors.getColorPalette();
 
   $scope.gradebooksList = AppManager.getGradebooks();
   $scope.data = {};
+  $scope.backSwipe = true;
+
+  $scope.$watch(function() {
+     return $ionicHistory.currentView().index;
+  }, function(value) {
+
+      if(value == 1){
+        $scope.backSwipe = false;
+       $ionicPlatform.registerBackButtonAction(
+         function() {
+           $ionicPopup.show({
+             templateUrl: 'templates/confirmExit.html',
+             title: 'Warning!',
+             cssClass: 'my-popup',
+             scope: $scope,
+             buttons: [
+               { text: '<b>No</b>' },
+               {
+                 text: '<b>Yes</b>',
+                 type: 'save',
+                 onTap: function() {
+                   return true;
+                 }
+               },
+             ]
+           }).then(function(res) {
+             if (res) {
+               ionic.Platform.exitApp();
+             }
+           })
+         }, 101
+       );
+     } else {
+       $scope.backSwipe = true;
+       $ionicPlatform.registerBackButtonAction(
+         function() {
+           $ionicHistory.goBack(-1);
+         }, 101
+       );
+     }
+  });
+
   $scope.settingsButtonClicked = false;
 
   $scope.settingsButtons = [];
@@ -351,13 +393,55 @@ angular.module('gpaCalc.controllers', [])
 
 })
 
-.controller('gradebookCtrl', function($scope, $state, $stateParams, $ionicLoading, AppColors, HomeReference, GradingScaleManager, $ionicModal, SettingsReference, AppManager, GradebookManager, TermManager, $ionicPopover, $ionicPopup) {
+.controller('gradebookCtrl', function($scope, $state, $stateParams, $ionicLoading, AppColors, HomeReference, GradingScaleManager, $ionicModal, SettingsReference, AppManager, GradebookManager, TermManager, $ionicPopover, $ionicPopup, $ionicHistory, $ionicPlatform) {
   $scope.colorPalette = AppColors.getColorPalette();
 
   $scope.currentGradebook = GradebookManager.getGradebook($stateParams.id);
   //console.log("gradebookCtrl ID: "+$scope.currentGradebook.id);
   $scope.termsList = GradebookManager.getTerms($scope.currentGradebook.id);
   $scope.data = {};
+  $scope.backSwipe = true;
+
+  $scope.$watch(function() {
+     return $ionicHistory.currentView().index;
+  }, function(value) {
+
+      if(value == 1){
+        $scope.backSwipe = false;
+       $ionicPlatform.registerBackButtonAction(
+         function() {
+           $ionicPopup.show({
+             templateUrl: 'templates/confirmExit.html',
+             title: 'Warning!',
+             cssClass: 'my-popup',
+             scope: $scope,
+             buttons: [
+               { text: '<b>No</b>' },
+               {
+                 text: '<b>Yes</b>',
+                 type: 'save',
+                 onTap: function() {
+                   return true;
+                 }
+               },
+             ]
+           }).then(function(res) {
+             if (res) {
+               ionic.Platform.exitApp();
+             }
+           })
+         }, 101
+       );
+     } else {
+       $scope.backSwipe = true;
+       $ionicPlatform.registerBackButtonAction(
+         function() {
+           $ionicHistory.goBack(-1);
+         }, 101
+       );
+     }
+  });
+
   $scope.settingsButtonClicked = false;
 
   $scope.$watchCollection(function () {
@@ -380,7 +464,7 @@ angular.module('gpaCalc.controllers', [])
     ];
 
     var currentHome = HomeReference.getHome();
-    if(currentHome.state != 'gradebook'){
+    if(currentHome.state != 'gradebook' || currentHome.stateParams != $stateParams.id){
       var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"}
       var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
       if(currentHome.state == 'gradebooks')
@@ -551,7 +635,7 @@ $scope.$on('popover.removed', function() {
 });
 
 $scope.showInitialGPAPopup = function(gradebookID) {
-            
+
             $scope.removeOverlay();
 
     // $scope.data.iGPA = null;
@@ -712,7 +796,7 @@ $scope.showInitialGPAPopup = function(gradebookID) {
   });
 })
 
-.controller('termCtrl', function($scope, $state, $stateParams, AppColors, HomeReference, SettingsReference, TermManager, CourseManager, GradingScaleManager, AppManager, GradebookManager, $ionicPopover, $ionicPopup) {
+.controller('termCtrl', function($scope, $state, $stateParams, AppColors, HomeReference, SettingsReference, TermManager, CourseManager, GradingScaleManager, AppManager, GradebookManager, $ionicPopover, $ionicPopup, $ionicHistory, $ionicPlatform) {
   $scope.colorPalette = AppColors.getColorPalette();
 
   $scope.currentTerm = TermManager.getTerm($stateParams.id);
@@ -720,6 +804,48 @@ $scope.showInitialGPAPopup = function(gradebookID) {
 
   $scope.coursesList = TermManager.getCourses($scope.currentTerm.id);
   $scope.data = {};
+  $scope.backSwipe = true;
+
+  $scope.$watch(function() {
+     return $ionicHistory.currentView().index;
+  }, function(value) {
+
+      if(value == 1){
+        $scope.backSwipe = false;
+       $ionicPlatform.registerBackButtonAction(
+         function() {
+           $ionicPopup.show({
+             templateUrl: 'templates/confirmExit.html',
+             title: 'Warning!',
+             cssClass: 'my-popup',
+             scope: $scope,
+             buttons: [
+               { text: '<b>No</b>' },
+               {
+                 text: '<b>Yes</b>',
+                 type: 'save',
+                 onTap: function() {
+                   return true;
+                 }
+               },
+             ]
+           }).then(function(res) {
+             if (res) {
+               ionic.Platform.exitApp();
+             }
+           })
+         }, 101
+       );
+     } else {
+       $scope.backSwipe = true;
+       $ionicPlatform.registerBackButtonAction(
+         function() {
+           $ionicHistory.goBack(-1);
+         }, 101
+       );
+     }
+  });
+
   $scope.settingsButtonClicked = false;
 
   $scope.$watchCollection(function () {
@@ -740,7 +866,7 @@ $scope.showInitialGPAPopup = function(gradebookID) {
     ];
 
     var currentHome = HomeReference.getHome();
-    if(currentHome.state != 'term'){
+    if(currentHome.state != 'term' || currentHome.stateParams != $stateParams.id){
       var goHome = {name: "Home", icon:"ion-android-home", onClick:"goTo('"+currentHome.state+"','"+currentHome.stateParams+"')"};
       var setHome = {name: "Set Home", icon:"ion-pin", onClick:"setHome()"};
       if(currentHome.state == 'gradebooks')
